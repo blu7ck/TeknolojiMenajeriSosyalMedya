@@ -2,80 +2,56 @@ import { Package, Module, ProcessStep } from '../types';
 
 export const individualModules: Module[] = [
   {
-    name: 'Statik İçerik Üretimi',
-    description: 'Görsel + caption + hashtag',
-    deliverables: '1 post',
-    price: '200-600 TRY'
+    name: 'Fenomen Paket',
+    description: 'Mentorluk + İçerik Üretimi',
+    deliverables: 'Profesyonel Seviyede 12 Fotoğraf + 2 Video | Sosyal Medya Eğitimi',
+    price: '5000 TRY'
   },
   {
-    name: 'Story Şablonu',
-    description: 'Basit kişisel temalı görseller',
-    deliverables: '3-5 story',
-    price: '300-800 TRY'
+    name: 'Kişiye Özel İçerik Üretimi',
+    description: 'Görsel',
+    deliverables: '4 Adet Görsel',
+    price: '800 TRY'
   },
   {
-    name: 'Mini Video (Reel/TikTok)',
-    description: '15-30 sn video',
-    deliverables: '1 video',
-    price: '800-2.500 TRY'
+    name: 'Mini Video (Reel)',
+    description: 'Anılarınızı canlandırabilir, hayallerinizi gerçekleştirebilirsiniz :)',
+    deliverables: '1 Adet Video',
+    price: '1000 TRY'
   },
   {
-    name: 'Profil Düzenleme',
-    description: 'Bio + profil fotoğrafı önerisi + highlight',
-    deliverables: '1 set',
-    price: '500-1.200 TRY'
-  },
-  {
-    name: 'AI İçerik Önerileri',
-    description: '10 hazır içerik fikri',
-    deliverables: 'PDF/Notion dosyası',
-    price: '500-1.500 TRY'
-  },
-  {
-    name: 'Kişisel Marka Danışmanlığı',
-    description: '1 saatlik online oturum',
-    deliverables: 'Not + öneri raporu',
-    price: '1.000-3.000 TRY'
+    name: 'Trend AI İçerikler',
+    description: 'Sosyal Medya Viral İçerikleri',
+    deliverables: 'Görsel | Video',
+    price: '300 TRY | 650 TRY'
   }
 ];
 
 export const influencerModules: Module[] = [
   {
-    name: 'Statik İçerik Üretimi',
-    description: 'Görsel + caption + hashtag',
-    deliverables: '1 post',
-    price: '200-800 TRY'
+    name: 'Infiluencer Başlangıç Paketi',
+    description: 'Danışmanlık + Profil Yönetimi + İçerik Takvimi + İçerik Üretimi + Hedef Kitle Analizi',
+    deliverables: 'Aylık 2 Saat Danışmanlık Hizmeti + Profesyonel Seviyede 20 Fotoğraf + 4 Video + Anlık İletişim Hizmeti',
+    price: '20.000 TRY'
   },
   {
-    name: 'Reel/TikTok',
-    description: 'Trend uyumlu kısa video',
-    deliverables: '1 video',
-    price: '1.000-4.000 TRY'
+    name: 'Marka İşbirliği İçerik Üretimi',
+    description: 'Görsel + Caption + Hashtag | Video + Caption + Hashtag',
+    deliverables: 'Görsel | Video',
+    price: '1500 TRY | 4000 TRY'
   },
   {
-    name: 'Story Paketi',
-    description: 'Marka/ürün entegrasyonlu şablon',
-    deliverables: '5 story',
-    price: '500-1.500 TRY'
-  },
-  {
-    name: 'Medya Kiti',
-    description: 'PDF dosya (istatistik + portföy)',
-    deliverables: '1 dosya',
-    price: '1.000-3.500 TRY'
+    name: 'Mini Video (Platform Uyumlu)',
+    description: 'Kısa video',
+    deliverables: '1 Adet Video',
+    price: '1.000 TRY'
   },
   {
     name: 'UGC Seti',
-    description: 'Doğal içerik (marka için kullanılabilir)',
-    deliverables: '5 içerik',
-    price: '3.000-10.000 TRY'
+    description: 'İstenilen Stilde',
+    deliverables: '1 Adet UGC Video',
+    price: '5000 TRY'
   },
-  {
-    name: 'Performans Raporu',
-    description: 'Aylık erişim & etkileşim analizi',
-    deliverables: '1 rapor',
-    price: '2.000-5.000 TRY'
-  }
 ];
 
 export const businessModules: Module[] = [
@@ -83,95 +59,82 @@ export const businessModules: Module[] = [
     name: 'Sosyal Medya Yönetimi',
     description: 'Hesapların tam kapsamlı yönetimi',
     deliverables: '1-3 platform yönetimi',
-    price: '8.000-25.000 TRY/ay'
+    price: '35.000 TRY/ay'
   },
   {
     name: 'Video İçerik Üretimi',
-    description: '15-60 sn profesyonel video',
-    deliverables: '1 video (çekim + montaj)',
-    price: '1.500-5.000 TRY'
+    description: 'Yapay Zeka destekli veya UE5 profesyonel video',
+    deliverables: '1 Adet Video',
+    price: '3000 TRY Başlangıç Fiyatı'
   },
   {
     name: 'Web Sitesi Tasarımı',
     description: 'Kurumsal veya e-ticaret site',
-    deliverables: '1 site (tasarım + entegrasyon)',
-    price: '15.000-75.000 TRY'
+    deliverables: 'Website',
+    price: '15.000 TRY Başlangıç Fiyatı'
   },
   {
     name: 'SEO',
-    description: 'Teknik + içerik optimizasyonu',
-    deliverables: 'Aylık rapor + içerik planı',
-    price: '5.000-20.000 TRY/ay'
+    description: 'İçerik optimizasyonu',
+    deliverables: 'Aylık rapor + İçerik planı',
+    price: '15.000 TRY/ay'
   },
   {
-    name: 'Reklam Yönetimi',
-    description: 'Meta/Google/TikTok kampanyaları',
-    deliverables: 'Aylık yönetim + optimizasyon',
-    price: '5.000-20.000 TRY + reklam bütçesi'
+    name: 'Kişisel Marka Danışmanlığı',
+    description: '1 Saatlik Online Oturum',
+    deliverables: 'Rapor',
+    price: '10.000 TRY'
   },
-  {
-    name: 'E-ticaret Entegrasyonu',
-    description: 'Shop kurulumu + entegrasyon',
-    deliverables: 'Instagram/TikTok Shop + ürün yükleme',
-    price: '4.000-15.000 TRY'
-  }
 ];
 
 export const packages: Package[] = [
-  {
-    id: 'individual',
-    title: 'Bireysel Kullanıcı',
-    description: 'Kişisel hesaplar için profesyonel görünüm',
-    target: 'Sosyal medyayı daha düzenli, estetik ve profesyonel kullanmak isteyen bireyler, kişisel marka oluşturmak isteyenler, hobi içerik üreticileri',
-    modules: individualModules,
-    pricing: '1.500-15.000 TRY',
-    features: [
-      '8-12 statik post tasarımı',
-      '4-8 story şablonu',
-      'Profil düzenleme ve optimizasyon',
-      'Aylık içerik takvimi',
-      'Caption ve hashtag setleri',
-      'Mini video paketleri (opsiyonel)',
-      'Kişisel marka danışmanlığı'
-    ]
-  },
-  {
-    id: 'influencer',
-    title: 'Influencer Paketi',
-    description: 'İçerik üreticileri ve marka işbirlikleri için',
-    target: 'Gelir elde eden veya gelir hedefleyen içerik üreticileri, markalarla işbirliği yapanlar veya işbirliği sürecine hazırlananlar',
-    modules: influencerModules,
-    pricing: '5.000-40.000+ TRY',
-    features: [
-      'Bireysel paketin tüm özellikleri',
-      'Marka işbirliği içerik üretimi',
-      'Profesyonel medya kiti hazırlığı',
-      'UGC içerik setleri',
-      'Performans raporlama',
-      'Video prodüksiyon (premium)',
-      'Marka danışmanlığı ve kontrat desteği'
-    ]
-  },
-  {
-    id: 'business',
-    title: 'İşletme Paketi',
-    description: 'KOBİ\'den kurumsala tam çözüm',
-    target: 'KOBİ\'den kurumsala kadar işletmeler, marka yönetimi, satış odaklı sosyal medya, SEO ve dijital büyüme hedefleri',
-    modules: businessModules,
-    pricing: '12.000-80.000+ TRY',
-    features: [
-      'Çoklu platform yönetimi',
-      'Kapsamlı içerik üretimi (16-20+ post)',
-      'Reklam yönetimi ve optimizasyon',
-      'SEO ve web sitesi entegrasyonu',
-      'E-ticaret entegrasyonu',
-      'CRM ve otomasyon sistemleri',
-      'Kriz iletişimi ve itibar yönetimi',
-      'Detaylı raporlama ve dashboard'
-    ]
-  }
-];
-
+    {
+      id: 'individual',
+      title: 'Bireysel Kullanıcı',
+      description: 'Kişisel hesaplar için profesyonel görünüm',
+      target: 'Sosyal medyayı daha düzenli, estetik ve profesyonel kullanmak isteyen bireyler, kişisel marka oluşturmak isteyenler, hobi içerik üreticileri',
+      modules: individualModules,
+      pricing: '300-5.000 TRY',
+      features: [
+        'Fenomen Paket',
+        'Kişiye Özel İçerik Üretimi',
+        'Mini Video',
+        'Trend AI İçerikler',
+      ]
+    },
+    {
+      id: 'influencer',
+      title: 'Influencer Paketi',
+      description: 'İçerik üreticileri ve marka işbirlikleri için',
+      target: 'Gelir elde eden veya gelir hedefleyen içerik üreticileri, markalarla işbirliği yapanlar veya işbirliği sürecine hazırlananlar',
+      modules: influencerModules,
+      pricing: '1.000-20.000 TRY',
+      features: [
+        'Infiluencer Başlangıç Paketi',
+        'Marka işbirliği içerik üretimi',
+        'Mini Video',
+        'UGC içerik setleri'
+      ]
+    },
+    {
+      id: 'business',
+      title: 'İşletme Paketi',
+      description: 'KOBİ\'den kurumsala tam çözüm',
+      target: 'KOBİ\'den kurumsala kadar işletmeler, marka yönetimi, satış odaklı sosyal medya, SEO ve dijital büyüme hedefleri',
+      modules: businessModules,
+      pricing: '3.000-35.000+ TRY',
+      features: [
+        'Sosyal Medya Yönetimi',
+        'Video İçerik Üretimi',
+        'Web Sitesi Tasarımı',
+        'SEO ve İçerik optimizasyonu',
+        'Kişisel Marka Danışmanlığı',
+        'Detaylı raporlama'
+      ]
+    }
+  ]
+  
+  
 export const processSteps: ProcessStep[] = [
   {
     step: 1,
