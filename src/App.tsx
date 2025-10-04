@@ -1,110 +1,112 @@
-import React from 'react';
 import { useState } from 'react';
+import { useStardustCursor } from './hooks/useStardustCursor';
 import { Header } from './components/Header';
-import { HeroSection } from './components/HeroSection';
-import { PackageSection } from './components/PackageSection';
-import { ModuleMenu } from './components/ModuleMenu';
 import { ProcessSection } from './components/ProcessSection';
-import { PackageBuilder } from './components/PackageBuilder';
 import { GalleryPage } from './components/GalleryPage';
-import { packages, individualModules, influencerModules, businessModules, processSteps } from './data/packages';
+import { CursorTrail } from './components/CursorTrail';
+import { AboutUs } from './components/AboutUs';
+import { Services } from './components/Services';
+import './components/PackageSelector.css';
+import { processSteps } from './data/packages';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 function App() {
-  const [isPackageBuilderOpen, setIsPackageBuilderOpen] = useState(false);
-  const [selectedPackageType, setSelectedPackageType] = useState<'individual' | 'influencer' | 'business'>('individual');
-  const [showGallery, setShowGallery] = useState(false);
-
-  const handlePackageSelect = (packageType: 'individual' | 'influencer' | 'business') => {
-    setSelectedPackageType(packageType);
-    setIsPackageBuilderOpen(true);
-  };
-
-  const handlePackageBuilderOpen = () => {
-    setIsPackageBuilderOpen(true);
-  };
+  const [showGallery] = useState(false);
+  
+  // Initialize stardust cursor animation
+  useStardustCursor();
 
   if (showGallery) {
     return <GalleryPage />;
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header onGalleryClick={() => setShowGallery(true)} />
-      <HeroSection />
-      <PackageSection packages={packages} onPackageSelect={handlePackageSelect} />
-      
-      {/* Module Menu Section */}
-      <section id="modules" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Modül Menüsü
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              İhtiyaçlarınıza göre seçebileceğiniz tüm modüller ve fiyatlandırmaları
-            </p>
-          </div>
+    <div className="min-h-screen" style={{ backgroundColor: '#D3DADD' }}>
+      <Header />
+      <CursorTrail />
+      <div className="pt-24">
+        <GalleryPage />
+      {/* About Us Section */}
+      <AboutUs />
 
-          <ModuleMenu 
-            modules={individualModules} 
-            categoryTitle="Bireysel Kullanıcı Modülleri" 
-            onPackageBuilderOpen={handlePackageBuilderOpen}
-          />
-          <ModuleMenu modules={influencerModules} categoryTitle="Influencer Modülleri" />
-          <ModuleMenu modules={businessModules} categoryTitle="İşletme Modülleri" />
+      {/* Services Section */}
+      <Services />
+
+      {/* Important Notes Section */}
+      <section className="pt-8 pb-12" style={{ backgroundColor: '#D3DADD' }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Önemli Noktalar</h3>
+          <ul className="space-y-3 text-gray-700">
+            <li className="flex items-start">
+              <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+              <span><strong>Revizyon Hakkı:</strong> Her içerik seti için 1 revizyon hakkı dahil</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+              <span><strong>Telif Hakları:</strong> Üretilen içeriklerin kullanım hakları net olarak tanımlanır</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+              <span><strong>SLA Garantisi:</strong> Paket türüne göre 24-48 saat destek süresi</span>
+            </li>
+            <li className="flex items-start">
+              <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+              <span><strong>Ölçeklenebilirlik:</strong> İhtiyaçlarınıza göre paket genişletme imkanı</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Free Digital Analysis Section */}
+      <section className="py-20" style={{ backgroundColor: '#D3DADD' }}>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+            Ücretsiz Dijital Analiz
+          </h2>
+          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+            Online platformlardaki ayak izinizi değerlendirerek, markanızın dijital varlığını nasıl geliştireceğiniz konusunda size özel öneriler sunuyoruz.
+          </p>
+          
+          <div className="max-w-2xl mx-auto">
+            <form className="space-y-6">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Ad - Soyad"
+                    className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    placeholder="E-posta"
+                    className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="url"
+                    placeholder="Website"
+                    className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full md:w-auto px-8 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105"
+              >
+                Rapor İste
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
       <ProcessSection steps={processSteps} />
 
-      {/* Additional Information */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Key Points */}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Önemli Noktalar</h3>
-              <ul className="space-y-4 text-gray-700">
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span><strong>Revizyon Hakkı:</strong> Her içerik seti için 1 revizyon hakkı dahil</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span><strong>Telif Hakları:</strong> Üretilen içeriklerin kullanım hakları net olarak tanımlanır</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span><strong>SLA Garantisi:</strong> Paket türüne göre 24-48 saat destek süresi</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span><strong>Ölçeklenebilirlik:</strong> İhtiyaçlarınıza göre paket genişletme imkanı</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Reporting */}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Raporlama & KPI</h3>
-              <p className="text-gray-700 mb-4">Aylık raporlarda yer alacak metrikler:</p>
-              <ul className="space-y-2 text-gray-700">
-                <li>• Erişim (reach) ve gösterimler (impressions)</li>
-                <li>• Etkileşim sayısı ve oranları</li>
-                <li>• Takipçi değişimi analizi</li>
-                <li>• Link tıklamaları ve web trafiği</li>
-                <li>• Dönüşümler ve satın alma metrikleri</li>
-                <li>• Öne çıkan içerikler ve öğrenimler</li>
-                <li>• Önerilen aksiyonlar ve gelecek planları</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-white">
+      <section id="contact" className="py-20" style={{ backgroundColor: '#D3DADD' }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             İletişime Geçin
@@ -147,10 +149,10 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
+      <footer className="py-8" style={{ backgroundColor: '#D3DADD' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">
-            © 2024 Sosyal Medya Paketleri. Tüm hakları saklıdır.
+          <p className="text-gray-600">
+            © 2025 TEKNOLOJİ MENAJERİ. Tüm hakları saklıdır.
           </p>
           <p className="text-gray-500 text-sm mt-2">
             Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
@@ -158,11 +160,7 @@ function App() {
         </div>
       </footer>
 
-      <PackageBuilder
-        isOpen={isPackageBuilderOpen}
-        onClose={() => setIsPackageBuilderOpen(false)}
-        initialPackageType={selectedPackageType}
-      />
+      </div>
     </div>
   );
 }

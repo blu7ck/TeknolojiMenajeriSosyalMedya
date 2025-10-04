@@ -1,10 +1,6 @@
 import InfiniteGallery from './InfiniteGallery';
-import { ArrowLeft } from 'lucide-react';
 
 export function GalleryPage() {
-	const handleBackClick = () => {
-		window.location.reload();
-	};
 	const sampleImages = [
 		{ src: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 1' },
 		{ src: 'https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 2' },
@@ -18,15 +14,6 @@ export function GalleryPage() {
 
 	return (
 		<main className="min-h-screen relative">
-			<button
-				onClick={handleBackClick}
-				className="fixed top-6 left-6 z-50 bg-white/90 backdrop-blur-sm text-gray-900 px-4 py-2 rounded-lg
-				           hover:bg-white transition-all duration-200 flex items-center gap-2 shadow-lg"
-			>
-				<ArrowLeft size={20} />
-				<span>Ana Sayfa</span>
-			</button>
-
 			<InfiniteGallery
 				images={sampleImages}
 				speed={1.2}
@@ -35,17 +22,27 @@ export function GalleryPage() {
 				falloff={{ near: 0.8, far: 14 }}
 				className="h-screen w-full"
 			/>
-			<div className="h-screen inset-0 pointer-events-none fixed flex items-center justify-center text-center px-3 mix-blend-exclusion text-white">
-				<h1 className="text-4xl md:text-7xl tracking-tight font-bold">
-					<span className="italic">Sosyal Medya</span> Portföyümüz
-				</h1>
-			</div>
-
-			<div className="text-center fixed bottom-10 left-0 right-0 text-white font-mono uppercase text-[11px] font-semibold mix-blend-exclusion">
-				<p>Fare tekerleği, ok tuşları veya dokunma ile gezinin</p>
-				<p className="opacity-60">
-					3 saniye hareketsizlik sonrası otomatik oynatma devam eder
-				</p>
+			
+			{/* Logo and Text Overlay */}
+			<div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+				<div className="text-center">
+					{/* Logo */}
+					<div className="mb-6">
+						<img 
+							src="/logo.svg" 
+							alt="Teknoloji Menajeri Logo" 
+							className="w-48 h-auto mx-auto filter drop-shadow-2xl"
+						/>
+					</div>
+					
+					{/* Social Media Agency Text */}
+					<h2 
+						className="text-2xl md:text-4xl font-bold text-white tracking-wider filter drop-shadow-2xl"
+						style={{ fontFamily: 'Orbitron, Arial, sans-serif' }}
+					>
+						#SosyalMedyaAjansı
+					</h2>
+				</div>
 			</div>
 		</main>
 	);

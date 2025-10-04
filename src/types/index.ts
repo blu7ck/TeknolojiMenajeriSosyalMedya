@@ -4,15 +4,14 @@ export interface Package {
   description: string;
   target: string;
   modules: Module[];
-  pricing: string;
-  features: string[];
 }
 
 export interface Module {
+  id: string;
   name: string;
-  description: string;
-  deliverables: string;
-  price: string;
+  description?: string;
+  mediaUrl?: string;
+  exampleJson?: string;
 }
 
 export interface ProcessStep {
@@ -24,7 +23,7 @@ export interface ProcessStep {
 export interface SelectedModule {
   name: string;
   price: string;
-  category: 'individual' | 'influencer' | 'business';
+  category: 'individual' | 'influencer' | 'corporate';
 }
 
 export interface ContactForm {
@@ -32,7 +31,7 @@ export interface ContactForm {
   email: string;
   phone: string;
   company?: string;
-  packageType: 'individual' | 'influencer' | 'business';
+  packageType: 'individual' | 'influencer' | 'corporate';
   selectedModules: SelectedModule[];
   totalPrice: number;
   message: string;

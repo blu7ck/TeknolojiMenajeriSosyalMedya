@@ -18,7 +18,7 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
   };
 
   return (
-    <section id="packages" className="py-20 bg-gray-50">
+    <section id="packages" className="py-20" style={{ backgroundColor: '#D3DADD' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -33,7 +33,7 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
           {packages.map((pkg, index) => (
             <div 
               key={pkg.id}
-              className="bg-white rounded-xl shadow-lg p-8 relative hover:shadow-xl transition-shadow duration-300"
+              className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 relative hover:shadow-xl hover:border-gray-300 transition-all duration-300"
             >
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
@@ -42,7 +42,7 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
               </div>
 
               <div className="space-y-4 mb-8">
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-200 pt-6">
                   <h4 className="font-semibold text-gray-900 mb-3">Hedef Kitle:</h4>
                   <p className="text-gray-600 text-sm">{pkg.target}</p>
                 </div>
@@ -52,8 +52,8 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
                   <ul className="space-y-2">
                     {pkg.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
-                        <CheckCircle size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
-                        <span className="text-gray-700 text-sm">{feature}</span>
+                        <CheckCircle size={16} className="text-green-600 mr-2 mt-1 flex-shrink-0" />
+                        <span className="text-gray-600 text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -62,8 +62,7 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
 
               <button 
                 onClick={() => onPackageSelect(getPackageType(pkg.id))}
-                className="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg 
-                         hover:bg-blue-700 transition-colors duration-200"
+                className="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 Kendi Paketini Oluştur
               </button>
