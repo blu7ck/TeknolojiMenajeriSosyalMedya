@@ -1,7 +1,11 @@
 import React from 'react';
 import { Menu, X } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onGalleryClick?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onGalleryClick }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const scrollToSection = (id: string) => {
@@ -40,6 +44,14 @@ export const Header: React.FC = () => {
             >
               Süreç
             </button>
+            {onGalleryClick && (
+              <button
+                onClick={onGalleryClick}
+                className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
+              >
+                Galeri
+              </button>
+            )}
             <button
               onClick={() => scrollToSection('contact')}
               className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
@@ -81,6 +93,17 @@ export const Header: React.FC = () => {
               >
                 Süreç
               </button>
+              {onGalleryClick && (
+                <button
+                  onClick={() => {
+                    onGalleryClick();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600"
+                >
+                  Galeri
+                </button>
+              )}
               <button
                 onClick={() => scrollToSection('contact')}
                 className="block w-full text-left px-3 py-2 text-gray-600 hover:text-blue-600"

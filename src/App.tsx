@@ -6,12 +6,14 @@ import { PackageSection } from './components/PackageSection';
 import { ModuleMenu } from './components/ModuleMenu';
 import { ProcessSection } from './components/ProcessSection';
 import { PackageBuilder } from './components/PackageBuilder';
+import { GalleryPage } from './components/GalleryPage';
 import { packages, individualModules, influencerModules, businessModules, processSteps } from './data/packages';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 function App() {
   const [isPackageBuilderOpen, setIsPackageBuilderOpen] = useState(false);
   const [selectedPackageType, setSelectedPackageType] = useState<'individual' | 'influencer' | 'business'>('individual');
+  const [showGallery, setShowGallery] = useState(false);
 
   const handlePackageSelect = (packageType: 'individual' | 'influencer' | 'business') => {
     setSelectedPackageType(packageType);
@@ -22,9 +24,13 @@ function App() {
     setIsPackageBuilderOpen(true);
   };
 
+  if (showGallery) {
+    return <GalleryPage />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header onGalleryClick={() => setShowGallery(true)} />
       <HeroSection />
       <PackageSection packages={packages} onPackageSelect={handlePackageSelect} />
       
