@@ -2,14 +2,18 @@ import InfiniteGallery from './InfiniteGallery';
 
 export function GalleryPage() {
 	const sampleImages = [
+		// Local gallery images
+		{ src: '/gallery/model (1).jpeg', alt: 'Model 1' },
+		{ src: '/gallery/model (2).jpeg', alt: 'Model 2' },
+		{ src: '/gallery/model (3).jpeg', alt: 'Model 3' },
+		{ src: '/gallery/stylish.jpeg', alt: 'Stylish' },
+		{ src: '/gallery/taki (1).jpeg', alt: 'Taki 1' },
+		{ src: '/gallery/taki.jpeg', alt: 'Taki' },
+		// External images for variety
 		{ src: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 1' },
 		{ src: 'https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 2' },
 		{ src: 'https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 3' },
 		{ src: 'https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 4' },
-		{ src: 'https://images.pexels.com/photos/1181354/pexels-photo-1181354.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 5' },
-		{ src: 'https://images.pexels.com/photos/3184295/pexels-photo-3184295.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 6' },
-		{ src: 'https://images.pexels.com/photos/3184357/pexels-photo-3184357.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 7' },
-		{ src: 'https://images.pexels.com/photos/3182746/pexels-photo-3182746.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media 8' },
 	];
 
 	return (
