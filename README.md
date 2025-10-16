@@ -117,13 +117,9 @@ supabase functions deploy
 ```
 
 ### **5. Veritabanı Kurulumu**
-Supabase Dashboard'da SQL Editor'ü açın ve şu script'leri sırayla çalıştırın:
-- `scripts/001_create_blog_tables.sql`
-- `scripts/002_update_newsletter_rls.sql`
-- `scripts/003_fix_newsletter_rls.sql`
-- `scripts/004_update_newsletter_schema.sql`
-- `scripts/005_create_missing_tables.sql`
-- `scripts/006_fix_rls_and_reactions.sql`
+**📁 Scripts ve Docs Klasörü:** `scripts/` ve `docs/` klasörleri projeye dahil değildir. Bu dosyalar lokalde kalır ve gerektiğinde paylaşılabilir.
+
+**🔧 Veritabanı kurulumu için:** Supabase Dashboard'da SQL Editor'ü açın ve gerekli tabloları oluşturun. Detaylı kurulum rehberi için iletişime geçin.
 
 ### **6. Mailgun Kurulumu**
 1. Mailgun hesabı oluşturun
