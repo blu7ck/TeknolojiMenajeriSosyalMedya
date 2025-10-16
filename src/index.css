@@ -306,3 +306,44 @@
 .animate-float {
   animation: header-float 6s ease-in-out infinite;
 }
+
+/* Blog Content Text Wrapping */
+.prose {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  hyphens: auto !important;
+}
+
+.prose p,
+.prose div,
+.prose span,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  hyphens: auto !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Long URLs and codes */
+.prose pre,
+.prose code,
+.prose a {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Markdown content specific */
+.markdown-content {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  hyphens: auto !important;
+}

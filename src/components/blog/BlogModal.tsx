@@ -129,7 +129,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-200">
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden bg-white rounded-2xl shadow-2xl border border-gray-200">
         {/* Theme Toggle Button */}
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
@@ -180,7 +180,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
               {post.excerpt && <p className={`text-xl mb-8 text-pretty ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{post.excerpt}</p>}
 
               {/* Content */}
-              <div className={`prose prose-lg max-w-none mb-12 ${isDarkMode ? 'prose-invert' : 'prose-gray'}`}>
+              <div className={`prose prose-lg max-w-none mb-12 break-words overflow-wrap-anywhere markdown-content ${isDarkMode ? 'prose-invert' : 'prose-gray'}`}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
               </div>
 
