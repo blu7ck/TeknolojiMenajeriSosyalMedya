@@ -13,7 +13,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-3.0+-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-[🌐 Demo](https://teknoloji-menajeri-sosyal-medya.vercel.app) • [📖 Dokümantasyon](#dokümantasyon) • [🚀 Kurulum](#kurulum) • [📝 Changelog](#changelog)
+[🌐 Demo]([https://teknoloji-menajeri-sosyal-medya.vercel.app](https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg)) • [📖 Dokümantasyon](#dokümantasyon) • [🚀 Kurulum](#kurulum) • [📝 Changelog](#changelog)
 
 </div>
 
