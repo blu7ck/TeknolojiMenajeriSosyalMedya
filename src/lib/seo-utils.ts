@@ -64,18 +64,94 @@ export function setBlogPostSEO(post: {
   excerpt?: string
   cover_image?: string
   slug: string
+  category?: string
+  tags?: string[]
 }) {
   const baseUrl = 'https://teknolojimenajeri.com'
   const postUrl = `${baseUrl}/blog/${post.slug}`
   
+  // Akıllı anahtar kelime oluşturma
+  const smartKeywords = generateSmartKeywords(post)
+  
   updatePageSEO({
     title: `${post.title} | Teknoloji Menajeri Blog`,
     description: post.excerpt || `Teknoloji Menajeri blog yazısı: ${post.title}`,
-    keywords: `teknoloji, blog, ${post.title.toLowerCase()}, teknoloji menajeri`,
+    keywords: smartKeywords,
     image: post.cover_image || 'https://i.ibb.co/CstJSnMp/logo.png',
     url: postUrl,
     type: 'article'
   })
+}
+
+// Akıllı anahtar kelime oluşturma
+function generateSmartKeywords(post: {
+  title: string
+  category?: string
+  tags?: string[]
+}): string {
+  const baseKeywords = ['teknoloji', 'blog', 'teknoloji menajeri']
+  
+  // Başlıktan anahtar kelimeler çıkar
+  const titleKeywords = extractKeywordsFromTitle(post.title)
+  
+  // Kategori bazlı anahtar kelimeler
+  const categoryKeywords = getCategoryKeywords(post.category)
+  
+  // Tag'lerden anahtar kelimeler
+  const tagKeywords = post.tags || []
+  
+  // Tüm anahtar kelimeleri birleştir ve tekrarları kaldır
+  const allKeywords = [
+    ...baseKeywords,
+    ...titleKeywords,
+    ...categoryKeywords,
+    ...tagKeywords
+  ]
+  
+  // Tekrarları kaldır ve virgülle ayır
+  const uniqueKeywords = [...new Set(allKeywords)]
+    .filter(keyword => keyword.length > 2) // Çok kısa kelimeleri filtrele
+    .slice(0, 15) // Maksimum 15 anahtar kelime
+  
+  return uniqueKeywords.join(', ')
+}
+
+// Başlıktan anahtar kelime çıkarma
+function extractKeywordsFromTitle(title: string): string[] {
+  // Türkçe stop words (gereksiz kelimeler)
+  const stopWords = [
+    've', 'ile', 'bir', 'bu', 'şu', 'o', 'için', 'olan', 'olan', 'gibi',
+    'kadar', 'sonra', 'önce', 'üzerinde', 'altında', 'arasında',
+    'nedir', 'nasıl', 'ne', 'hangi', 'kim', 'nerede', 'ne zaman',
+    'artık', 'hala', 'henüz', 'sadece', 'yalnız', 'ancak', 'fakat'
+  ]
+  
+  return title
+    .toLowerCase()
+    .replace(/[^\w\sğüşıöçĞÜŞİÖÇ]/g, '') // Özel karakterleri kaldır
+    .split(/\s+/)
+    .filter(word => word.length > 3 && !stopWords.includes(word))
+    .slice(0, 5) // Maksimum 5 kelime
+}
+
+// Kategori bazlı anahtar kelimeler
+function getCategoryKeywords(category?: string): string[] {
+  if (!category) return []
+  
+  const categoryMap: Record<string, string[]> = {
+    'yapay-zeka': ['yapay zeka', 'ai', 'machine learning', 'derin öğrenme', 'neural network'],
+    'blockchain': ['blockchain', 'kripto', 'bitcoin', 'ethereum', 'defi', 'nft'],
+    'mobil': ['mobil', 'android', 'ios', 'uygulama', 'app development'],
+    'web': ['web', 'frontend', 'backend', 'fullstack', 'javascript', 'react'],
+    'bulut': ['bulut', 'cloud', 'aws', 'azure', 'google cloud', 'devops'],
+    'güvenlik': ['güvenlik', 'cyber security', 'siber güvenlik', 'hacker', 'malware'],
+    'oyun': ['oyun', 'game', 'unity', 'unreal engine', 'gaming', 'esports'],
+    'iot': ['iot', 'nesnelerin interneti', 'akıllı ev', 'sensor', 'connected devices'],
+    'ar-vr': ['ar', 'vr', 'augmented reality', 'virtual reality', 'metaverse'],
+    'sosyal-medya': ['sosyal medya', 'instagram', 'facebook', 'twitter', 'linkedin', 'tiktok']
+  }
+  
+  return categoryMap[category.toLowerCase()] || []
 }
 
 // Blog sayfası için SEO

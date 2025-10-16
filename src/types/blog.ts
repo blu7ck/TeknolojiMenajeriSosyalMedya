@@ -7,6 +7,8 @@ export interface BlogPost {
   cover_image?: string
   author_name?: string
   author_avatar?: string
+  category?: string
+  tags?: string[]
   status: "draft" | "published"
   published_at?: string
   created_at: string

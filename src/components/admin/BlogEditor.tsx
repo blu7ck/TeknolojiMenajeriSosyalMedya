@@ -17,6 +17,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
     excerpt: "",
     content: "",
     cover_image: "",
+    category: "",
+    tags: "",
     status: "draft" as "draft" | "published",
   })
   const [loading, setLoading] = useState(false)
@@ -31,6 +33,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
         excerpt: post.excerpt || "",
         content: post.content,
         cover_image: post.cover_image || "",
+        category: post.category || "",
+        tags: post.tags?.join(", ") || "",
         status: post.status,
       })
     }
@@ -119,6 +123,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
         excerpt: formData.excerpt || null,
         content: formData.content,
         cover_image: formData.cover_image || null,
+        category: formData.category || null,
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : null,
         status: formData.status,
         published_at: formData.status === "published" && !post?.published_at ? new Date().toISOString() : post?.published_at,
       }
@@ -220,6 +226,39 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Kısa açıklama"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Kategori seçin</option>
+                <option value="yapay-zeka">Yapay Zeka</option>
+                <option value="blockchain">Blockchain</option>
+                <option value="mobil">Mobil</option>
+                <option value="web">Web</option>
+                <option value="bulut">Bulut</option>
+                <option value="güvenlik">Güvenlik</option>
+                <option value="oyun">Oyun</option>
+                <option value="iot">IoT</option>
+                <option value="ar-vr">AR/VR</option>
+                <option value="sosyal-medya">Sosyal Medya</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Etiketler (Tags)</label>
+              <input
+                type="text"
+                value={formData.tags}
+                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="react, javascript, frontend (virgülle ayırın)"
+              />
+              <p className="text-sm text-gray-500 mt-1">Etiketleri virgülle ayırın. SEO için otomatik anahtar kelime oluşturulacak.</p>
             </div>
 
             <div>
