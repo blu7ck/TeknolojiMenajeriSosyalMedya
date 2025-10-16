@@ -222,3 +222,7 @@ storybook-static/
 # Project specific
 public/uploads/
 uploads/
+
+# Documentation and scripts (keep local only)
+scripts/
+docs/
