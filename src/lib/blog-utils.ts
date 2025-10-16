@@ -79,7 +79,7 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
     // Check if user already viewed this post today
     const today = new Date().toISOString().split('T')[0]
     const { data: existingView } = await supabase
-      .from("blog_posts_views")
+      .from("blog_post_views")
       .select("id")
       .eq("blog_post_id", blogPostId)
       .eq("user_identifier", userIdentifier)
@@ -89,7 +89,7 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
     // Only track if not viewed today
     if (!existingView) {
       const { error } = await supabase
-        .from("blog_posts_views")
+        .from("blog_post_views")
         .insert({
           blog_post_id: blogPostId,
           user_identifier: userIdentifier,
