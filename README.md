@@ -6,6 +6,8 @@
 
 **Modern teknoloji haberleri ve sosyal medya yönetimi için geliştirilmiş kapsamlı platform**
 
+> **📋 Not:** Bu repository sadece kaynak kodları içerir. Kurulum script'leri ve detaylı dokümantasyon lokalde tutulur. Tam kurulum için iletişime geçin.
+
 [![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-3.0+-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
@@ -117,9 +119,17 @@ supabase functions deploy
 ```
 
 ### **5. Veritabanı Kurulumu**
-**📁 Scripts ve Docs Klasörü:** `scripts/` ve `docs/` klasörleri projeye dahil değildir. Bu dosyalar lokalde kalır ve gerektiğinde paylaşılabilir.
+**📁 Scripts ve Docs Klasörü:** `scripts/` ve `docs/` klasörleri Git repository'ye dahil değildir. Bu dosyalar sadece lokalde kalır ve gerektiğinde ayrıca paylaşılabilir.
 
-**🔧 Veritabanı kurulumu için:** Supabase Dashboard'da SQL Editor'ü açın ve gerekli tabloları oluşturun. Detaylı kurulum rehberi için iletişime geçin.
+**🔧 Veritabanı kurulumu için:** 
+1. Supabase Dashboard'da SQL Editor'ü açın
+2. Gerekli tabloları oluşturun:
+   - `blog_posts` - Blog yazıları için
+   - `blog_reactions` - Blog reaksiyonları için
+   - `newsletter_subscribers` - Newsletter aboneleri için
+   - `blog_post_views` - Blog görüntülenme istatistikleri için
+
+**📋 Detaylı Kurulum:** Tam kurulum rehberi, SQL script'leri ve dokümantasyon için iletişime geçin.
 
 ### **6. Mailgun Kurulumu**
 1. Mailgun hesabı oluşturun
@@ -141,21 +151,25 @@ npm run dev
 
 ```
 TeknolojiMenajeriSosyalMedya/
-├── 📁 public/                 # Statik dosyalar
+├── 📁 public/                 # Statik dosyalar (robots.txt, sitemap.xml)
 ├── 📁 src/
 │   ├── 📁 components/         # React bileşenleri
 │   │   ├── 📁 admin/         # Admin panel bileşenleri
 │   │   ├── 📁 blog/          # Blog bileşenleri
 │   │   └── 📄 ...            # Diğer bileşenler
 │   ├── 📁 pages/             # Sayfa bileşenleri
-│   ├── 📁 lib/               # Utility fonksiyonları
+│   ├── 📁 lib/               # Utility fonksiyonları (SEO, Supabase)
 │   ├── 📁 types/             # TypeScript type tanımları
 │   └── 📄 ...                # Ana dosyalar
 ├── 📁 supabase/
-│   └── 📁 functions/         # Edge Functions
-├── 📁 scripts/               # SQL script'leri
+│   └── 📁 functions/         # Edge Functions (Email, Notifications)
 ├── 📄 package.json           # Proje bağımlılıkları
+├── 📄 index.html             # SEO optimized HTML
 └── 📄 README.md              # Bu dosya
+
+📋 Lokalde Tutulan Dosyalar (Git'e dahil değil):
+├── 📁 scripts/               # SQL script'leri (Database setup)
+└── 📁 docs/                  # Detaylı dokümantasyon
 ```
 
 ---
@@ -261,6 +275,13 @@ npm run build
 
 ## 📝 Changelog
 
+### **v1.0.1-beta** (2025-01-15)
+- 🔧 Repository temizliği yapıldı
+- 📁 Scripts ve docs klasörleri Git'ten çıkarıldı
+- 📋 README güncellendi - lokalde tutulan dosyalar belirtildi
+- 🔒 Güvenlik iyileştirmesi - sensitive bilgiler Git'te görünmez
+- ✨ SEO sistemi akıllı anahtar kelime üretimi ile geliştirildi
+
 ### **v1.0.0-beta** (2025-01-15)
 - ✨ Blog sistemi eklendi
 - ✨ Admin panel oluşturuldu
@@ -294,6 +315,8 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 - **Website**: [teknolojimenajeri.com](https://teknolojimenajeri.com.tr)
 - **Email**: gulsah@teknolojimenajeri.com
 - **GitHub**: [@blu7ck](https://github.com/blu7ck)
+
+**📋 Kurulum Desteği:** Detaylı kurulum rehberi, SQL script'leri ve dokümantasyon için iletişime geçin.
 
 ---
 
