@@ -5,9 +5,31 @@ export function getUserIdentifier(): string {
   const cookieName = "blog_user_id"
   let userId = Cookies.get(cookieName)
 
+  // Fallback: localStorage'dan kontrol et
+  if (!userId) {
+    userId = localStorage.getItem(cookieName) || undefined
+  }
+
   if (!userId) {
     userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    Cookies.set(cookieName, userId, { expires: 365 }) // 1 year
+    
+    // Cookie domain ayarları - Vercel için güvenli
+    const cookieOptions = {
+      expires: 365,
+      secure: true,
+      sameSite: 'lax' as const,
+      path: '/'
+    }
+    
+    try {
+      Cookies.set(cookieName, userId, cookieOptions)
+      // localStorage'a da kaydet (fallback için)
+      localStorage.setItem(cookieName, userId)
+    } catch (error) {
+      console.warn("Cookie set failed, using localStorage:", error)
+      // Sadece localStorage kullan
+      localStorage.setItem(cookieName, userId)
+    }
   }
 
   return userId
@@ -44,4 +66,43 @@ export function groupPostsByMonth(posts: any[]): Record<string, any[]> {
     },
     {} as Record<string, any[]>,
   )
+}
+
+// Track blog post view
+export async function trackBlogView(blogPostId: string): Promise<void> {
+  try {
+    const { createClient } = await import("./supabase/client")
+    const supabase = createClient()
+    const userIdentifier = getUserIdentifier()
+    const ipAddress = await getUserIP()
+    
+    // Check if user already viewed this post today
+    const today = new Date().toISOString().split('T')[0]
+    const { data: existingView } = await supabase
+      .from("blog_posts_views")
+      .select("id")
+      .eq("blog_post_id", blogPostId)
+      .eq("user_identifier", userIdentifier)
+      .gte("created_at", `${today}T00:00:00.000Z`)
+      .single()
+    
+    // Only track if not viewed today
+    if (!existingView) {
+      const { error } = await supabase
+        .from("blog_posts_views")
+        .insert({
+          blog_post_id: blogPostId,
+          user_identifier: userIdentifier,
+          ip_address: ipAddress
+        })
+      
+      if (error) {
+        console.error("Error tracking blog view:", error)
+      } else {
+        console.log("Blog view tracked successfully:", blogPostId)
+      }
+    }
+  } catch (error) {
+    console.error("Failed to track blog view:", error)
+  }
 }

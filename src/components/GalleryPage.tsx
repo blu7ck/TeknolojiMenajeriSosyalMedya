@@ -34,7 +34,7 @@ export default function GalleryPage() {
 					{/* Logo */}
 					<div className="mb-6">
 						<img 
-							src="/logo.svg" 
+							src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
 							alt="Teknoloji Menajeri Logo" 
 							className="w-48 h-auto mx-auto filter drop-shadow-2xl"
 						/>

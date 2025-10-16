@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import type { BlogPost, ReactionCount } from "../../types/blog"
 import { createClient } from "../../lib/supabase/client"
-import { getUserIdentifier, getUserIP } from "../../lib/blog-utils"
+import { getUserIdentifier, getUserIP, trackBlogView } from "../../lib/blog-utils"
 import { setBlogPostSEO } from "../../lib/seo-utils"
 import { X, Calendar, Sparkles, Lightbulb, Flame, Moon, Sun } from "lucide-react"
 import ReactMarkdown from "react-markdown"
@@ -31,10 +31,13 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
     // SEO ayarlarını güncelle
     setBlogPostSEO(post)
     
+    // Blog view tracking
+    trackBlogView(post.id)
+    
     return () => {
       document.body.style.overflow = "unset"
     }
-  }, [])
+  }, [post.id])
 
   const fetchReactions = async () => {
     const supabase = createClient()

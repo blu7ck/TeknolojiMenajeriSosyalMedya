@@ -40,3 +40,11 @@ export interface ReactionCount {
   idea: number
   motivated: number
 }
+
+export interface BlogPostView {
+  id: string
+  blog_post_id: string
+  ip_address: string
+  user_identifier: string
+  created_at: string
+}
