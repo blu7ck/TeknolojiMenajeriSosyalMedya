@@ -78,16 +78,21 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
     
     // Check if user already viewed this post today
     const today = new Date().toISOString().split('T')[0]
-    const { data: existingView } = await supabase
+    const { data: existingViews, error: checkError } = await supabase
       .from("blog_post_views")
       .select("id")
       .eq("post_id", blogPostId)
       .eq("user_identifier", userIdentifier)
       .gte("viewed_at", `${today}T00:00:00.000Z`)
-      .single()
+    
+    // Check for query errors
+    if (checkError) {
+      console.error("Error checking existing views:", checkError)
+      return
+    }
     
     // Only track if not viewed today
-    if (!existingView) {
+    if (!existingViews || existingViews.length === 0) {
       const { error } = await supabase
         .from("blog_post_views")
         .insert({
@@ -101,6 +106,8 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
       } else {
         console.log("Blog view tracked successfully:", blogPostId)
       }
+    } else {
+      console.log("Blog already viewed today, skipping:", blogPostId)
     }
   } catch (error) {
     console.error("Failed to track blog view:", error)
