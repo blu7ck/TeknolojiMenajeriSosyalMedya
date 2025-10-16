@@ -47,24 +47,28 @@ export default function HomePage() {
     <>
       <Header />
       <div className="pt-24">
-        {/* Gallery placeholder */}
-        <div ref={galleryRef} className="h-96 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-          {shouldLoadGallery ? (
+        {/* Gallery with Intersection Observer */}
+        {shouldLoadGallery ? (
+          <div ref={galleryRef}>
             <Suspense fallback={
-              <div className="text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-                <p className="text-gray-600">3D Galeri yükleniyor...</p>
+              <div className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+                <div className="text-center">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+                  <p className="text-gray-600">3D Galeri yükleniyor...</p>
+                </div>
               </div>
             }>
               <GalleryPage />
             </Suspense>
-          ) : (
+          </div>
+        ) : (
+          <div ref={galleryRef} className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
               <p className="text-gray-600">3D Galeri hazırlanıyor...</p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* About Us Section */}
         <AboutUs />
