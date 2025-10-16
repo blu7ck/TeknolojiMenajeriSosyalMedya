@@ -123,8 +123,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
         excerpt: formData.excerpt || null,
         content: formData.content,
         cover_image: formData.cover_image || null,
-        category: formData.category || null,
-        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : null,
+        // category: formData.category || null, // Geçici olarak kapatıldı
+        // tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag) : null, // Geçici olarak kapatıldı
         status: formData.status,
         published_at: formData.status === "published" && !post?.published_at ? new Date().toISOString() : post?.published_at,
       }
@@ -228,6 +228,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
               />
             </div>
 
+            {/* Geçici olarak kapatıldı - Database schema güncellenene kadar */}
+            {/* 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
               <select
@@ -260,6 +262,7 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
               />
               <p className="text-sm text-gray-500 mt-1">Etiketleri virgülle ayırın. SEO için otomatik anahtar kelime oluşturulacak.</p>
             </div>
+            */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Kapak Görseli</label>
