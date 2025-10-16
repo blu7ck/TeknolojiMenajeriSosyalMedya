@@ -81,9 +81,9 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
     const { data: existingView } = await supabase
       .from("blog_post_views")
       .select("id")
-      .eq("blog_post_id", blogPostId)
+      .eq("post_id", blogPostId)
       .eq("user_identifier", userIdentifier)
-      .gte("created_at", `${today}T00:00:00.000Z`)
+      .gte("viewed_at", `${today}T00:00:00.000Z`)
       .single()
     
     // Only track if not viewed today
@@ -91,7 +91,7 @@ export async function trackBlogView(blogPostId: string): Promise<void> {
       const { error } = await supabase
         .from("blog_post_views")
         .insert({
-          blog_post_id: blogPostId,
+          post_id: blogPostId,
           user_identifier: userIdentifier,
           ip_address: ipAddress
         })

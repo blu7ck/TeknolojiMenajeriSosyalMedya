@@ -43,8 +43,8 @@ export interface ReactionCount {
 
 export interface BlogPostView {
   id: string
-  blog_post_id: string
+  post_id: string
   ip_address: string
   user_identifier: string
-  created_at: string
+  viewed_at: string
 }
