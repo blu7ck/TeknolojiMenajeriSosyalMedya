@@ -36,7 +36,7 @@ const packages: Package[] = [
         name: "Fenomen Paket",
         description: "Mentorluk + İçerik Üretimi ",
         mediaUrl: "/test.mp4",
-        exampleJson: 'Profesyonel Seviyede 12 Fotoğraf ve 2 Video | Sosyal Medya Eğitimi',
+        exampleJson: "Profesyonel Seviyede 12 Fotoğraf ve 2 Video | Sosyal Medya Eğitimi",
         price: "₺2,500",
       },
       {
@@ -44,7 +44,7 @@ const packages: Package[] = [
         name: "Kişiye Özel İçerik Üretimi",
         description: "Görsel",
         mediaUrl: "/test2.mp4",
-        exampleJson: '4 Adet Görsel',
+        exampleJson: "4 Adet Görsel",
         price: "₺800",
       },
       {
@@ -74,7 +74,8 @@ const packages: Package[] = [
         id: "influencer-baslangic",
         name: "Infiluencer Başlangıç Paketi",
         description: "Danışmanlık + Profil Yönetimi + İçerik Takvimi + İçerik Üretimi + Hedef Kitle Analizi",
-        exampleJson: '{"deliverables": "Aylık 2 Saat Danışmanlık Hizmeti + Profesyonel Seviyede 20 Fotoğraf + 4 Video + Anlık İletişim Hizmeti"}',
+        exampleJson:
+          '{"deliverables": "Aylık 2 Saat Danışmanlık Hizmeti + Profesyonel Seviyede 20 Fotoğraf + 4 Video + Anlık İletişim Hizmeti"}',
         price: "₺4,500",
       },
       {
@@ -139,7 +140,6 @@ const packages: Package[] = [
   },
 ]
 
-
 export function PackageSelector() {
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
   const [selectedModules, setSelectedModules] = useState<Record<string, string[]>>({})
@@ -153,7 +153,7 @@ export function PackageSelector() {
     companyInfo: "",
     socialMedia: [""],
   })
-  const [hoverPosition, setHoverPosition] = useState<'left' | 'right'>('right')
+  const [hoverPosition, setHoverPosition] = useState<"left" | "right">("right")
 
   const handleContainerClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -291,7 +291,7 @@ export function PackageSelector() {
                               const viewportWidth = window.innerWidth
                               const popupWidth = 288 // w-72 = 18rem = 288px
                               const wouldOverflow = rect.right + popupWidth > viewportWidth - 20
-                              setHoverPosition(wouldOverflow ? 'left' : 'right')
+                              setHoverPosition(wouldOverflow ? "left" : "right")
                             }}
                             onMouseLeave={() => setHoveredModule(null)}
                             onFocus={() => setHoveredModule(module)}
@@ -319,9 +319,10 @@ export function PackageSelector() {
                             {hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
                               <div
                                 className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[100] animate-fade-slide-in pointer-events-none
-                                  ${hoverPosition === 'right' 
-                                    ? 'md:left-full md:top-0 md:ml-2' 
-                                    : 'md:right-full md:top-0 md:mr-2'
+                                  ${
+                                    hoverPosition === "right"
+                                      ? "md:left-full md:top-0 md:ml-2"
+                                      : "md:right-full md:top-0 md:mr-2"
                                   }
                                   max-md:left-0 max-md:top-full max-md:mt-2 max-md:ml-0`}
                                 style={{
@@ -332,9 +333,7 @@ export function PackageSelector() {
                                 <div className="flex justify-between items-start mb-2">
                                   <h4 className="text-white font-semibold flex-1">{module.name}</h4>
                                   {module.price && (
-                                    <span className="text-red-500 font-bold text-lg ml-2">
-                                      {module.price}
-                                    </span>
+                                    <span className="text-red-500 font-bold text-lg ml-2">{module.price}</span>
                                   )}
                                 </div>
                                 {module.description && (
@@ -360,11 +359,11 @@ export function PackageSelector() {
                                     ) : null}
                                   </div>
                                 )}
-                                    {module.exampleJson && (
-                                      <pre className="mt-3 text-xs text-gray-500 bg-black/50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words max-w-full">
-                                        {module.exampleJson}
-                                      </pre>
-                                    )}
+                                {module.exampleJson && (
+                                  <pre className="mt-3 text-xs text-gray-500 bg-black/50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words max-w-full">
+                                    {module.exampleJson}
+                                  </pre>
+                                )}
                               </div>
                             )}
                           </div>
@@ -397,7 +396,7 @@ export function PackageSelector() {
               animation: "slideIn 0.7s ease-out forwards",
             }}
           >
-             <div className="max-w-[500px] mx-auto bg-black/95 backdrop-blur-sm border border-red-500/40 rounded-2xl p-6 shadow-2xl shadow-red-500/30">
+            <div className="max-w-[500px] mx-auto bg-black/95 backdrop-blur-sm border border-red-500/40 rounded-2xl p-6 shadow-2xl shadow-red-500/30">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-white">Teklif Formu</h3>
                 <button
@@ -409,7 +408,7 @@ export function PackageSelector() {
                 </button>
               </div>
 
-               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
                 <div className="text-sm text-gray-300">
                   <strong className="text-white">Seçili Paket:</strong>{" "}
                   {packages.find((p) => p.id === selectedPackage)?.title}
@@ -428,12 +427,12 @@ export function PackageSelector() {
                 )}
               </div>
 
-               <form onSubmit={handleSubmit} className="space-y-3">
-                 <div className="grid grid-cols-2 gap-3">
+              <form onSubmit={handleSubmit} className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                       İsim <span className="text-red-500">*</span>
-                     </label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      İsim <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       required
@@ -443,9 +442,9 @@ export function PackageSelector() {
                     />
                   </div>
                   <div>
-                     <label className="block text-sm font-medium text-gray-300 mb-1">
-                       Soyisim <span className="text-red-500">*</span>
-                     </label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      Soyisim <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="text"
                       required
@@ -530,7 +529,7 @@ export function PackageSelector() {
 
                 <button
                   type="submit"
-                   className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 mt-4"
+                  className="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 mt-4"
                 >
                   Teklif Gönder
                 </button>

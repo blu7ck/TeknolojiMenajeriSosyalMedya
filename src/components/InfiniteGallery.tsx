@@ -1,10 +1,36 @@
 import type React from 'react';
-import { useRef, useMemo, useCallback, useState, useEffect } from 'react';
+import { useRef, useMemo, useCallback, useState, useEffect, Component } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 type ImageItem = string | { src: string; alt?: string };
+
+// Error Boundary Component
+class ErrorBoundary extends Component<
+	{ children: React.ReactNode; fallback: React.ReactNode },
+	{ hasError: boolean }
+> {
+	constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+		super(props);
+		this.state = { hasError: false };
+	}
+
+	static getDerivedStateFromError() {
+		return { hasError: true };
+	}
+
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		console.error('ErrorBoundary caught an error:', error, errorInfo);
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return this.props.fallback;
+		}
+		return this.props.children;
+	}
+}
 
 interface FadeSettings {
 	fadeIn: {
@@ -204,7 +230,9 @@ function GalleryScene({
 		[images]
 	);
 
-	const textures = useTexture(normalizedImages.map((img) => img.src));
+	const textures = useTexture(normalizedImages.map((img) => img.src), undefined, (error) => {
+		console.warn('Texture loading error:', error);
+	});
 
 	const materials = useMemo(
 		() => Array.from({ length: visibleCount }, () => createClothMaterial()),
@@ -516,17 +544,19 @@ export default function InfiniteGallery({
 
 	return (
 		<div className={className} style={style}>
-			<Canvas
-				camera={{ position: [0, 0, 0], fov: 55 }}
-				gl={{ antialias: true, alpha: true }}
-			>
-				<GalleryScene
-					images={images}
-					fadeSettings={fadeSettings}
-					blurSettings={blurSettings}
-					{...props}
-				/>
-			</Canvas>
+			<ErrorBoundary fallback={<FallbackGallery images={images} />}>
+				<Canvas
+					camera={{ position: [0, 0, 0], fov: 55 }}
+					gl={{ antialias: true, alpha: true }}
+				>
+					<GalleryScene
+						images={images}
+						fadeSettings={fadeSettings}
+						blurSettings={blurSettings}
+						{...props}
+					/>
+				</Canvas>
+			</ErrorBoundary>
 		</div>
 	);
 }

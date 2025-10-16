@@ -2,6 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Aggressive Cursor Override - Tüm elementler için */
+.custom-cursor,
+.custom-cursor *,
+.custom-cursor *::before,
+.custom-cursor *::after,
+.custom-cursor *:hover,
+.custom-cursor *:focus,
+.custom-cursor *:active,
+.custom-cursor *:visited,
+.custom-cursor .cursor-auto,
+.custom-cursor .cursor-default,
+.custom-cursor .cursor-pointer,
+.custom-cursor .cursor-wait,
+.custom-cursor .cursor-text,
+.custom-cursor .cursor-move,
+.custom-cursor .cursor-help,
+.custom-cursor .cursor-not-allowed {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="%234F46E5" stroke="%23FBBF24" stroke-width="1" d="M2 2 L2 18 L12 10 Z"/></svg>') 2 2, auto !important;
+}
+
+/* Clickable elements için pointer cursor - Tüm durumlar için */
+.custom-cursor button,
+.custom-cursor button *,
+.custom-cursor button::before,
+.custom-cursor button::after,
+.custom-cursor button:hover,
+.custom-cursor button:focus,
+.custom-cursor button:active,
+.custom-cursor button:visited,
+.custom-cursor a,
+.custom-cursor a *,
+.custom-cursor a::before,
+.custom-cursor a::after,
+.custom-cursor a:hover,
+.custom-cursor a:focus,
+.custom-cursor a:active,
+.custom-cursor a:visited,
+.custom-cursor [role="button"],
+.custom-cursor [role="button"] *,
+.custom-cursor [role="button"]::before,
+.custom-cursor [role="button"]::after,
+.custom-cursor [role="button"]:hover,
+.custom-cursor [role="button"]:focus,
+.custom-cursor [role="button"]:active,
+.custom-cursor [role="button"]:visited,
+.custom-cursor input[type="button"],
+.custom-cursor input[type="button"]:hover,
+.custom-cursor input[type="button"]:focus,
+.custom-cursor input[type="button"]:active,
+.custom-cursor input[type="submit"],
+.custom-cursor input[type="submit"]:hover,
+.custom-cursor input[type="submit"]:focus,
+.custom-cursor input[type="submit"]:active,
+.custom-cursor input[type="checkbox"],
+.custom-cursor input[type="checkbox"]:hover,
+.custom-cursor input[type="checkbox"]:focus,
+.custom-cursor input[type="checkbox"]:active,
+.custom-cursor input[type="radio"],
+.custom-cursor input[type="radio"]:hover,
+.custom-cursor input[type="radio"]:focus,
+.custom-cursor input[type="radio"]:active,
+.custom-cursor select,
+.custom-cursor select:hover,
+.custom-cursor select:focus,
+.custom-cursor select:active,
+.custom-cursor textarea,
+.custom-cursor textarea:hover,
+.custom-cursor textarea:focus,
+.custom-cursor textarea:active,
+.custom-cursor [data-clickable="true"],
+.custom-cursor [data-clickable="true"] *,
+.custom-cursor [data-clickable="true"]::before,
+.custom-cursor [data-clickable="true"]::after,
+.custom-cursor [data-clickable="true"]:hover,
+.custom-cursor [data-clickable="true"]:focus,
+.custom-cursor [data-clickable="true"]:active,
+.custom-cursor [data-clickable="true"]:visited,
+.custom-cursor .cursor-pointer,
+.custom-cursor .cursor-pointer *,
+.custom-cursor .cursor-pointer::before,
+.custom-cursor .cursor-pointer::after,
+.custom-cursor .cursor-pointer:hover,
+.custom-cursor .cursor-pointer:focus,
+.custom-cursor .cursor-pointer:active,
+.custom-cursor .cursor-pointer:visited,
+.custom-cursor .clickable,
+.custom-cursor .clickable *,
+.custom-cursor .clickable::before,
+.custom-cursor .clickable::after,
+.custom-cursor .clickable:hover,
+.custom-cursor .clickable:focus,
+.custom-cursor .clickable:active,
+.custom-cursor .clickable:visited,
+.custom-cursor .clickable.cursor-auto,
+.custom-cursor .clickable.cursor-default,
+.custom-cursor .clickable.cursor-pointer,
+.custom-cursor .clickable.cursor-wait,
+.custom-cursor .clickable.cursor-text,
+.custom-cursor .clickable.cursor-move,
+.custom-cursor .clickable.cursor-help,
+.custom-cursor .clickable.cursor-not-allowed {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FBBF24" stroke="%234F46E5" stroke-width="1.5" d="M3 3 L3 21 L15 12 Z"/></svg>') 3 3, pointer !important;
+}
+
+/* Ultra Aggressive Cursor Override - En yüksek specificity */
+.custom-cursor.custom-cursor.custom-cursor *,
+.custom-cursor.custom-cursor.custom-cursor *::before,
+.custom-cursor.custom-cursor.custom-cursor *::after,
+.custom-cursor.custom-cursor.custom-cursor *:hover,
+.custom-cursor.custom-cursor.custom-cursor *:focus,
+.custom-cursor.custom-cursor.custom-cursor *:active,
+.custom-cursor.custom-cursor.custom-cursor *:visited,
+.custom-cursor.custom-cursor.custom-cursor *:focus-visible,
+.custom-cursor.custom-cursor.custom-cursor *:focus-within {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="%234F46E5" stroke="%23FBBF24" stroke-width="1" d="M2 2 L2 18 L12 10 Z"/></svg>') 2 2, auto !important;
+}
+
+/* Ultra Aggressive Clickable Cursor Override */
+.custom-cursor.custom-cursor.custom-cursor button,
+.custom-cursor.custom-cursor.custom-cursor button *,
+.custom-cursor.custom-cursor.custom-cursor button::before,
+.custom-cursor.custom-cursor.custom-cursor button::after,
+.custom-cursor.custom-cursor.custom-cursor button:hover,
+.custom-cursor.custom-cursor.custom-cursor button:focus,
+.custom-cursor.custom-cursor.custom-cursor button:active,
+.custom-cursor.custom-cursor.custom-cursor button:visited,
+.custom-cursor.custom-cursor.custom-cursor button:focus-visible,
+.custom-cursor.custom-cursor.custom-cursor button:focus-within,
+.custom-cursor.custom-cursor.custom-cursor a,
+.custom-cursor.custom-cursor.custom-cursor a *,
+.custom-cursor.custom-cursor.custom-cursor a::before,
+.custom-cursor.custom-cursor.custom-cursor a::after,
+.custom-cursor.custom-cursor.custom-cursor a:hover,
+.custom-cursor.custom-cursor.custom-cursor a:focus,
+.custom-cursor.custom-cursor.custom-cursor a:active,
+.custom-cursor.custom-cursor.custom-cursor a:visited,
+.custom-cursor.custom-cursor.custom-cursor a:focus-visible,
+.custom-cursor.custom-cursor.custom-cursor a:focus-within,
+.custom-cursor.custom-cursor.custom-cursor .clickable,
+.custom-cursor.custom-cursor.custom-cursor .clickable *,
+.custom-cursor.custom-cursor.custom-cursor .clickable::before,
+.custom-cursor.custom-cursor.custom-cursor .clickable::after,
+.custom-cursor.custom-cursor.custom-cursor .clickable:hover,
+.custom-cursor.custom-cursor.custom-cursor .clickable:focus,
+.custom-cursor.custom-cursor.custom-cursor .clickable:active,
+.custom-cursor.custom-cursor.custom-cursor .clickable:visited,
+.custom-cursor.custom-cursor.custom-cursor .clickable:focus-visible,
+.custom-cursor.custom-cursor.custom-cursor .clickable:focus-within {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23FBBF24" stroke="%234F46E5" stroke-width="1.5" d="M3 3 L3 21 L15 12 Z"/></svg>') 3 3, pointer !important;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -124,81 +275,6 @@
     background-color: #D3DADD;
     color: #374151;
   }
-  
-  /* Global cursor styles - same cursor for all actions */
-  *, *::before, *::after {
-    cursor: none !important;
-  }
-  
-  /* Specific elements that should show default cursor */
-  input, textarea, select, button, a {
-    cursor: none !important;
-  }
-  
-  /* Disable text selection cursor */
-  ::selection {
-    cursor: none !important;
-  }
-  
-  /* Disable hover cursors */
-  :hover {
-    cursor: none !important;
-  }
-}
-
-/* Pure black cursor with strong red glow */
-.custom-cursor {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  background: #000000;
-  border: 2px solid #ef4444;
-  border-radius: 0;
-  pointer-events: none;
-  z-index: 99999;
-  transition: transform 0.1s ease-out;
-  clip-path: polygon(0 0, 0 20px, 20px 20px);
-  transform: translate(-50%, -50%);
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: block !important;
-  box-shadow: 
-    0 0 15px #ef4444,
-    0 0 30px #ef4444,
-    0 0 60px #ef4444,
-    inset 0 0 10px rgba(239, 68, 68, 0.3);
-}
-
-.custom-cursor::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  background: #ef4444;
-  border: 1px solid #ffffff;
-  border-radius: 0;
-  transform: translate(-50%, -50%);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  box-shadow: 
-    0 0 8px #ef4444,
-    0 0 16px #ef4444,
-    0 0 24px #ef4444;
-}
-
-.custom-cursor::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.4) 0%, transparent 70%);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: -1;
 }
 
 /* Canvas-based cursor trail - no CSS animations needed */
