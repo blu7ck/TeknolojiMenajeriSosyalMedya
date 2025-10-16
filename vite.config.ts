@@ -12,12 +12,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // React vendor chunk
-          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+          // React vendor chunk (smaller)
+          if (id.includes('react') && !id.includes('react-three')) {
             return 'react-vendor'
           }
-          // Three.js vendor chunk
-          if (id.includes('three') || id.includes('@react-three')) {
+          // Three.js vendor chunk (separate heavy chunk)
+          if (id.includes('three') || id.includes('@react-three') || id.includes('three-mesh-bvh')) {
             return 'three-vendor'
           }
           // UI vendor chunk
@@ -32,7 +32,11 @@ export default defineConfig({
           if (id.includes('react-markdown') || id.includes('remark')) {
             return 'markdown-vendor'
           }
-          // Admin components (heavy)
+          // Router chunk (separate)
+          if (id.includes('react-router')) {
+            return 'router-vendor'
+          }
+          // Admin components (heavy - only load when needed)
           if (id.includes('/admin/') || id.includes('/components/admin')) {
             return 'admin-chunk'
           }
@@ -40,9 +44,17 @@ export default defineConfig({
           if (id.includes('/blog/') || id.includes('/components/blog')) {
             return 'blog-chunk'
           }
-          // Pages chunk
-          if (id.includes('/pages/')) {
+          // Gallery component (heavy 3D)
+          if (id.includes('GalleryPage') || id.includes('InfiniteGallery')) {
+            return 'gallery-chunk'
+          }
+          // Pages chunk (smaller)
+          if (id.includes('/pages/') && !id.includes('HomePage')) {
             return 'pages-chunk'
+          }
+          // HomePage separate (includes gallery)
+          if (id.includes('HomePage')) {
+            return 'home-chunk'
           }
         },
         // Daha küçük chunk'lar için

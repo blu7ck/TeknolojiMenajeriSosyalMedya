@@ -11,14 +11,30 @@
     <link rel="dns-prefetch" href="https://rqhrjhgcoonsvzjwlega.supabase.co" />
     <link rel="preconnect" href="https://rqhrjhgcoonsvzjwlega.supabase.co" />
     
-    <!-- Critical CSS inline (for above-the-fold content) -->
-    <style>
-      /* Critical CSS for initial render */
-      body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
-      .custom-cursor { cursor: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath fill='%23000' d='M12 2L2 7l10 5 10-5-10-5z'/%3e%3c/svg%3e") 12 12, auto !important; }
-      .loading-spinner { animation: spin 1s linear infinite; }
-      @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
+        <!-- Critical CSS inline (for above-the-fold content) -->
+        <style>
+          /* Critical CSS for initial render */
+          body { 
+            margin: 0; 
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #D3DADD;
+          }
+          .custom-cursor { 
+            cursor: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath fill='%23000' d='M12 2L2 7l10 5 10-5-10-5z'/%3e%3c/svg%3e") 12 12, auto !important; 
+          }
+          .loading-spinner { animation: spin 1s linear infinite; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+          
+          /* Critical layout styles */
+          .min-h-screen { min-height: 100vh; }
+          .flex { display: flex; }
+          .items-center { align-items: center; }
+          .justify-center { justify-content: center; }
+          .text-center { text-align: center; }
+          
+          /* Hide non-critical content initially */
+          .non-critical { display: none; }
+        </style>
     
     <!-- SEO Meta Tags -->
     <title>Teknoloji Menajeri - Sosyal Medya Ajansı | Blog & Teknoloji Haberleri</title>
