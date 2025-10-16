@@ -2,10 +2,20 @@ import { Header } from "../components/Header"
 import { ProcessSection } from "../components/ProcessSection"
 import { AboutUs } from "../components/AboutUs"
 import { Services } from "../components/Services"
-import { GalleryPage } from "../components/GalleryPage"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
 import { Mail, Phone, MapPin } from "lucide-react"
+import { Suspense, lazy } from "react"
+
+// Lazy load heavy 3D gallery with error handling
+const GalleryPage = lazy(() => import("../components/GalleryPage").catch(() => ({
+  default: () => <div className="h-96 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+      <p className="text-gray-600">3D Galeri yükleniyor...</p>
+    </div>
+  </div>
+})))
 
 export function HomePage() {
   // SEO ayarlarını güncelle
@@ -15,7 +25,16 @@ export function HomePage() {
     <>
       <Header />
       <div className="pt-24">
-        <GalleryPage />
+        <Suspense fallback={
+          <div className="h-96 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+              <p className="text-gray-600">3D Galeri yükleniyor...</p>
+            </div>
+          </div>
+        }>
+          <GalleryPage />
+        </Suspense>
 
         {/* About Us Section */}
         <AboutUs />
