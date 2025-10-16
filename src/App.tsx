@@ -3,6 +3,7 @@ import { HomePage } from "./pages/HomePage"
 import { BlogPage } from "./pages/BlogPage"
 import { AdminPage } from "./pages/AdminPage"
 import { UnsubscribePage } from "./pages/UnsubscribePage"
+import { TestPage } from "./pages/TestPage"
 import "./components/PackageSelector.css"
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blu4ck" element={<AdminPage />} />
         <Route path="/unsubscribe" element={<UnsubscribePage />} />
+        <Route path="/test" element={<TestPage />} />
       </Routes>
     </div>
   )

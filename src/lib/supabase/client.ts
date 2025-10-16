@@ -7,7 +7,20 @@ export function createClient() {
     return supabaseClient
   }
 
-  supabaseClient = createBrowserClient(import.meta.env.VITE_SUPABASE_URL!, import.meta.env.VITE_SUPABASE_ANON_KEY!)
+  const url = import.meta.env.VITE_SUPABASE_URL
+  const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+  console.log("🔧 Supabase config:", { 
+    url: url ? `${url.substring(0, 30)}...` : 'MISSING', 
+    key: key ? `${key.substring(0, 20)}...` : 'MISSING' 
+  })
+
+  if (!url || !key) {
+    throw new Error("Supabase URL or ANON_KEY is missing!")
+  }
+
+  supabaseClient = createBrowserClient(url, key)
+  console.log("✅ Supabase client initialized")
 
   return supabaseClient
 }

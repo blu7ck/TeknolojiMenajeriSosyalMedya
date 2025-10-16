@@ -26,17 +26,30 @@ export function BlogPage() {
   }, [])
 
   const fetchPosts = async () => {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from("blog_posts")
-      .select("*")
-      .eq("status", "published")
-      .order("published_at", { ascending: false })
+    try {
+      console.log("🔄 Blog posts fetching started...")
+      const supabase = createClient()
+      console.log("✅ Supabase client created")
+      
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
 
-    if (!error && data) {
-      setPosts(data)
+      console.log("📊 Supabase response:", { data, error })
+
+      if (error) {
+        console.error("❌ Supabase error:", error)
+      } else {
+        console.log("✅ Blog posts fetched:", data?.length || 0, "posts")
+        setPosts(data || [])
+      }
+    } catch (err) {
+      console.error("❌ Fetch error:", err)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   // Yıl filtresi uygula
