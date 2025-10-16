@@ -9,7 +9,7 @@ import { Lock } from "lucide-react"
 
 const ADMIN_PASSWORD = "130113" // Basit şifre koruması
 
-export function AdminPage() {
+export default function AdminPage() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [isPasswordVerified, setIsPasswordVerified] = useState(false)

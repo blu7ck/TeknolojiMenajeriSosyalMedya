@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '../lib/supabase/client'
 
-export function TestPage() {
+export default function TestPage() {
   const [envStatus, setEnvStatus] = useState<{
     url: boolean
     key: boolean

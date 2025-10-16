@@ -1,6 +1,6 @@
 import InfiniteGallery from './InfiniteGallery';
 
-export function GalleryPage() {
+export default function GalleryPage() {
 	const sampleImages = [
 		// Professional social media and business images
 		{ src: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800', alt: 'Social Media Marketing' },

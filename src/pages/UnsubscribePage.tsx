@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom"
 import { createClient } from "../lib/supabase/client"
 import { Mail, CheckCircle, XCircle, ArrowLeft } from "lucide-react"
 
-export function UnsubscribePage() {
+export default function UnsubscribePage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [status, setStatus] = useState<"loading" | "success" | "error" | "idle">("idle")

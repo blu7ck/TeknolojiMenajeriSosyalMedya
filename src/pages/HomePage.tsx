@@ -17,7 +17,7 @@ const GalleryPage = lazy(() => import("../components/GalleryPage").catch(() => (
   </div>
 })))
 
-export function HomePage() {
+export default function HomePage() {
   // SEO ayarlarını güncelle
   setHomePageSEO()
 

@@ -12,7 +12,7 @@ import { BlogModal } from "../components/blog/BlogModal"
 import { NewsletterForm } from "../components/blog/NewsletterForm"
 import { Calendar } from "lucide-react"
 
-export function BlogPage() {
+export default function BlogPage() {
   const [isDark, setIsDark] = useState(true)
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
