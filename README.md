@@ -295,7 +295,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 ## 📞 İletişim
 
-- **Website**: [teknolojimenajeri.com](https://teknolojimenajeri.com)
+- **Website**: [teknolojimenajeri.com](https://teknolojimenajeri.com.tr)
 - **Email**: gulsah@teknolojimenajeri.com
 - **GitHub**: [@blu7ck](https://github.com/blu7ck)
 
@@ -303,8 +303,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 <div align="center">
 
-**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
-
-Made with ❤️ by [Teknoloji Menajeri](https://teknolojimenajeri.com)
+Made with ❤️ for [Teknoloji Menajeri](https://teknolojimenajeri.com.tr)
 
 </div>
