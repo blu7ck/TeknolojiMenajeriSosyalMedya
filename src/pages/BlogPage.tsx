@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Header } from "../components/Header"
 import { createClient } from "../lib/supabase/client"
+import { setBlogPageSEO } from "../lib/seo-utils"
 import type { BlogPost } from "../types/blog"
 import { groupPostsByMonth } from "../lib/blog-utils"
 import { MonthlyCards } from "../components/blog/MonthlyCards"
@@ -21,6 +22,7 @@ export function BlogPage() {
 
   useEffect(() => {
     fetchPosts()
+    setBlogPageSEO()
   }, [])
 
   const fetchPosts = async () => {

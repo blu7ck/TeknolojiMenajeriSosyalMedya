@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import type { BlogPost, ReactionCount } from "../../types/blog"
 import { createClient } from "../../lib/supabase/client"
 import { getUserIdentifier, getUserIP } from "../../lib/blog-utils"
+import { setBlogPostSEO } from "../../lib/seo-utils"
 import { X, Calendar, Sparkles, Lightbulb, Flame, Moon, Sun } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -26,6 +27,10 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
   useEffect(() => {
     fetchReactions()
     document.body.style.overflow = "hidden"
+    
+    // SEO ayarlarını güncelle
+    setBlogPostSEO(post)
+    
     return () => {
       document.body.style.overflow = "unset"
     }

@@ -4,9 +4,13 @@ import { GalleryPage } from "../components/GalleryPage"
 import { AboutUs } from "../components/AboutUs"
 import { Services } from "../components/Services"
 import { processSteps } from "../data/packages"
+import { setHomePageSEO } from "../lib/seo-utils"
 import { Mail, Phone, MapPin } from "lucide-react"
 
 export function HomePage() {
+  // SEO ayarlarını güncelle
+  setHomePageSEO()
+
   return (
     <>
       <Header />
