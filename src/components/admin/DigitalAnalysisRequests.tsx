@@ -164,6 +164,10 @@ export function DigitalAnalysisRequests() {
       console.log(`🚀 Starting analysis for: ${website}`)
       console.log('📝 Request data:', { requestId: id, website, name, email })
       
+      // First, update status to 'processing'
+      console.log('🔄 Updating status to processing...')
+      await updateRequestStatus(id, 'processing')
+      
       // Call Edge Function
       const { data, error } = await supabase.functions.invoke('analyze-website', {
         body: {
@@ -178,6 +182,8 @@ export function DigitalAnalysisRequests() {
 
       if (error) {
         console.error('❌ Analysis error:', error)
+        // Update status to failed if analysis fails
+        await updateRequestStatus(id, 'failed')
         alert(`Analiz başlatılamadı: ${error.message}`)
         return
       }
@@ -194,6 +200,12 @@ export function DigitalAnalysisRequests() {
       console.log('🔄 List refreshed')
     } catch (error) {
       console.error('❌ Analysis start error:', error)
+      // Update status to failed if there's an error
+      try {
+        await updateRequestStatus(id, 'failed')
+      } catch (updateError) {
+        console.error('Failed to update status to failed:', updateError)
+      }
       alert(`Bir hata oluştu: ${error}`)
     }
   }
