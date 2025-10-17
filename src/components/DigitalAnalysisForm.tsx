@@ -27,6 +27,13 @@ interface FormState {
 }
 
 export function DigitalAnalysisForm() {
+  console.log('🎬 DigitalAnalysisForm component mounted')
+  console.log('🔧 Environment check:', {
+    hasRecaptchaKey: !!import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+    hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+    hasSupabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY
+  })
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -41,36 +48,64 @@ export function DigitalAnalysisForm() {
 
   // reCAPTCHA v3 script yükleme
   useEffect(() => {
+    console.log('🔄 useEffect triggered - Loading reCAPTCHA...')
+    
     const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+    console.log('🔑 Site Key:', siteKey ? `${siteKey.substring(0, 20)}...` : 'NOT SET')
     
     if (!siteKey) {
       console.error('❌ VITE_RECAPTCHA_SITE_KEY not configured')
+      alert('reCAPTCHA yapılandırması eksik. Lütfen site yöneticisiyle iletişime geçin.')
       return
     }
 
     // Check if script already exists
     const existingScript = document.querySelector(`script[src*="recaptcha"]`)
+    console.log('🔍 Existing script:', existingScript ? 'FOUND' : 'NOT FOUND')
+    
     if (existingScript) {
-      console.log('reCAPTCHA script already loaded')
+      console.log('✅ reCAPTCHA script already loaded')
       setRecaptchaLoaded(true)
+      
+      // Check if grecaptcha is available
+      if (window.grecaptcha) {
+        console.log('✅ window.grecaptcha is available')
+      } else {
+        console.warn('⚠️ Script exists but grecaptcha not ready, waiting...')
+        setTimeout(() => {
+          if (window.grecaptcha) {
+            console.log('✅ window.grecaptcha now available')
+            setRecaptchaLoaded(true)
+          }
+        }, 1000)
+      }
       return
     }
 
+    console.log('📥 Loading reCAPTCHA script...')
     const script = document.createElement('script')
     script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`
     script.async = true
     script.defer = true
     script.onload = () => {
-      console.log('✅ reCAPTCHA script loaded')
+      console.log('✅ reCAPTCHA script loaded successfully')
       setRecaptchaLoaded(true)
+      
+      // Wait a bit for grecaptcha to be ready
+      setTimeout(() => {
+        console.log('🔍 grecaptcha available:', !!window.grecaptcha)
+      }, 500)
     }
-    script.onerror = () => {
-      console.error('❌ reCAPTCHA script failed to load')
+    script.onerror = (error) => {
+      console.error('❌ reCAPTCHA script failed to load:', error)
+      alert('reCAPTCHA yüklenemedi. İnternet bağlantınızı kontrol edin.')
     }
+    
+    console.log('➕ Appending script to head...')
     document.head.appendChild(script)
 
     return () => {
-      // Don't remove script on unmount as it might be used by other components
+      console.log('🧹 Component unmounting (script stays)')
     }
   }, [])
 

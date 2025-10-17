@@ -162,6 +162,7 @@ export function DigitalAnalysisRequests() {
   const startAnalysis = async (id: string, website: string, name: string, email: string) => {
     try {
       console.log(`🚀 Starting analysis for: ${website}`)
+      console.log('📝 Request data:', { requestId: id, website, name, email })
       
       // Call Edge Function
       const { data, error } = await supabase.functions.invoke('analyze-website', {
@@ -173,17 +174,27 @@ export function DigitalAnalysisRequests() {
         }
       })
 
+      console.log('📨 Edge Function response:', { data, error })
+
       if (error) {
-        console.error('Analysis error:', error)
+        console.error('❌ Analysis error:', error)
+        alert(`Analiz başlatılamadı: ${error.message}`)
         return
       }
 
-      console.log('✅ Analysis started successfully')
+      if (data) {
+        console.log('✅ Analysis completed:', data)
+        if (data.success) {
+          alert('Analiz başarıyla tamamlandı! Email gönderildi.')
+        }
+      }
       
       // Refresh the list to show updated status
-      fetchRequests()
+      await fetchRequests()
+      console.log('🔄 List refreshed')
     } catch (error) {
-      console.error('Analysis start error:', error)
+      console.error('❌ Analysis start error:', error)
+      alert(`Bir hata oluştu: ${error}`)
     }
   }
 
