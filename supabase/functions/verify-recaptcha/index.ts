@@ -70,7 +70,7 @@ serve(async (req) => {
     const requestBody = JSON.stringify({
       event: {
         token: token,
-        expectedAction: action || 'submit',
+        expectedAction: action || 'SUBMIT',
         siteKey: '6LdGyeOrAAAAAOeyqn9wQRNeLjEve1D7FQzfDcpj'
       }
     })

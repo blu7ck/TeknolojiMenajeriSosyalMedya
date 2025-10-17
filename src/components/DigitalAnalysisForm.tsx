@@ -165,13 +165,15 @@ export function DigitalAnalysisForm() {
       }
 
       try {
-        // Enterprise API kullan
+        // Enterprise API kullan - Görseldeki format'a uygun
         if (window.grecaptcha.enterprise) {
           window.grecaptcha.enterprise.ready(() => {
             console.log('🔍 reCAPTCHA Enterprise ready, executing...')
-            window.grecaptcha.enterprise.execute(siteKey, { action: 'submit' })
+            // Görseldeki örnekteki gibi action parametresi
+            window.grecaptcha.enterprise.execute(siteKey, { action: 'SUBMIT' })
               .then((token: string) => {
                 console.log('✅ reCAPTCHA Enterprise token received:', token ? 'YES' : 'NO')
+                console.log('📝 Token will be sent to backend for verification')
                 resolve(token)
               })
               .catch((error) => {
@@ -183,9 +185,10 @@ export function DigitalAnalysisForm() {
           // Fallback to regular API
           window.grecaptcha.ready(() => {
             console.log('🔍 reCAPTCHA ready, executing...')
-            window.grecaptcha.execute(siteKey, { action: 'submit' })
+            window.grecaptcha.execute(siteKey, { action: 'SUBMIT' })
               .then((token: string) => {
                 console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
+                console.log('📝 Token will be sent to backend for verification')
                 resolve(token)
               })
               .catch((error) => {
@@ -385,7 +388,7 @@ export function DigitalAnalysisForm() {
       const { data: verificationResult, error: verificationError } = await supabase.functions.invoke('verify-recaptcha', {
         body: {
           token: token,
-          action: 'submit'
+          action: 'SUBMIT'
         }
       })
       
