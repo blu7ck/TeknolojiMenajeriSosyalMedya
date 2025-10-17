@@ -172,6 +172,10 @@ export function DigitalAnalysisRequests() {
       await fetchRequests()
       console.log('🔄 List refreshed to show processing status')
       
+      // Add minimum delay to show processing status (2 seconds)
+      console.log('⏳ Waiting 2 seconds to show processing status...')
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
       // Call Edge Function
       const { data, error } = await supabase.functions.invoke('analyze-website', {
         body: {
