@@ -6,7 +6,9 @@ import type { BlogPost } from "../../types/blog"
 import { BlogEditor } from "./BlogEditor"
 import { BlogPostList } from "./BlogPostList"
 import { SubscribersList } from "./SubscribersList"
-import { PenSquare, List, Users, LogOut } from 'lucide-react'
+import { DigitalAnalysisRequests } from "./DigitalAnalysisRequests"
+import { RecaptchaAnalytics } from "./RecaptchaAnalytics"
+import { PenSquare, List, Users, LogOut, BarChart3, Shield } from 'lucide-react'
 
 interface AdminDashboardProps {
   user: any
@@ -14,7 +16,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<"posts" | "new" | "edit" | "subscribers">("posts")
+  const [activeTab, setActiveTab] = useState<"posts" | "new" | "edit" | "subscribers" | "analysis" | "recaptcha">("posts")
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
@@ -56,6 +58,8 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { id: "posts" as const, label: "Tüm Yazılar", icon: List },
     { id: "new" as const, label: "Yeni Yazı", icon: PenSquare },
     { id: "subscribers" as const, label: "Aboneler", icon: Users },
+    { id: "analysis" as const, label: "Dijital Analiz", icon: BarChart3 },
+    { id: "recaptcha" as const, label: "reCAPTCHA", icon: Shield },
   ]
 
   return (
@@ -114,6 +118,10 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
           <BlogPostList posts={posts} onEdit={handleEdit} onDelete={handleDelete} />
         ) : activeTab === "subscribers" ? (
           <SubscribersList />
+        ) : activeTab === "analysis" ? (
+          <DigitalAnalysisRequests />
+        ) : activeTab === "recaptcha" ? (
+          <RecaptchaAnalytics />
         ) : (
           <BlogEditor post={editingPost} onSuccess={handleSaveSuccess} onCancel={() => setActiveTab("posts")} />
         )}

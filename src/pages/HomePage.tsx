@@ -2,6 +2,7 @@ import { Header } from "../components/Header"
 import { ProcessSection } from "../components/ProcessSection"
 import { AboutUs } from "../components/AboutUs"
 import { Services } from "../components/Services"
+import { DigitalAnalysisForm } from "../components/DigitalAnalysisForm"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
 import { Mail, Phone, MapPin } from "lucide-react"
@@ -118,39 +119,7 @@ export default function HomePage() {
               konusunda size özel öneriler sunuyoruz.
             </p>
 
-            <div className="max-w-2xl mx-auto">
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Ad - Soyad"
-                      className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="E-posta"
-                      className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="url"
-                      placeholder="Website"
-                      className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors"
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full md:w-auto px-8 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105"
-                >
-                  Rapor İste
-                </button>
-              </form>
-            </div>
+            <DigitalAnalysisForm />
           </div>
         </section>
 
