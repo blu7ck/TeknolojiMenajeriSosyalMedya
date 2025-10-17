@@ -44,19 +44,26 @@ export function DigitalAnalysisRequests() {
   const fetchRequests = async () => {
     try {
       setLoading(true)
+      console.log('🔍 Fetching digital analysis requests...')
+      
       const { data, error } = await supabase
         .from('digital_analysis_requests')
         .select('*')
         .order('created_at', { ascending: false })
 
+      console.log('📊 Database response:', { data, error, count: data?.length || 0 })
+
       if (error) {
-        console.error('Error fetching requests:', error)
+        console.error('❌ Error fetching requests:', error)
+        alert(`Database error: ${error.message}`)
         return
       }
 
+      console.log('✅ Requests fetched successfully:', data?.length || 0, 'requests')
       setRequests(data || [])
     } catch (error) {
-      console.error('Error:', error)
+      console.error('❌ Fetch error:', error)
+      alert(`Fetch error: ${error}`)
     } finally {
       setLoading(false)
     }
