@@ -7,7 +7,7 @@ const corsHeaders = {
 }
 
 interface EmailRequest {
-  type: 'user_confirmation' | 'admin_notification' | 'status_update' | 'feedback_request'
+  type: 'user_confirmation' | 'admin_notification' | 'status_update' | 'feedback_request' | 'analysis_report'
   to: string
   data: {
     name: string
@@ -15,6 +15,10 @@ interface EmailRequest {
     website: string
     requestId: string
     status?: string
+    reason?: string
+    report_summary?: any
+    markdown_report?: string
+    pdf_url?: string
   }
 }
 
@@ -147,6 +151,14 @@ function generateEmailContent(type: string, data: any) {
         subject: 'Dijital Analiz Raporunuz Hakkında Görüşlerinizi Paylaşın',
         html: generateFeedbackRequestHTML(data, baseUrl),
         text: generateFeedbackRequestText(data)
+      }
+    
+    case 'analysis_report':
+      return {
+        to: data.email,
+        subject: `Dijital Analiz Raporunuz Hazır - ${data.website}`,
+        html: generateAnalysisReportHTML(data, baseUrl),
+        text: generateAnalysisReportText(data)
       }
     
     default:
@@ -456,6 +468,107 @@ function generateFeedbackRequestHTML(data: any, baseUrl: string) {
         </p>
       </div>
     </div>
+  `
+}
+
+// Analysis Report Email Templates
+function generateAnalysisReportHTML(data: any, baseUrl: string) {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .score-card { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #DC2626; }
+        .score { font-size: 48px; font-weight: bold; color: #DC2626; }
+        .button { display: inline-block; background: #DC2626; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>🎉 Dijital Analiz Raporunuz Hazır!</h1>
+        </div>
+        <div class="content">
+          <p>Merhaba <strong>${data.name}</strong>,</p>
+          
+          <p><strong>${data.website}</strong> website'iniz için hazırladığımız dijital analiz raporu tamamlandı!</p>
+          
+          <div class="score-card">
+            <h2>Genel Değerlendirme</h2>
+            <div class="score">${data.report_summary?.overall_score || 0}/100</div>
+            <p><strong>Güçlü Yönler:</strong></p>
+            <ul>
+              ${(data.report_summary?.strengths || []).map((s: string) => `<li>✅ ${s}</li>`).join('')}
+            </ul>
+            ${(data.report_summary?.improvements || []).length > 0 ? `
+              <p><strong>Geliştirilmesi Gerekenler:</strong></p>
+              <ul>
+                ${data.report_summary.improvements.map((i: string) => `<li>⚠️ ${i}</li>`).join('')}
+              </ul>
+            ` : ''}
+          </div>
+          
+          <p><strong>Raporunuzda neler var?</strong></p>
+          <ul>
+            <li>⚡ Performans Analizi (PageSpeed Insights)</li>
+            <li>🔍 SEO Değerlendirmesi</li>
+            <li>🌐 Sosyal Medya Entegrasyonu</li>
+            <li>🤖 AI Tabanlı Öneriler</li>
+          </ul>
+          
+          ${data.pdf_url ? `
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${data.pdf_url}" class="button" style="background: #DC2626; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                📄 PDF Raporu İndir
+              </a>
+            </div>
+          ` : ''}
+          
+          <p>Detaylı rapor içeriğini ${data.pdf_url ? 'PDF dosyasında veya ' : ''}aşağıda bulabilirsiniz:</p>
+          
+          <hr style="border: 1px solid #eee; margin: 30px 0;">
+          
+          <div style="background: white; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 14px; white-space: pre-wrap;">
+${data.markdown_report || 'Rapor oluşturulamadı'}
+          </div>
+          
+          <p style="margin-top: 30px;">Bu rapor hakkında sorularınız veya danışmanlık talebiniz için bizimle iletişime geçebilirsiniz.</p>
+          
+          <div class="footer">
+            <p>Bu rapor <strong>Teknoloji Menajeri</strong> tarafından otomatik olarak oluşturulmuştur.</p>
+            <p>E-posta: gulsah@teknolojimenajeri.com</p>
+            <p>Website: <a href="https://teknolojimenajeri.com">teknolojimenajeri.com</a></p>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `
+}
+
+function generateAnalysisReportText(data: any) {
+  return `
+    Dijital Analiz Raporunuz Hazır!
+    
+    Merhaba ${data.name},
+    
+    ${data.website} website'iniz için hazırladığımız dijital analiz raporu tamamlandı!
+    
+    GENEL DEĞERLENDİRME
+    Toplam Skor: ${data.report_summary?.overall_score || 0}/100
+    
+    ${data.markdown_report || 'Rapor oluşturulamadı'}
+    
+    Bu rapor hakkında sorularınız için:
+    E-posta: gulsah@teknolojimenajeri.com
+    Website: https://teknolojimenajeri.com
+    
+    Teknoloji Menajeri
   `
 }
 
