@@ -51,7 +51,7 @@ export function DigitalAnalysisForm() {
 
   // reCAPTCHA v3 script yükleme
   useEffect(() => {
-    console.log('🔄 useEffect triggered - Loading reCAPTCHA...')
+    console.log('🔄 useEffect triggered - Checking reCAPTCHA...')
     
     const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
     console.log('🔑 Site Key:', siteKey ? `${siteKey.substring(0, 20)}...` : 'NOT SET')
@@ -61,42 +61,48 @@ export function DigitalAnalysisForm() {
       return
     }
 
-    // Check if script already exists
+    // Check if script already exists in HTML head
     const existingScript = document.querySelector(`script[src*="recaptcha"]`)
-    console.log('🔍 Existing script:', existingScript ? 'FOUND' : 'NOT FOUND')
+    console.log('🔍 Existing script in HTML:', existingScript ? 'FOUND' : 'NOT FOUND')
     
     if (existingScript) {
-      console.log('✅ reCAPTCHA script already loaded')
-      setRecaptchaLoaded(true)
+      console.log('✅ reCAPTCHA script found in HTML, waiting for load...')
       
-      // Check if grecaptcha is available
-      if (window.grecaptcha) {
-        console.log('✅ window.grecaptcha is available')
-      } else {
-        console.warn('⚠️ Script exists but grecaptcha not ready, waiting...')
-        setTimeout(() => {
-          if (window.grecaptcha) {
-            console.log('✅ window.grecaptcha now available')
-            setRecaptchaLoaded(true)
-          }
-        }, 1000)
+      // Wait for grecaptcha to be available
+      const checkGrecaptcha = () => {
+        if (window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
+          console.log('✅ window.grecaptcha.ready is available')
+          setRecaptchaLoaded(true)
+        } else {
+          console.log('⏳ Waiting for grecaptcha...')
+          setTimeout(checkGrecaptcha, 100)
+        }
       }
+      
+      checkGrecaptcha()
       return
     }
 
-    console.log('📥 Loading reCAPTCHA script...')
+    console.log('📥 Loading reCAPTCHA script dynamically...')
     const script = document.createElement('script')
     script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`
     script.async = true
     script.defer = true
     script.onload = () => {
       console.log('✅ reCAPTCHA script loaded successfully')
-      setRecaptchaLoaded(true)
       
-      // Wait a bit for grecaptcha to be ready
-      setTimeout(() => {
-        console.log('🔍 grecaptcha available:', !!window.grecaptcha)
-      }, 500)
+      // Wait for grecaptcha to be ready
+      const checkGrecaptcha = () => {
+        if (window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
+          console.log('✅ window.grecaptcha.ready is available')
+          setRecaptchaLoaded(true)
+        } else {
+          console.log('⏳ Waiting for grecaptcha...')
+          setTimeout(checkGrecaptcha, 100)
+        }
+      }
+      
+      checkGrecaptcha()
     }
     script.onerror = (error) => {
       console.error('❌ reCAPTCHA script failed to load:', error)
@@ -115,14 +121,31 @@ export function DigitalAnalysisForm() {
   const getRecaptchaToken = async (): Promise<string | null> => {
     return new Promise((resolve) => {
       const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
       
       console.log('🔍 reCAPTCHA check:', { 
         recaptchaLoaded, 
         grecaptcha: !!window.grecaptcha,
+        grecaptchaReady: !!(window.grecaptcha && typeof window.grecaptcha.ready === 'function'),
         siteKey: siteKey ? 'SET' : 'NOT SET',
         currentDomain: window.location.hostname,
-        currentUrl: window.location.href
+        currentUrl: window.location.href,
+        isLocalhost
       })
+      
+      // Development ortamında reCAPTCHA'yı atla
+      if (isLocalhost) {
+        console.log('🏠 Development mode: Skipping reCAPTCHA for localhost')
+        resolve('dev-token-' + Date.now())
+        return
+      }
+      
+      // Studio subdomain için de development mode (test için)
+      if (window.location.hostname === 'studio.teknolojimenajeri.com' && window.location.protocol === 'http:') {
+        console.log('🏠 Development mode: Skipping reCAPTCHA for HTTP studio domain')
+        resolve('dev-token-' + Date.now())
+        return
+      }
       
       if (!siteKey) {
         console.error('❌ reCAPTCHA site key not configured')
@@ -130,42 +153,30 @@ export function DigitalAnalysisForm() {
         return
       }
 
-      if (!window.grecaptcha) {
-        console.error('❌ reCAPTCHA not loaded')
-        // Wait for script to load
-        setTimeout(() => {
-          if (window.grecaptcha) {
-            window.grecaptcha.ready(() => {
-              window.grecaptcha.execute(siteKey, { action: 'submit' })
-                .then((token: string) => {
-                  console.log('✅ reCAPTCHA token received (delayed):', token ? 'YES' : 'NO')
-                  resolve(token)
-                })
-                .catch((error) => {
-                  console.error('❌ reCAPTCHA error:', error)
-                  resolve(null)
-                })
-            })
-          } else {
-            console.error('❌ reCAPTCHA still not loaded after delay')
-            resolve(null)
-          }
-        }, 1000)
+      if (!window.grecaptcha || typeof window.grecaptcha.ready !== 'function') {
+        console.error('❌ reCAPTCHA not loaded or ready function not available')
+        console.error('🔍 Available grecaptcha methods:', window.grecaptcha ? Object.keys(window.grecaptcha) : 'grecaptcha not available')
+        resolve(null)
         return
       }
 
-      window.grecaptcha.ready(() => {
-        console.log('🔍 reCAPTCHA ready, executing...')
-        window.grecaptcha.execute(siteKey, { action: 'submit' })
-          .then((token: string) => {
-            console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
-            resolve(token)
-          })
-          .catch((error) => {
-            console.error('❌ reCAPTCHA error:', error)
-            resolve(null)
-          })
-      })
+      try {
+        window.grecaptcha.ready(() => {
+          console.log('🔍 reCAPTCHA ready, executing...')
+          window.grecaptcha.execute(siteKey, { action: 'submit' })
+            .then((token: string) => {
+              console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
+              resolve(token)
+            })
+            .catch((error) => {
+              console.error('❌ reCAPTCHA error:', error)
+              resolve(null)
+            })
+        })
+      } catch (error) {
+        console.error('❌ reCAPTCHA ready error:', error)
+        resolve(null)
+      }
     })
   }
 
@@ -346,9 +357,27 @@ export function DigitalAnalysisForm() {
         return
       }
       
-      console.log('✅ reCAPTCHA token obtained, proceeding with submission...')
-
+      console.log('✅ reCAPTCHA token obtained, verifying with backend...')
+      
+      // Backend reCAPTCHA doğrulama
       const supabase = createClient()
+      const { data: verificationResult, error: verificationError } = await supabase.functions.invoke('verify-recaptcha', {
+        body: {
+          token: token,
+          action: 'submit'
+        }
+      })
+      
+      if (verificationError || !verificationResult?.success) {
+        console.error('❌ reCAPTCHA backend verification failed:', verificationError || verificationResult)
+        setFormState({ 
+          status: 'error', 
+          message: 'Güvenlik doğrulaması başarısız. Lütfen tekrar deneyin.' 
+        })
+        return
+      }
+      
+      console.log('✅ reCAPTCHA backend verification successful, proceeding with submission...')
       
       // Get user IP and user agent
       const ipResponse = await fetch('https://api.ipify.org?format=json')
