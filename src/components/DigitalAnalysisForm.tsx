@@ -119,7 +119,9 @@ export function DigitalAnalysisForm() {
       console.log('🔍 reCAPTCHA check:', { 
         recaptchaLoaded, 
         grecaptcha: !!window.grecaptcha,
-        siteKey: siteKey ? 'SET' : 'NOT SET'
+        siteKey: siteKey ? 'SET' : 'NOT SET',
+        currentDomain: window.location.hostname,
+        currentUrl: window.location.href
       })
       
       if (!siteKey) {
@@ -330,6 +332,13 @@ export function DigitalAnalysisForm() {
       
       if (!token) {
         console.error('❌ reCAPTCHA token is null')
+        console.error('🔍 reCAPTCHA debug info:', {
+          recaptchaLoaded,
+          grecaptcha: !!window.grecaptcha,
+          siteKey: recaptchaSiteKey ? `${recaptchaSiteKey.substring(0, 10)}...` : 'NOT SET',
+          currentDomain: window.location.hostname,
+          currentUrl: window.location.href
+        })
         setFormState({ 
           status: 'error', 
           message: 'Güvenlik doğrulaması başarısız. Lütfen sayfayı yenileyin ve tekrar deneyin.' 
