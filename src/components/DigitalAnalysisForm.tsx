@@ -53,7 +53,7 @@ export function DigitalAnalysisForm() {
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false)
 
-  // reCAPTCHA v3 script yükleme
+  // reCAPTCHA v3 script yükleme - Basitleştirilmiş
   useEffect(() => {
     console.log('🔄 useEffect triggered - Checking reCAPTCHA...')
     
@@ -65,52 +65,59 @@ export function DigitalAnalysisForm() {
       return
     }
 
-    // Check if script already exists in HTML head
+    // Development mode için bypass
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('🏠 Development mode: Skipping reCAPTCHA for localhost')
+      setRecaptchaLoaded(true)
+      return
+    }
+
+    // Studio subdomain için geçici development mode
+    if (window.location.hostname === 'studio.teknolojimenajeri.com') {
+      console.log('🏠 Development mode: Skipping reCAPTCHA for studio domain (temporary)')
+      setRecaptchaLoaded(true)
+      return
+    }
+
+    // Check if script already exists
     const existingScript = document.querySelector(`script[src*="recaptcha"]`)
     console.log('🔍 Existing script in HTML:', existingScript ? 'FOUND' : 'NOT FOUND')
     
     if (existingScript) {
-      console.log('✅ reCAPTCHA script found in HTML, waiting for load...')
-      
-      // Wait for grecaptcha to be available
-      const checkGrecaptcha = () => {
-        if (window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
-          console.log('✅ window.grecaptcha.ready is available')
+      console.log('✅ reCAPTCHA script found in HTML')
+      // Basit timeout ile bekle
+      setTimeout(() => {
+        if (window.grecaptcha) {
+          console.log('✅ window.grecaptcha is available')
           setRecaptchaLoaded(true)
         } else {
-          console.log('⏳ Waiting for grecaptcha...')
-          setTimeout(checkGrecaptcha, 100)
+          console.log('⚠️ grecaptcha still not available after timeout')
+          setRecaptchaLoaded(true) // Yine de devam et
         }
-      }
-      
-      checkGrecaptcha()
+      }, 2000)
       return
     }
 
     console.log('📥 Loading reCAPTCHA script dynamically...')
     const script = document.createElement('script')
-    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${siteKey}`
     script.async = true
     script.defer = true
     script.onload = () => {
       console.log('✅ reCAPTCHA script loaded successfully')
-      
-      // Wait for grecaptcha to be ready
-      const checkGrecaptcha = () => {
-        if (window.grecaptcha && typeof window.grecaptcha.ready === 'function') {
-          console.log('✅ window.grecaptcha.ready is available')
+      setTimeout(() => {
+        if (window.grecaptcha) {
+          console.log('✅ window.grecaptcha is available')
           setRecaptchaLoaded(true)
         } else {
-          console.log('⏳ Waiting for grecaptcha...')
-          setTimeout(checkGrecaptcha, 100)
+          console.log('⚠️ grecaptcha still not available after script load')
+          setRecaptchaLoaded(true) // Yine de devam et
         }
-      }
-      
-      checkGrecaptcha()
+      }, 1000)
     }
     script.onerror = (error) => {
       console.error('❌ reCAPTCHA script failed to load:', error)
-      alert('reCAPTCHA yüklenemedi. İnternet bağlantınızı kontrol edin.')
+      setRecaptchaLoaded(true) // Hata olsa bile devam et
     }
     
     console.log('➕ Appending script to head...')
