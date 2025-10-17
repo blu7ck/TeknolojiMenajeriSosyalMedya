@@ -132,7 +132,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden bg-white rounded-2xl shadow-2xl border border-gray-200">
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-200" style={{ overflowX: 'hidden' }}>
         {/* Theme Toggle Button */}
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
@@ -152,7 +152,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
         </button>
 
         {/* Content */}
-        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`} style={{ overflowX: 'hidden', maxWidth: '100%' }}>
           {/* Featured Image */}
           {post.cover_image && (
             <div className="relative overflow-hidden rounded-xl aspect-video mb-8 bg-muted">
@@ -183,7 +183,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
               {post.excerpt && <p className={`text-xl mb-8 text-pretty ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{post.excerpt}</p>}
 
               {/* Content */}
-              <div className={`prose prose-lg max-w-none mb-12 break-words overflow-wrap-anywhere markdown-content ${isDarkMode ? 'prose-invert' : 'prose-gray'}`}>
+              <div className={`prose prose-lg max-w-none mb-12 markdown-content ${isDarkMode ? 'prose-invert' : 'prose-gray'}`} style={{ wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%' }}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
               </div>
 
