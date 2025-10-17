@@ -168,6 +168,10 @@ export function DigitalAnalysisRequests() {
       console.log('🔄 Updating status to processing...')
       await updateRequestStatus(id, 'processing')
       
+      // Refresh the list to show processing status immediately
+      await fetchRequests()
+      console.log('🔄 List refreshed to show processing status')
+      
       // Call Edge Function
       const { data, error } = await supabase.functions.invoke('analyze-website', {
         body: {
