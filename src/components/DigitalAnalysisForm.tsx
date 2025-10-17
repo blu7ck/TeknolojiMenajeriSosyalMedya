@@ -27,9 +27,12 @@ interface FormState {
 }
 
 export function DigitalAnalysisForm() {
+  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+  
   console.log('🎬 DigitalAnalysisForm component mounted')
   console.log('🔧 Environment check:', {
-    hasRecaptchaKey: !!import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+    hasRecaptchaKey: !!recaptchaSiteKey,
+    recaptchaKey: recaptchaSiteKey ? `${recaptchaSiteKey.substring(0, 10)}...` : 'NOT SET',
     hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
     hasSupabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY
   })
