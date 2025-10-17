@@ -173,32 +173,59 @@ async function analyzePerformance(website: string) {
   try {
     const apiKey = Deno.env.get('GOOGLE_PAGESPEED_API_KEY')
     if (!apiKey) {
-      console.warn('Google PageSpeed API key not configured')
-      return { error: 'Performance analysis not configured' }
+      console.warn('⚠️ Google PageSpeed API key not configured')
+      return {
+        mobile_score: 0,
+        accessibility_score: 0,
+        best_practices_score: 0,
+        seo_score: 0,
+        metrics: { fcp: 'N/A', lcp: 'N/A', cls: 'N/A', fid: 'N/A' },
+        opportunities: [],
+        error: 'API key not configured'
+      }
     }
 
-    const response = await fetch(
-      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(website)}&key=${apiKey}&strategy=mobile&category=performance&category=accessibility&category=best-practices&category=seo`
-    )
+    console.log('📊 Calling PageSpeed API for:', website)
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(website)}&key=${apiKey}&strategy=mobile&category=performance&category=accessibility&category=best-practices&category=seo`
+    console.log('🔗 PageSpeed API URL (without key):', apiUrl.replace(apiKey, 'HIDDEN'))
+    
+    const response = await fetch(apiUrl)
+    console.log('📡 PageSpeed API response status:', response.status)
 
     if (!response.ok) {
-      throw new Error(`PageSpeed API error: ${response.status}`)
+      const errorText = await response.text()
+      console.error('❌ PageSpeed API error:', { 
+        status: response.status, 
+        statusText: response.statusText,
+        error: errorText 
+      })
+      
+      // Try to parse error details
+      try {
+        const errorJson = JSON.parse(errorText)
+        console.error('📋 PageSpeed API error details:', errorJson)
+      } catch (e) {
+        console.error('📋 PageSpeed API raw error:', errorText)
+      }
+      
+      throw new Error(`PageSpeed API error: ${response.status} - ${errorText.substring(0, 200)}`)
     }
 
     const data = await response.json()
+    console.log('✅ PageSpeed data received')
     
     return {
-      mobile_score: data.lighthouseResult.categories.performance.score * 100,
-      accessibility_score: data.lighthouseResult.categories.accessibility.score * 100,
-      best_practices_score: data.lighthouseResult.categories['best-practices'].score * 100,
-      seo_score: data.lighthouseResult.categories.seo.score * 100,
+      mobile_score: (data.lighthouseResult?.categories?.performance?.score || 0) * 100,
+      accessibility_score: (data.lighthouseResult?.categories?.accessibility?.score || 0) * 100,
+      best_practices_score: (data.lighthouseResult?.categories?.['best-practices']?.score || 0) * 100,
+      seo_score: (data.lighthouseResult?.categories?.seo?.score || 0) * 100,
       metrics: {
-        fcp: data.lighthouseResult.audits['first-contentful-paint']?.displayValue,
-        lcp: data.lighthouseResult.audits['largest-contentful-paint']?.displayValue,
-        cls: data.lighthouseResult.audits['cumulative-layout-shift']?.displayValue,
-        fid: data.lighthouseResult.audits['max-potential-fid']?.displayValue
+        fcp: data.lighthouseResult?.audits?.['first-contentful-paint']?.displayValue || 'N/A',
+        lcp: data.lighthouseResult?.audits?.['largest-contentful-paint']?.displayValue || 'N/A',
+        cls: data.lighthouseResult?.audits?.['cumulative-layout-shift']?.displayValue || 'N/A',
+        fid: data.lighthouseResult?.audits?.['max-potential-fid']?.displayValue || 'N/A'
       },
-      opportunities: data.lighthouseResult.categories.performance.auditRefs
+      opportunities: (data.lighthouseResult?.categories?.performance?.auditRefs || [])
         .filter((audit: any) => audit.result?.score < 0.9)
         .map((audit: any) => ({
           id: audit.id,
@@ -208,17 +235,32 @@ async function analyzePerformance(website: string) {
         }))
     }
   } catch (error) {
-    console.error('Performance analysis error:', error)
-    return { error: error.message }
+    console.error('❌ Performance analysis error:', error)
+    return {
+      mobile_score: 0,
+      accessibility_score: 0,
+      best_practices_score: 0,
+      seo_score: 0,
+      metrics: { fcp: 'N/A', lcp: 'N/A', cls: 'N/A', fid: 'N/A' },
+      opportunities: [],
+      error: error.message
+    }
   }
 }
 
 // SEO Analysis
 async function analyzeSEO(website: string) {
   try {
-    // Basic SEO checks
+    console.log('🔍 Fetching website HTML for SEO analysis:', website)
     const response = await fetch(website)
+    
+    if (!response.ok) {
+      console.error('❌ Failed to fetch website:', response.status)
+      throw new Error(`Failed to fetch website: ${response.status}`)
+    }
+    
     const html = await response.text()
+    console.log('✅ HTML fetched, length:', html.length)
     
     // Extract meta tags
     const titleMatch = html.match(/<title>(.*?)<\/title>/i)
@@ -262,8 +304,16 @@ async function analyzeSEO(website: string) {
 // Social Media Analysis
 async function analyzeSocialMedia(website: string) {
   try {
+    console.log('🌐 Fetching website HTML for social media analysis:', website)
     const response = await fetch(website)
+    
+    if (!response.ok) {
+      console.error('❌ Failed to fetch website:', response.status)
+      throw new Error(`Failed to fetch website: ${response.status}`)
+    }
+    
     const html = await response.text()
+    console.log('✅ HTML fetched for social analysis')
     
     // Check for social media meta tags
     const ogTitle = html.match(/<meta property="og:title" content="(.*?)"/i)?.[1]
@@ -325,7 +375,8 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
     Focus on digital marketing and business growth opportunities.
     `
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`
+    // Updated model name for v1beta API
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`
     console.log('🤖 Calling Gemini API...')
     
     const response = await fetch(apiUrl, {
