@@ -51,7 +51,7 @@ serve(async (req) => {
       )
     }
 
-    // reCAPTCHA v3 verification
+    // reCAPTCHA Enterprise verification
     const recaptchaSecret = Deno.env.get('RECAPTCHA_SECRET_KEY')
     if (!recaptchaSecret) {
       console.error('RECAPTCHA_SECRET_KEY not configured')
@@ -64,15 +64,23 @@ serve(async (req) => {
       )
     }
 
-    const verificationUrl = 'https://www.google.com/recaptcha/api/siteverify'
-    const formData = new FormData()
-    formData.append('secret', recaptchaSecret)
-    formData.append('response', token)
-    formData.append('remoteip', req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '')
+    // Google reCAPTCHA Enterprise API kullan
+    const verificationUrl = 'https://recaptchaenterprise.googleapis.com/v1/projects/teknoloji-menaje-1760688123174/assessments?key=' + recaptchaSecret
+    
+    const requestBody = JSON.stringify({
+      event: {
+        token: token,
+        expectedAction: action || 'submit',
+        siteKey: '6LdGyeOrAAAAAOeyqn9wQRNeLjEve1D7FQzfDcpj'
+      }
+    })
 
     const recaptchaResponse = await fetch(verificationUrl, {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
     })
 
     const recaptchaResult: RecaptchaResponse = await recaptchaResponse.json()
