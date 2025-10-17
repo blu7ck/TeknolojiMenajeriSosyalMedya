@@ -55,7 +55,6 @@ export function DigitalAnalysisForm() {
     
     if (!siteKey) {
       console.error('❌ VITE_RECAPTCHA_SITE_KEY not configured')
-      alert('reCAPTCHA yapılandırması eksik. Lütfen site yöneticisiyle iletişime geçin.')
       return
     }
 

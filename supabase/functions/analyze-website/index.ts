@@ -80,30 +80,10 @@ serve(async (req) => {
     const markdownReport = generateMarkdownReport(report_data)
     console.log('✅ Markdown report generated')
 
-    // 7. Generate PDF from Markdown
-    const pdfBuffer = await generatePDFFromMarkdown(markdownReport, website)
-    console.log('✅ PDF report generated')
-
-    // 8. Upload PDF to Supabase Storage
-    const pdfFileName = `digital-analysis-${requestId}-${Date.now()}.pdf`
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('digital-analysis-reports')
-      .upload(pdfFileName, pdfBuffer, {
-        contentType: 'application/pdf',
-        cacheControl: '3600',
-        upsert: false
-      })
-
+    // 7. PDF generation (temporarily disabled - HTML to PDF needs proper implementation)
+    // TODO: Implement proper HTML to PDF conversion using a service like Puppeteer
     let pdfUrl = null
-    if (!uploadError && uploadData) {
-      const { data: urlData } = supabase.storage
-        .from('digital-analysis-reports')
-        .getPublicUrl(pdfFileName)
-      pdfUrl = urlData.publicUrl
-      console.log('✅ PDF uploaded to storage:', pdfUrl)
-    } else {
-      console.error('❌ PDF upload error:', uploadError)
-    }
+    console.log('⚠️ PDF generation skipped (not implemented yet)')
 
     // Save analysis results to database
     await supabase
