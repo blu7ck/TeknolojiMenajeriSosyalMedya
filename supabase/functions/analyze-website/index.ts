@@ -423,7 +423,19 @@ Format your response clearly with numbered lists.`
       throw new Error('Invalid Gemini API response structure')
     }
     
-    const aiResponse = data.candidates[0].content.parts[0].text
+    // Handle different response structures
+    let aiResponse = ''
+    if (data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+      aiResponse = data.candidates[0].content.parts[0].text || ''
+    } else if (data.candidates[0].content.role) {
+      // Handle case where content only has role (MAX_TOKENS finish reason)
+      console.log('⚠️ Gemini response truncated (MAX_TOKENS), using fallback')
+      aiResponse = 'Dijital Varlık Analizi: Website analizi tamamlandı ancak AI yanıtı token limiti nedeniyle kesildi. Temel analiz sonuçları yukarıda mevcut.'
+    } else {
+      console.error('❌ No valid content found in Gemini response')
+      throw new Error('No valid content in Gemini response')
+    }
+    
     console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
 
     return {
