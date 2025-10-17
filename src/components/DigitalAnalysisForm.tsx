@@ -41,37 +41,83 @@ export function DigitalAnalysisForm() {
 
   // reCAPTCHA v3 script yükleme
   useEffect(() => {
+    const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
+    
+    if (!siteKey) {
+      console.error('❌ VITE_RECAPTCHA_SITE_KEY not configured')
+      return
+    }
+
+    // Check if script already exists
+    const existingScript = document.querySelector(`script[src*="recaptcha"]`)
+    if (existingScript) {
+      console.log('reCAPTCHA script already loaded')
+      setRecaptchaLoaded(true)
+      return
+    }
+
     const script = document.createElement('script')
-    script.src = `https://www.google.com/recaptcha/api.js?render=${import.meta.env.VITE_RECAPTCHA_SITE_KEY}`
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`
     script.async = true
     script.defer = true
     script.onload = () => {
+      console.log('✅ reCAPTCHA script loaded')
       setRecaptchaLoaded(true)
+    }
+    script.onerror = () => {
+      console.error('❌ reCAPTCHA script failed to load')
     }
     document.head.appendChild(script)
 
     return () => {
-      const existingScript = document.querySelector(`script[src*="recaptcha"]`)
-      if (existingScript) {
-        document.head.removeChild(existingScript)
-      }
+      // Don't remove script on unmount as it might be used by other components
     }
   }, [])
 
   // reCAPTCHA v3 token alma
   const getRecaptchaToken = async (): Promise<string | null> => {
     return new Promise((resolve) => {
-      console.log('🔍 reCAPTCHA check:', { recaptchaLoaded, grecaptcha: !!window.grecaptcha })
+      const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
       
-      if (!recaptchaLoaded || !window.grecaptcha) {
-        console.error('❌ reCAPTCHA not loaded')
+      console.log('🔍 reCAPTCHA check:', { 
+        recaptchaLoaded, 
+        grecaptcha: !!window.grecaptcha,
+        siteKey: siteKey ? 'SET' : 'NOT SET'
+      })
+      
+      if (!siteKey) {
+        console.error('❌ reCAPTCHA site key not configured')
         resolve(null)
+        return
+      }
+
+      if (!window.grecaptcha) {
+        console.error('❌ reCAPTCHA not loaded')
+        // Wait for script to load
+        setTimeout(() => {
+          if (window.grecaptcha) {
+            window.grecaptcha.ready(() => {
+              window.grecaptcha.execute(siteKey, { action: 'submit' })
+                .then((token: string) => {
+                  console.log('✅ reCAPTCHA token received (delayed):', token ? 'YES' : 'NO')
+                  resolve(token)
+                })
+                .catch((error) => {
+                  console.error('❌ reCAPTCHA error:', error)
+                  resolve(null)
+                })
+            })
+          } else {
+            console.error('❌ reCAPTCHA still not loaded after delay')
+            resolve(null)
+          }
+        }, 1000)
         return
       }
 
       window.grecaptcha.ready(() => {
         console.log('🔍 reCAPTCHA ready, executing...')
-        window.grecaptcha.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, { action: 'submit' })
+        window.grecaptcha.execute(siteKey, { action: 'submit' })
           .then((token: string) => {
             console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
             resolve(token)
@@ -242,14 +288,19 @@ export function DigitalAnalysisForm() {
 
     try {
       // reCAPTCHA v3 token al
+      console.log('📝 Form submitting, getting reCAPTCHA token...')
       const token = await getRecaptchaToken()
+      
       if (!token) {
+        console.error('❌ reCAPTCHA token is null')
         setFormState({ 
           status: 'error', 
-          message: 'Güvenlik doğrulaması başarısız. Lütfen sayfayı yenileyin.' 
+          message: 'Güvenlik doğrulaması başarısız. Lütfen sayfayı yenileyin ve tekrar deneyin.' 
         })
         return
       }
+      
+      console.log('✅ reCAPTCHA token obtained, proceeding with submission...')
 
       const supabase = createClient()
       
