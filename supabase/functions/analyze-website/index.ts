@@ -376,7 +376,7 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
     `
 
     // Updated model name for v1beta API
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
     console.log('🤖 Calling Gemini API...')
     
     const response = await fetch(apiUrl, {
