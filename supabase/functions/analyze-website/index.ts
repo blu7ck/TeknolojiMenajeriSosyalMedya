@@ -415,7 +415,16 @@ Format your response clearly with numbered lists.`
     }
 
     const data = await response.json()
+    console.log('📦 Gemini API response structure:', JSON.stringify(data).substring(0, 500))
+    
+    // Check if response has expected structure
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      console.error('❌ Unexpected Gemini API response structure')
+      throw new Error('Invalid Gemini API response structure')
+    }
+    
     const aiResponse = data.candidates[0].content.parts[0].text
+    console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
 
     return {
       insights: aiResponse,
