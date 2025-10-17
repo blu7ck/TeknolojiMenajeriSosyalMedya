@@ -140,9 +140,9 @@ export function DigitalAnalysisForm() {
         return
       }
       
-      // Studio subdomain için geçici development mode (domain kayıt sorunu için)
-      if (window.location.hostname === 'studio.teknolojimenajeri.com') {
-        console.log('🏠 Development mode: Skipping reCAPTCHA for studio domain (temporary)')
+      // Studio subdomain için de development mode (test için)
+      if (window.location.hostname === 'studio.teknolojimenajeri.com' && window.location.protocol === 'http:') {
+        console.log('🏠 Development mode: Skipping reCAPTCHA for HTTP studio domain')
         resolve('dev-token-' + Date.now())
         return
       }
