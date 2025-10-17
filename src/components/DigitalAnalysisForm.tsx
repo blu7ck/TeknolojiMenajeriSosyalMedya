@@ -11,6 +11,10 @@ declare global {
     grecaptcha: {
       ready: (callback: () => void) => void
       execute: (siteKey: string, options: { action: string }) => Promise<string>
+      enterprise: {
+        ready: (callback: () => void) => void
+        execute: (siteKey: string, options: { action: string }) => Promise<string>
+      }
     }
   }
 }
@@ -161,18 +165,35 @@ export function DigitalAnalysisForm() {
       }
 
       try {
-        window.grecaptcha.ready(() => {
-          console.log('🔍 reCAPTCHA ready, executing...')
-          window.grecaptcha.execute(siteKey, { action: 'submit' })
-            .then((token: string) => {
-              console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
-              resolve(token)
-            })
-            .catch((error) => {
-              console.error('❌ reCAPTCHA error:', error)
-              resolve(null)
-            })
-        })
+        // Enterprise API kullan
+        if (window.grecaptcha.enterprise) {
+          window.grecaptcha.enterprise.ready(() => {
+            console.log('🔍 reCAPTCHA Enterprise ready, executing...')
+            window.grecaptcha.enterprise.execute(siteKey, { action: 'submit' })
+              .then((token: string) => {
+                console.log('✅ reCAPTCHA Enterprise token received:', token ? 'YES' : 'NO')
+                resolve(token)
+              })
+              .catch((error) => {
+                console.error('❌ reCAPTCHA Enterprise error:', error)
+                resolve(null)
+              })
+          })
+        } else {
+          // Fallback to regular API
+          window.grecaptcha.ready(() => {
+            console.log('🔍 reCAPTCHA ready, executing...')
+            window.grecaptcha.execute(siteKey, { action: 'submit' })
+              .then((token: string) => {
+                console.log('✅ reCAPTCHA token received:', token ? 'YES' : 'NO')
+                resolve(token)
+              })
+              .catch((error) => {
+                console.error('❌ reCAPTCHA error:', error)
+                resolve(null)
+              })
+          })
+        }
       } catch (error) {
         console.error('❌ reCAPTCHA ready error:', error)
         resolve(null)
