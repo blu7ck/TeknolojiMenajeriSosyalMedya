@@ -57,10 +57,14 @@ export function Header() {
           <nav className="relative flex items-center justify-between px-6 md:px-8 py-4">
             <Link
               to="/"
-              className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors duration-300 clickable"
+              className="flex items-center gap-3 text-xl md:text-2xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors duration-300 clickable"
             >
-              <span className="font-mono">Teknoloji</span>
-              <span className="text-accent">Menajeri</span>
+              <img 
+                src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/Logo2.png" 
+                alt="Teknoloji Menajeri" 
+                className="w-10 h-10 md:w-12 md:h-12 object-contain"
+              />
+              <span className="text-gray-800">#SosyalMedyaAjansı</span>
             </Link>
 
             {/* Desktop Navigation - Blog sayfasında gizle */}

@@ -103,23 +103,23 @@ export const packages: Package[] = [
 export const processSteps: ProcessStep[] = [
   {
     step: 1,
-    title: 'Satış & Teklif',
-    description: 'Teklif gönderimi (paket + modüller) ve ihtiyaç analizi'
+    title: 'Ücretsiz Dijital Analizinizi Yaptırın',
+    description: 'Online platformlardaki ayak izinizi değerlendirerek, markanızın dijital varlığını nasıl geliştireceğiniz konusunda size özel öneriler sunuyoruz.'
   },
   {
     step: 2,
-    title: 'Sözleşme & Ödeme',
-    description: 'Ön ödeme alımı ve sözleşme imzalama süreci'
-  },
-  {
-    step: 3,
-    title: 'Brief / Intake Form',
+    title: 'İhtiyaçlarınızı Belirleyin/Belirleyelim',
     description: 'Hedefler, tone-of-voice, görsel referans ve erişim bilgilerinin alınması'
   },
   {
+    step: 3,
+    title: 'Modül Paket Seçimleri ve Fiyat Teklifi',
+    description: 'Teklif gönderimi (paket + modüller) ve ihtiyaç analizi'
+  },
+  {
     step: 4,
-    title: 'Kickoff Toplantısı',
-    description: '30-60 dakikalık başlangıç toplantısı ve detay belirleme'
+    title: 'Sözleşme ve Ön Ödeme',
+    description: 'Ön ödeme alımı ve sözleşme imzalama süreci'
   },
   {
     step: 5,

@@ -7,7 +7,7 @@ const corsHeaders = {
 }
 
 interface EmailRequest {
-  type: 'user_confirmation' | 'admin_notification' | 'status_update' | 'feedback_request' | 'analysis_report'
+  type: 'user_confirmation' | 'admin_notification' | 'status_update' | 'feedback_request' | 'analysis_report' | 'package_request'
   to: string
   data: {
     name: string
@@ -118,7 +118,7 @@ serve(async (req) => {
 
 // Generate email content based on type
 function generateEmailContent(type: string, data: any) {
-  const baseUrl = 'https://teknolojimenajeri.com'
+  const baseUrl = 'https://studio.teknolojimenajeri.com'
   
   switch (type) {
     case 'user_confirmation':
@@ -145,20 +145,20 @@ function generateEmailContent(type: string, data: any) {
         text: generateStatusUpdateText(data)
       }
     
-    case 'feedback_request':
-      return {
-        to: data.email,
-        subject: 'Dijital Analiz Raporunuz Hakkında Görüşlerinizi Paylaşın',
-        html: generateFeedbackRequestHTML(data, baseUrl),
-        text: generateFeedbackRequestText(data)
-      }
-    
     case 'analysis_report':
       return {
         to: data.email,
         subject: `Dijital Analiz Raporunuz Hazır - ${data.website}`,
         html: generateAnalysisReportHTML(data, baseUrl),
         text: generateAnalysisReportText(data)
+      }
+    
+    case 'package_request':
+      return {
+        to: 'furkan@fixurelabs.dev,mucahit@fixurelabs.dev',
+        subject: `Yeni Paket Talebi - ${data.formData.firstName} ${data.formData.lastName}`,
+        html: generatePackageRequestHTML(data, baseUrl),
+        text: generatePackageRequestText(data)
       }
     
     default:
@@ -319,7 +319,7 @@ function generateAdminNotificationHTML(data: any, baseUrl: string) {
         </div>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${baseUrl}/admin" 
+          <a href="${baseUrl}/blu4ck" 
              style="background: #ff6b6b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
             Admin Paneline Git
           </a>
@@ -513,36 +513,20 @@ function generateAnalysisReportHTML(data: any, baseUrl: string) {
             ` : ''}
           </div>
           
-          <p><strong>Raporunuzda neler var?</strong></p>
-          <ul>
-            <li>⚡ Performans Analizi (PageSpeed Insights)</li>
-            <li>🔍 SEO Değerlendirmesi</li>
-            <li>🌐 Sosyal Medya Entegrasyonu</li>
-            <li>🤖 AI Tabanlı Öneriler</li>
-          </ul>
-          
           ${data.pdf_url ? `
             <div style="text-align: center; margin: 30px 0;">
               <a href="${data.pdf_url}" class="button" style="background: #DC2626; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
-                📄 PDF Raporu İndir
+                📄 Ayrıntılı Sonuçlarınız İçin: Detaylı Raporu Görüntüle
               </a>
             </div>
           ` : ''}
-          
-          <p>Detaylı rapor içeriğini ${data.pdf_url ? 'PDF dosyasında veya ' : ''}aşağıda bulabilirsiniz:</p>
-          
-          <hr style="border: 1px solid #eee; margin: 30px 0;">
-          
-          <div style="background: white; padding: 20px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 14px; white-space: pre-wrap;">
-${data.markdown_report || 'Rapor oluşturulamadı'}
-          </div>
           
           <p style="margin-top: 30px;">Bu rapor hakkında sorularınız veya danışmanlık talebiniz için bizimle iletişime geçebilirsiniz.</p>
           
           <div class="footer">
             <p>Bu rapor <strong>Teknoloji Menajeri</strong> tarafından otomatik olarak oluşturulmuştur.</p>
             <p>E-posta: gulsah@teknolojimenajeri.com</p>
-            <p>Website: <a href="https://teknolojimenajeri.com">teknolojimenajeri.com</a></p>
+            <p>Website: <a href="https://www.teknolojimenajeri.com.tr">www.teknolojimenajeri.com.tr</a></p>
           </div>
         </div>
       </div>
@@ -566,25 +550,107 @@ function generateAnalysisReportText(data: any) {
     
     Bu rapor hakkında sorularınız için:
     E-posta: gulsah@teknolojimenajeri.com
-    Website: https://teknolojimenajeri.com
+    Website: https://studio.teknolojimenajeri.com
     
     Teknoloji Menajeri
   `
 }
 
-function generateFeedbackRequestText(data: any) {
-  const feedbackUrl = `https://teknolojimenajeri.com/feedback?id=${data.requestId}`
-  
+// Package Request Email Templates
+function generatePackageRequestHTML(data: any, baseUrl: string) {
+  const socialMediaList = data.formData.socialMedia
+    .filter((social: any) => social.username.trim())
+    .map((social: any) => {
+      const platformNames: any = {
+        instagram: 'Instagram',
+        tiktok: 'TikTok', 
+        facebook: 'Facebook',
+        linkedin: 'LinkedIn',
+        twitter: 'X (Twitter)'
+      }
+      return `${platformNames[social.platform] || social.platform}: @${social.username}`
+    })
+    .join('<br>')
+
   return `
-    Dijital Analiz Raporunuz Hakkında Görüşlerinizi Paylaşın
-    
-    Merhaba ${data.name},
-    
-    Dijital analiz raporunuzu aldığınızdan bu yana bir hafta geçti. 
-    Hizmetimiz hakkındaki görüşlerinizi paylaşarak bize yardımcı olabilir misiniz?
-    
-    Feedback formu: ${feedbackUrl}
-    
-    Teknoloji Menajeri Ekibi
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #DC2626 0%, #000000 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">🎯 Yeni Paket Talebi</h1>
+      </div>
+      
+      <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+        <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #DC2626;">
+          <h2 style="color: #DC2626; margin: 0 0 15px 0;">📦 Paket Bilgileri</h2>
+          <p style="margin: 5px 0;"><strong>Paket:</strong> ${data.package}</p>
+          <p style="margin: 5px 0;"><strong>Seçili Modüller:</strong></p>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            ${data.modules.map((module: string) => `<li>${module}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #DC2626;">
+          <h2 style="color: #DC2626; margin: 0 0 15px 0;">👤 Müşteri Bilgileri</h2>
+          <p style="margin: 5px 0;"><strong>İsim:</strong> ${data.formData.firstName} ${data.formData.lastName}</p>
+          <p style="margin: 5px 0;"><strong>E-posta:</strong> <a href="mailto:${data.formData.email}" style="color: #DC2626;">${data.formData.email}</a></p>
+          <p style="margin: 5px 0;"><strong>Telefon:</strong> <a href="tel:${data.formData.phone}" style="color: #DC2626;">${data.formData.phone}</a></p>
+          ${data.formData.companyInfo ? `<p style="margin: 5px 0;"><strong>Kurumsal Bilgi:</strong><br>${data.formData.companyInfo}</p>` : ''}
+        </div>
+        
+        ${socialMediaList ? `
+        <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #DC2626;">
+          <h2 style="color: #DC2626; margin: 0 0 15px 0;">📱 Sosyal Medya Hesapları</h2>
+          <p style="margin: 0;">${socialMediaList}</p>
+        </div>
+        ` : ''}
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${baseUrl}/blu4ck" 
+             style="background: #DC2626; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
+            Admin Paneline Git
+          </a>
+        </div>
+        
+        <p style="font-size: 14px; color: #666; margin-top: 30px;">
+          Bu e-posta otomatik olarak gönderilmiştir.
+        </p>
+      </div>
+    </div>
   `
 }
+
+function generatePackageRequestText(data: any) {
+  const socialMediaList = data.formData.socialMedia
+    .filter((social: any) => social.username.trim())
+    .map((social: any) => {
+      const platformNames: any = {
+        instagram: 'Instagram',
+        tiktok: 'TikTok',
+        facebook: 'Facebook', 
+        linkedin: 'LinkedIn',
+        twitter: 'X (Twitter)'
+      }
+      return `${platformNames[social.platform] || social.platform}: @${social.username}`
+    })
+    .join('\n')
+
+  return `
+YENİ PAKET TALEBİ
+
+Paket Bilgileri:
+- Paket: ${data.package}
+- Seçili Modüller:
+${data.modules.map((module: string) => `  • ${module}`).join('\n')}
+
+Müşteri Bilgileri:
+- İsim: ${data.formData.firstName} ${data.formData.lastName}
+- E-posta: ${data.formData.email}
+- Telefon: ${data.formData.phone}
+${data.formData.companyInfo ? `- Kurumsal Bilgi: ${data.formData.companyInfo}` : ''}
+
+${socialMediaList ? `Sosyal Medya Hesapları:\n${socialMediaList}` : ''}
+
+---
+Bu e-posta otomatik olarak gönderilmiştir.
+  `
+}
+

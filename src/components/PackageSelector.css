@@ -6,6 +6,20 @@
   padding: 2rem;
 }
 
+/* Custom scale classes */
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+/* 3D Flip Animation */
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
 /* Package Grid */
 .package-grid {
   display: grid;

@@ -8,7 +8,8 @@ import { BlogPostList } from "./BlogPostList"
 import { SubscribersList } from "./SubscribersList"
 import { DigitalAnalysisRequests } from "./DigitalAnalysisRequests"
 import { RecaptchaAnalytics } from "./RecaptchaAnalytics"
-import { PenSquare, List, Users, LogOut, BarChart3, Shield } from 'lucide-react'
+import PackageRequests from "./PackageRequests"
+import { PenSquare, List, Users, LogOut, BarChart3, Shield, Package } from 'lucide-react'
 
 interface AdminDashboardProps {
   user: any
@@ -16,7 +17,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<"posts" | "new" | "edit" | "subscribers" | "analysis" | "recaptcha">("posts")
+  const [activeTab, setActiveTab] = useState<"posts" | "new" | "edit" | "subscribers" | "analysis" | "recaptcha" | "packages">("posts")
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
@@ -59,6 +60,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { id: "new" as const, label: "Yeni Yazı", icon: PenSquare },
     { id: "subscribers" as const, label: "Aboneler", icon: Users },
     { id: "analysis" as const, label: "Dijital Analiz", icon: BarChart3 },
+    { id: "packages" as const, label: "Paket Teklifleri", icon: Package },
     { id: "recaptcha" as const, label: "reCAPTCHA", icon: Shield },
   ]
 
@@ -120,6 +122,8 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
           <SubscribersList />
         ) : activeTab === "analysis" ? (
           <DigitalAnalysisRequests />
+        ) : activeTab === "packages" ? (
+          <PackageRequests />
         ) : activeTab === "recaptcha" ? (
           <RecaptchaAnalytics />
         ) : (

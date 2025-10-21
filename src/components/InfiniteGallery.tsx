@@ -315,17 +315,13 @@ function GalleryScene({
 	);
 
 	useEffect(() => {
-		const canvas = document.querySelector('canvas');
-		if (canvas) {
-			canvas.addEventListener('wheel', handleWheel, { passive: false });
-			document.addEventListener('keydown', handleKeyDown);
+		// Only keyboard controls, no mouse wheel
+		document.addEventListener('keydown', handleKeyDown);
 
-			return () => {
-				canvas.removeEventListener('wheel', handleWheel);
-				document.removeEventListener('keydown', handleKeyDown);
-			};
-		}
-	}, [handleWheel, handleKeyDown]);
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [handleKeyDown]);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -357,7 +353,7 @@ function GalleryScene({
 		const halfRange = totalRange / 2;
 
 		planesData.current.forEach((plane, i) => {
-			let newZ = plane.z + scrollVelocity * delta * 10;
+			let newZ = plane.z + scrollVelocity * delta * 30;
 			let wrapsForward = 0;
 			let wrapsBackward = 0;
 

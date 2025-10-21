@@ -5,6 +5,8 @@ import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Max-Age': '86400',
 }
 
 interface AnalysisRequest {
@@ -80,37 +82,71 @@ serve(async (req) => {
     const markdownReport = generateMarkdownReport(report_data)
     console.log('✅ Markdown report generated')
 
-    // 7. Generate and upload PDF report to Supabase Storage
+    // 7. Generate and upload report to both GitHub Gist and Supabase Storage
     let pdfUrl = null
     try {
-      console.log('📄 Generating PDF report...')
-      const pdfBuffer = await generatePDFFromMarkdown(markdownReport, website)
+      console.log('📄 Generating and uploading report...')
+      const markdownContent = await generatePDFFromMarkdown(markdownReport, website)
       
-      // Upload PDF to Supabase Storage
-      const fileName = `digital-analysis-report-${requestId}-${Date.now()}.pdf`
+      // Upload to Supabase Storage first
+      const fileName = `digital-analysis-report-${requestId}-${Date.now()}.md`
+      const markdownBuffer = new TextEncoder().encode(markdownContent)
+      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('digital-analysis-reports')
-        .upload(fileName, pdfBuffer, {
-          contentType: 'application/pdf',
+        .upload(fileName, markdownBuffer, {
           cacheControl: '3600'
         })
       
       if (uploadError) {
-        console.error('❌ PDF upload error:', uploadError)
-        throw uploadError
+        console.error('❌ Supabase Storage upload error:', uploadError)
+      } else {
+        const { data: urlData } = supabase.storage
+          .from('digital-analysis-reports')
+          .getPublicUrl(fileName)
+        console.log('✅ Report uploaded to Supabase Storage:', urlData.publicUrl)
       }
       
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('digital-analysis-reports')
-        .getPublicUrl(fileName)
+      // Upload to GitHub Gist
+      const gistData = {
+        description: `Dijital Analiz Raporu - ${website}`,
+        public: false,
+        files: {
+          'rapor.md': {
+            content: markdownContent
+          }
+        }
+      }
       
-      pdfUrl = urlData.publicUrl
-      console.log('✅ PDF report uploaded to bucket:', pdfUrl)
+      const githubToken = Deno.env.get('GITHUB_TOKEN')
+      if (!githubToken) {
+        console.warn('⚠️ GitHub token not found, skipping Gist upload')
+        throw new Error('GitHub token not configured')
+      }
       
-    } catch (pdfError) {
-      console.error('❌ PDF generation/upload error:', pdfError)
-      // Continue without PDF - don't fail the entire analysis
+      const gistResponse = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'Teknoloji-Menajeri-Bot'
+        },
+        body: JSON.stringify(gistData)
+      })
+      
+      if (!gistResponse.ok) {
+        const errorText = await gistResponse.text()
+        console.error('❌ GitHub Gist upload error:', errorText)
+        throw new Error(`GitHub API error: ${gistResponse.status}`)
+      }
+      
+      const gistResult = await gistResponse.json()
+      pdfUrl = gistResult.html_url
+      console.log('✅ Report uploaded to GitHub Gist:', pdfUrl)
+      
+    } catch (gistError) {
+      console.error('❌ Report upload error:', gistError)
+      // Continue without Gist - don't fail the entire analysis
     }
 
     // Save analysis results to database
@@ -392,16 +428,7 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
       }
     }
 
-    const prompt = `
-    Analyze this website: ${website}
-    
-    Performance Score: ${performance.mobile_score || 'N/A'}
-    SEO Score: ${seo.seo_score || 'N/A'}
-    Social Score: ${social.social_score || 'N/A'}
-    
-    Provide 5 key insights and 5 actionable recommendations for improvement.
-    Focus on digital marketing and business growth opportunities.
-    `
+    const prompt = `Analyze ${website}. Scores: M${performance.mobile_score || 'N/A'} S${seo.seo_score || 'N/A'} So${social.social_score || 'N/A'}. Give 2 insights + 2 tips. Max 100 words.`
 
     // Updated model name for v1beta API
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
@@ -415,21 +442,12 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `You are a digital marketing expert. Provide actionable insights and recommendations.
-
-${prompt}
-
-Please provide:
-1. 5 key insights about the website's digital presence
-2. 5 actionable recommendations for improvement
-3. Focus on digital marketing and business growth opportunities
-
-Format your response clearly with numbered lists.`
+            text: prompt
           }]
         }],
         generationConfig: {
+          maxOutputTokens: 200,
           temperature: 0.7,
-          maxOutputTokens: 1000,
         }
       })
     })
@@ -644,7 +662,7 @@ ${ai_insights.insights || 'AI analizi mevcut değil'}
 
 Bu rapor hakkında sorularınız için:  
 **Email:** gulsah@teknolojimenajeri.com  
-**Website:** https://teknolojimenajeri.com
+**Website:** https://www.teknolojimenajeri.com.tr
 
 ---
 
@@ -652,156 +670,360 @@ Bu rapor hakkında sorularınız için:
 `
 }
 
-// Markdown to PDF conversion
+// Generate professional PDF report using Puppeteer
 async function generatePDFFromMarkdown(markdown: string, website: string): Promise<Uint8Array> {
   try {
-    console.log('📝 Converting markdown to HTML...')
-    // Convert Markdown to HTML
-    const html = markdownToHTML(markdown)
+    console.log('📝 Generating PDF report with Puppeteer...')
+    console.log('📝 Markdown length:', markdown.length)
+    console.log('📝 Website:', website)
     
-    // Generate styled HTML for PDF
-    const styledHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <style>
-          @page {
-            size: A4;
-            margin: 2cm;
-          }
-          body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-          }
-          h1 {
-            color: #DC2626;
-            border-bottom: 3px solid #DC2626;
-            padding-bottom: 10px;
-            margin-top: 30px;
-          }
-          h2 {
-            color: #991B1B;
-            border-left: 4px solid #DC2626;
-            padding-left: 10px;
-            margin-top: 25px;
-          }
-          h3 {
-            color: #7F1D1D;
-            margin-top: 20px;
-          }
-          p {
-            margin: 10px 0;
-          }
-          ul, ol {
-            margin: 10px 0;
-            padding-left: 30px;
-          }
-          li {
-            margin: 5px 0;
-          }
-          strong {
-            color: #DC2626;
-          }
-          hr {
-            border: none;
-            border-top: 2px solid #E5E7EB;
-            margin: 30px 0;
-          }
-          .score {
-            font-size: 24px;
-            font-weight: bold;
-            color: #DC2626;
-          }
-          .header {
-            background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 30px;
-          }
-        </style>
-      </head>
-      <body>
-        ${html}
-      </body>
-      </html>
-    `
+    // Parse markdown sections
+    const lines = markdown.split('\n')
+    console.log('📝 Total lines:', lines.length)
+    const sections: any = {
+      header: {},
+      summary: {},
+      performance: {},
+      seo: {},
+      social: {},
+      ai: ''
+    }
     
-    console.log('📄 Converting HTML to PDF...')
+    let currentSection = ''
+    for (const line of lines) {
+      if (line.includes('Website:')) sections.header.website = line.split(':')[1]?.trim()
+      if (line.includes('Müşteri:')) sections.header.customer = line.split(':')[1]?.trim()
+      if (line.includes('Analiz Tarihi:')) sections.header.date = line.split(':')[1]?.trim()
+      if (line.includes('Toplam Skor:')) sections.summary.totalScore = line.split(':')[1]?.trim()
+      if (line.includes('Mobil Performans Skoru:')) sections.performance.mobile = line.split(':')[1]?.trim()
+      if (line.includes('Erişilebilirlik Skoru:')) sections.performance.accessibility = line.split(':')[1]?.trim()
+      if (line.includes('SEO Skoru:')) sections.seo.score = line.split(':')[1]?.trim()
+      if (line.includes('Sosyal Medya Skoru:')) sections.social.score = line.split(':')[1]?.trim()
+      if (line.includes('## 🤖')) currentSection = 'ai'
+      if (currentSection === 'ai' && line.trim()) sections.ai += line + '\n'
+    }
     
-    // Use HTML to PDF conversion service
-    // For now, we'll create a simple PDF-like content
-    // In production, you might want to use a service like Puppeteer or similar
-    
-    // Create a simple PDF structure (this is a basic implementation)
-    const pdfContent = `
-%PDF-1.4
-1 0 obj
-<<
-/Type /Catalog
-/Pages 2 0 R
->>
-endobj
+    const htmlContent = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dijital Analiz Raporu - ${website}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      background: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .header {
+      background: linear-gradient(135deg, #DC2626 0%, #000000 100%);
+      color: white;
+      padding: 50px 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    .header .website {
+      font-size: 20px;
+      opacity: 0.95;
+      margin-bottom: 10px;
+    }
+    .header .meta {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .content {
+      padding: 40px;
+    }
+    .section {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    .section-title {
+      color: #DC2626;
+      font-size: 28px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #DC2626;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .score-card {
+      background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .score-big {
+      font-size: 72px;
+      font-weight: bold;
+      line-height: 1;
+      margin: 10px 0;
+    }
+    .score-label {
+      font-size: 16px;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .metric-box {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #DC2626;
+    }
+    .metric-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #DC2626;
+    }
+    .info-list {
+      list-style: none;
+      padding: 0;
+    }
+    .info-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+    .info-list li:last-child {
+      border-bottom: none;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #333;
+    }
+    .info-value {
+      color: #666;
+    }
+    .ai-insights {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 8px;
+      border-left: 4px solid #DC2626;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+    .footer {
+      background: #000;
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #DC2626;
+      margin-bottom: 10px;
+    }
+    .footer-text {
+      opacity: 0.8;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .print-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #DC2626;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      z-index: 1000;
+    }
+    .print-button:hover {
+      background: #991B1B;
+    }
+    @media print {
+      .print-button {
+        display: none;
+      }
+      body {
+        background: white;
+      }
+      .container {
+        box-shadow: none;
+      }
+    }
+    @media (max-width: 768px) {
+      .header {
+        padding: 30px 20px;
+      }
+      .header h1 {
+        font-size: 28px;
+      }
+      .content {
+        padding: 20px;
+      }
+      .score-big {
+        font-size: 56px;
+      }
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="print-button" onclick="window.print()">🖨️ Yazdır / PDF Kaydet</button>
+  
+  <div class="container">
+    <div class="header">
+      <h1>📊 DİJİTAL ANALİZ RAPORU</h1>
+      <div class="website">${website}</div>
+      <div class="meta">
+        ${sections.header.customer || ''} | ${sections.header.date || new Date().toLocaleDateString('tr-TR')}
+      </div>
+    </div>
 
-2 0 obj
-<<
-/Type /Pages
-/Kids [3 0 R]
-/Count 1
->>
-endobj
+    <div class="content">
+      <!-- Genel Değerlendirme -->
+      <div class="section">
+        <h2 class="section-title">📈 Genel Değerlendirme</h2>
+        <div class="score-card">
+          <div class="score-label">Toplam Skor</div>
+          <div class="score-big">${sections.summary.totalScore || 'N/A'}</div>
+        </div>
+      </div>
 
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/MediaBox [0 0 612 792]
-/Contents 4 0 R
->>
-endobj
+      <!-- Performans -->
+      <div class="section">
+        <h2 class="section-title">⚡ Performans Analizi</h2>
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <div class="metric-label">Mobil Performans</div>
+            <div class="metric-value">${sections.performance.mobile || 'N/A'}</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Erişilebilirlik</div>
+            <div class="metric-value">${sections.performance.accessibility || 'N/A'}</div>
+          </div>
+        </div>
+      </div>
 
-4 0 obj
-<<
-/Length 44
->>
-stream
-BT
-/F1 12 Tf
-100 700 Td
-(Digital Analysis Report) Tj
-ET
-endstream
-endobj
+      <!-- SEO -->
+      <div class="section">
+        <h2 class="section-title">🔍 SEO Analizi</h2>
+        <div class="metric-box">
+          <div class="metric-label">SEO Skoru</div>
+          <div class="metric-value">${sections.seo.score || 'N/A'}</div>
+        </div>
+      </div>
 
-xref
-0 5
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000204 00000 n 
-trailer
-<<
-/Size 5
-/Root 1 0 R
->>
-startxref
-297
-%%EOF
-    `
+      <!-- Sosyal Medya -->
+      <div class="section">
+        <h2 class="section-title">🌐 Sosyal Medya Analizi</h2>
+        <div class="metric-box">
+          <div class="metric-label">Sosyal Medya Skoru</div>
+          <div class="metric-value">${sections.social.score || 'N/A'}</div>
+        </div>
+      </div>
+
+      <!-- AI Öngörüleri -->
+      <div class="section">
+        <h2 class="section-title">🤖 AI Öngörüleri ve Öneriler</h2>
+        <div class="ai-insights">${sections.ai || markdown}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-logo">Teknoloji Menajeri</div>
+      <div class="footer-text">Dijital Pazarlama ve Web Analiz Hizmetleri</div>
+      <div class="footer-text">🌐 www.teknolojimenajeri.com.tr</div>
+      <div class="footer-text">📧 gulsah@teknolojimenajeri.com</div>
+      <div class="footer-text" style="margin-top: 20px; opacity: 0.6; font-size: 12px;">
+        Bu rapor otomatik olarak oluşturulmuştur.
+      </div>
+    </div>
+  </div>
+</body>
+</html>`
     
-    // Convert to Uint8Array
-    const pdfBytes = new TextEncoder().encode(pdfContent)
-    console.log('✅ PDF content generated, size:', pdfBytes.length)
+    console.log('📝 HTML content length:', htmlContent.length)
+    console.log('📝 HTML content preview:', htmlContent.substring(0, 200) + '...')
     
-    return pdfBytes
+    // Convert to simple Markdown
+    console.log('📝 Converting to simple Markdown...')
+    
+    // Create simple markdown content
+    const markdownContent = `# Dijital Analiz Raporu
+
+**Website:** ${website}
+**Analiz Tarihi:** ${new Date().toLocaleDateString('tr-TR')}
+
+## Genel Değerlendirme
+
+**Toplam Skor:** ${sections.summary.totalScore || 'N/A'}/100
+
+## Performans Analizi
+
+- **Mobil Performans:** ${sections.performance.mobile || 'N/A'}
+- **Erişilebilirlik:** ${sections.performance.accessibility || 'N/A'}
+
+## SEO Analizi
+
+- **SEO Skoru:** ${sections.seo.score || 'N/A'}
+
+## Sosyal Medya Analizi
+
+- **Sosyal Medya Skoru:** ${sections.social.score || 'N/A'}
+
+## AI Öngörüleri ve Öneriler
+
+${sections.ai || 'AI analizi mevcut değil'}
+
+---
+
+*Bu rapor Teknoloji Menajeri tarafından otomatik olarak oluşturulmuştur.*
+*Website: www.teknolojimenajeri.com.tr*
+*Email: gulsah@teknolojimenajeri.com*
+    `.trim()
+    
+    console.log('✅ Simple Markdown report generated, size:', markdownContent.length, 'characters')
+    
+    return markdownContent
   } catch (error) {
-    console.error('PDF generation error:', error)
+    console.error('❌ HTML generation error:', error)
+    console.error('❌ Error stack:', error.stack)
     throw error
   }
 }

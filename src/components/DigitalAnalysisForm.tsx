@@ -522,7 +522,7 @@ export function DigitalAnalysisForm() {
   return (
     <div className="max-w-2xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <input
               type="text"
@@ -547,7 +547,10 @@ export function DigitalAnalysisForm() {
               required
             />
           </div>
-          <div>
+        </div>
+
+        <div className="flex gap-4">
+          <div className="flex-1">
             <input
               type="text"
               name="website"
@@ -560,6 +563,20 @@ export function DigitalAnalysisForm() {
               required
             />
           </div>
+          <button
+            type="submit"
+            disabled={formState.status === 'loading'}
+            className="px-8 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 disabled:hover:scale-100 whitespace-nowrap"
+          >
+            {formState.status === 'loading' ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Gönderiliyor...</span>
+              </div>
+            ) : (
+              'Rapor İste'
+            )}
+          </button>
         </div>
 
         {/* reCAPTCHA v3 - Görünmez, otomatik çalışır */}
@@ -580,20 +597,6 @@ export function DigitalAnalysisForm() {
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={formState.status === 'loading'}
-          className="w-full md:w-auto px-8 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 disabled:hover:scale-100"
-        >
-          {formState.status === 'loading' ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Gönderiliyor...</span>
-            </div>
-          ) : (
-            'Rapor İste'
-          )}
-        </button>
       </form>
     </div>
   )

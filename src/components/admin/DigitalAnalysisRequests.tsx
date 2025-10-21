@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "../../lib/supabase/client"
 import { createAdminClient } from "../../lib/supabase/admin-client"
 // Email service removed - using Edge Functions instead
-import { CheckCircle, XCircle, Clock, Eye, ExternalLink, RefreshCw, Play } from "lucide-react"
+import { CheckCircle, XCircle, Clock, ExternalLink, RefreshCw, Play, FileText } from "lucide-react"
 
 interface DigitalAnalysisRequest {
   id: string
@@ -19,6 +19,9 @@ interface DigitalAnalysisRequest {
   completed_at?: string
   ip_address?: string
   user_agent?: string
+  report_data?: {
+    pdf_url?: string
+  }
 }
 
 export function DigitalAnalysisRequests() {
@@ -406,14 +409,16 @@ export function DigitalAnalysisRequests() {
                             Analizi Başlat
                           </button>
                         )}
-                        {request.status === 'processing' && (
-                          <button
-                            onClick={() => updateRequestStatus(request.id, 'completed')}
-                            className="flex items-center gap-1 px-3 py-1 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 transition-colors"
+                        {request.status === 'completed' && request.report_data?.pdf_url && (
+                          <a
+                            href={request.report_data.pdf_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
                           >
-                            <CheckCircle className="w-3 h-3" />
-                            Tamamla
-                          </button>
+                            <FileText className="w-3 h-3" />
+                            Raporu Görüntüle
+                          </a>
                         )}
                       </div>
                     </td>

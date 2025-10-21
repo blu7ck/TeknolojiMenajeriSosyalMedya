@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProcessStep } from '../types';
-import { ArrowRight } from 'lucide-react';
+import { DigitalAnalysisForm } from './DigitalAnalysisForm';
 
 interface ProcessSectionProps {
   steps: ProcessStep[];
@@ -29,12 +29,16 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
                 </div>
                 <div className="flex-1 bg-black/60 border border-red-500/20 rounded-lg p-4">
                   <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
-                  <p className="text-gray-300">{step.description}</p>
+                  <p className="text-gray-300 mb-4">{step.description}</p>
+                  
+                  {/* İlk adımda form göster */}
+                  {step.step === 1 && (
+                    <div className="mt-6">
+                      <DigitalAnalysisForm />
+                    </div>
+                  )}
                 </div>
               </div>
-              {index < steps.length - 1 && (
-                <ArrowRight size={24} className="text-red-500 ml-6" />
-              )}
             </div>
           ))}
         </div>

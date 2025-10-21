@@ -152,7 +152,13 @@ export function PackageSelector() {
     email: "",
     phone: "",
     companyInfo: "",
-    socialMedia: [""],
+    socialMedia: [
+      { platform: "instagram", username: "" },
+      { platform: "tiktok", username: "" },
+      { platform: "facebook", username: "" },
+      { platform: "linkedin", username: "" },
+      { platform: "twitter", username: "" },
+    ],
   })
   const [hoverPosition, setHoverPosition] = useState<"left" | "right">("right")
 
@@ -170,41 +176,125 @@ export function PackageSelector() {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const selectedPkg = packages.find((p) => p.id === selectedPackage)
     const modules = selectedModules[selectedPackage || ""] || []
 
-    console.log("[v0] Form submitted:", {
-      package: selectedPkg?.title,
-      modules: modules,
-      formData,
-    })
+    try {
+      // Save to database first
+      const { createClient } = await import('../lib/supabase/client')
+      const supabase = createClient()
 
-    alert("Teklifiniz alındı! En kısa sürede size dönüş yapacağız.")
+      // Get module names from IDs
+      const moduleNames = modules.map((moduleId: string) => {
+        const module = selectedPkg?.modules.find((m: any) => m.id === moduleId)
+        return module?.name || moduleId
+      })
+
+      // Filter social media accounts that have usernames
+      const socialMediaAccounts = formData.socialMedia.filter((social: any) => social.username.trim())
+
+      // Insert package request
+      const { data: requestData, error: dbError } = await supabase
+        .from('package_requests')
+        .insert({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          company_info: formData.companyInfo || null,
+          package_type: selectedPackage,
+          package_title: selectedPkg?.title,
+          selected_modules: moduleNames,
+          social_media_accounts: socialMediaAccounts,
+          status: 'pending'
+        })
+        .select()
+        .single()
+
+      if (dbError) {
+        console.error('Database error:', dbError)
+        throw new Error('Failed to save package request')
+      }
+
+      // Send email notification via Supabase Edge Function
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+      
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+        body: JSON.stringify({
+          type: 'package_request',
+          to: 'furkan@fixurelabs.dev,mucahit@fixurelabs.dev',
+          data: {
+            package: selectedPkg?.title,
+            modules: moduleNames,
+            formData,
+            requestId: requestData.id
+          },
+        }),
+      })
+
+      if (response.ok) {
+        alert("Teklifiniz alındı! En kısa sürede size dönüş yapacağız.")
+        setShowForm(false)
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          companyInfo: "",
+          socialMedia: [
+            { platform: "instagram", username: "" },
+            { platform: "tiktok", username: "" },
+            { platform: "facebook", username: "" },
+            { platform: "linkedin", username: "" },
+            { platform: "twitter", username: "" },
+          ],
+        })
+      } else {
+        alert("Bir hata oluştu. Lütfen tekrar deneyin.")
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+      alert("Bir hata oluştu. Lütfen tekrar deneyin.")
+    }
   }
 
-  const addSocialMediaField = () => {
+  const updateSocialMedia = (index: number, field: 'platform' | 'username', value: string) => {
     setFormData((prev) => ({
       ...prev,
-      socialMedia: [...prev.socialMedia, ""],
+      socialMedia: prev.socialMedia.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      ),
     }))
   }
 
-  const updateSocialMedia = (index: number, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      socialMedia: prev.socialMedia.map((item, i) => (i === index ? value : (item ?? ""))),
-    }))
+  const getPlatformIcon = (platform: string) => {
+    switch (platform) {
+      case 'instagram': return '📷'
+      case 'tiktok': return '🎵'
+      case 'facebook': return '👥'
+      case 'linkedin': return '💼'
+      case 'twitter': return '🐦'
+      default: return '📱'
+    }
   }
 
-  const removeSocialMedia = (index: number) => {
-    if (formData.socialMedia.length <= 1) return
-
-    setFormData((prev) => ({
-      ...prev,
-      socialMedia: prev.socialMedia.filter((_, i) => i !== index),
-    }))
+  const getPlatformName = (platform: string) => {
+    switch (platform) {
+      case 'instagram': return 'Instagram'
+      case 'tiktok': return 'TikTok'
+      case 'facebook': return 'Facebook'
+      case 'linkedin': return 'LinkedIn'
+      case 'twitter': return 'X (Twitter)'
+      default: return platform
+    }
   }
 
   const getMediaType = (url: string): "image" | "video" | null => {
@@ -230,7 +320,7 @@ export function PackageSelector() {
             opacity: showForm ? 0 : 1,
           }}
         >
-          <div className="flex flex-col md:flex-row gap-8 overflow-visible items-start" onClick={handleContainerClick}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center items-start perspective-1000" onClick={handleContainerClick}>
             {packages.map((pkg) => {
               const isSelected = selectedPackage === pkg.id
 
@@ -242,49 +332,49 @@ export function PackageSelector() {
                     setSelectedPackage(isSelected ? null : pkg.id)
                   }}
                   className={`
-                    relative rounded-2xl p-6 cursor-pointer overflow-visible
-                    transition-all duration-500 ease-out
-                    flex flex-col
-                    ${
-                      isSelected
-                        ? "bg-black/95 backdrop-blur-sm border-2 border-red-500 shadow-2xl shadow-red-500/40 md:flex-1 md:max-w-[500px]"
-                        : "bg-black/80 border border-red-500/30 hover:border-red-500/60 hover:bg-black/90 md:w-72 md:flex-shrink-0 md:min-h-[240px]"
-                    }
-                    w-full
+                    relative w-full h-[280px] md:h-[320px] cursor-pointer transition-transform duration-700
+                    ${isSelected ? "rotate-y-180" : ""}
                   `}
                   style={{
-                    transitionProperty: "all",
-                    willChange: "transform, opacity, background-color, flex",
-                    zIndex: isSelected ? 10 : 1,
+                    transformStyle: "preserve-3d",
+                    zIndex: isSelected ? 20 : 1
                   }}
                 >
-                  {isSelected && (
+                  {/* Kartın Ön Yüzü */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl p-6 flex flex-col bg-black/80 border border-red-500/30 hover:border-red-500/60 hover:bg-black/90 transition-all duration-300"
+                    style={{
+                      backfaceVisibility: "hidden"
+                    }}
+                  >
+                    <div className="mb-4 min-h-0">
+                      <h3 className="text-2xl font-bold text-white mb-2">{pkg.title}</h3>
+                      <p className="text-gray-400 text-sm mb-2">{pkg.description}</p>
+                      <p className="text-gray-500 text-xs leading-relaxed">{pkg.target}</p>
+                    </div>
+                  </div>
+
+                  {/* Kartın Arka Yüzü */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl p-6 flex flex-col bg-black/95 backdrop-blur-sm border-2 border-red-500 shadow-2xl shadow-red-500/40"
+                    style={{
+                      backfaceVisibility: "hidden",
+                      transform: "rotateY(180deg)"
+                    }}
+                  >
                     <div className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
                       <Check className="w-5 h-5 text-white" />
                     </div>
-                  )}
 
-                  <div className="mb-4 min-h-0">
-                    <h3 className="text-2xl font-bold text-white mb-2">{pkg.title}</h3>
-                    <p className="text-gray-400 text-sm mb-2">{pkg.description}</p>
-                    <p className="text-gray-500 text-xs leading-relaxed">{pkg.target}</p>
-                  </div>
-
-                  {isSelected && (
-                    <div
-                      className="space-y-2 animate-fade-in overflow-visible flex-1"
-                      style={{
-                        animation: "fadeSlideIn 0.5s ease-out forwards",
-                      }}
-                    >
-                      <div className="text-sm font-semibold text-gray-300 mb-2">Modüller:</div>
+                    <div className="space-y-1 animate-fade-in">
+                      <div className="text-sm font-semibold text-gray-300 mb-1">Modüller:</div>
                       {pkg.modules.map((module) => {
                         const isModuleSelected = Boolean(selectedModules[pkg.id]?.includes(module.id))
 
                         return (
                           <div
                             key={module.id}
-                            className="relative overflow-visible"
+                            className="relative overflow-visible z-50"
                             onMouseEnter={(e) => {
                               setHoveredModule(module)
                               // Check if popup would overflow to the right
@@ -300,7 +390,7 @@ export function PackageSelector() {
                             tabIndex={0}
                           >
                             <label
-                              className="flex items-center gap-3 p-3 rounded-lg bg-black/60 hover:bg-black/80 border border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer group"
+                              className="flex items-center gap-2 p-2 rounded-lg bg-black/60 hover:bg-black/80 border border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer group"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <input
@@ -319,7 +409,7 @@ export function PackageSelector() {
 
                             {hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
                               <div
-                                className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[100] animate-fade-slide-in pointer-events-none
+                                className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[9999] animate-fade-slide-in pointer-events-none
                                   ${
                                     hoverPosition === "right"
                                       ? "md:left-full md:top-0 md:ml-2"
@@ -371,19 +461,17 @@ export function PackageSelector() {
                         )
                       })}
                     </div>
-                  )}
 
-                  {isSelected && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
                         setShowForm(true)
                       }}
-                      className="w-full mt-8 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105"
+                      className="w-full mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105"
                     >
                       TEKLİF AL
                     </button>
-                  )}
+                  </div>
                 </div>
               )
             })}
@@ -392,12 +480,12 @@ export function PackageSelector() {
 
         {showForm && (
           <div
-            className="absolute inset-0 animate-slide-in"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-slide-in"
             style={{
               animation: "slideIn 0.7s ease-out forwards",
             }}
           >
-            <div className="max-w-[500px] mx-auto bg-black/95 backdrop-blur-sm border border-red-500/40 rounded-2xl p-6 shadow-2xl shadow-red-500/30">
+            <div className="max-w-[500px] w-full bg-black/95 backdrop-blur-sm border border-red-500/40 rounded-2xl p-6 shadow-2xl shadow-red-500/30 max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-white">Teklif Formu</h3>
                 <button
@@ -497,34 +585,35 @@ export function PackageSelector() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Sosyal Medya Hesapları (İsteğe bağlı)
                   </label>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {formData.socialMedia.map((social, index) => (
-                      <div key={index} className="flex gap-2">
+                      <div key={index} className="flex gap-2 items-center">
+                        <div className="flex items-center gap-2 min-w-[120px]">
+                          <span className="text-lg">{getPlatformIcon(social.platform)}</span>
+                          <select
+                            value={social.platform}
+                            onChange={(e) => updateSocialMedia(index, 'platform', e.target.value)}
+                            className="px-2 py-1 bg-black/80 border border-red-500/30 rounded text-white text-sm focus:outline-none focus:border-red-500"
+                          >
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">X (Twitter)</option>
+                          </select>
+                        </div>
                         <input
                           type="text"
-                          value={social ?? ""}
-                          onChange={(e) => updateSocialMedia(index, e.target.value)}
-                          placeholder="@kullaniciadi veya platform/kullaniciadi"
+                          value={social.username}
+                          onChange={(e) => updateSocialMedia(index, 'username', e.target.value)}
+                          placeholder="@kullaniciadi"
                           className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500 transition-colors"
                         />
-                        {formData.socialMedia.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeSocialMedia(index)}
-                            className="px-3 py-2 bg-black/80 border border-red-500/30 rounded-lg text-gray-400 hover:text-red-500 hover:border-red-500 hover:bg-black/90 transition-colors"
-                          >
-                            <X className="w-5 h-5" />
-                          </button>
-                        )}
                       </div>
                     ))}
-                    <button
-                      type="button"
-                      onClick={addSocialMediaField}
-                      className="text-sm text-red-500 hover:text-red-400 transition-colors"
-                    >
-                      + Hesap Ekle
-                    </button>
+                    <p className="text-xs text-gray-500">
+                      💡 Boş bırakabilirsiniz. Sadece dolu olan hesaplar gönderilecek.
+                    </p>
                   </div>
                 </div>
 
