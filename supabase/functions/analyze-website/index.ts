@@ -1003,14 +1003,65 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     .info-value {
       color: #666;
     }
-    .ai-insights {
-      background: #f8f9fa;
-      padding: 25px;
-      border-radius: 8px;
-      border-left: 4px solid #DC2626;
-      white-space: pre-wrap;
-      line-height: 1.8;
+    .ai-insights-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .ai-insight-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+    
+    .ai-insight-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    
+    .ai-insight-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .ai-insight-content {
       font-size: 15px;
+      line-height: 1.7;
+      color: #495057;
+      margin-bottom: 0;
+    }
+    
+    .ai-insight-list {
+      margin: 16px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    
+    .ai-insight-list li {
+      background: #fff;
+      margin: 8px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 3px solid #007bff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .ai-insight-list li:before {
+      content: "•";
+      color: #007bff;
+      font-weight: bold;
+      margin-right: 8px;
     }
     .footer {
       background: #000;
@@ -1134,7 +1185,9 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
       <!-- AI Öngörüleri -->
       <div class="section">
         <h2 class="section-title">🤖 AI Öngörüleri ve Öneriler</h2>
-        <div class="ai-insights">${cleanAIInsights(sections.ai || markdown)}</div>
+        <div class="ai-insights-container">
+          ${formatAIInsights(cleanAIInsights(sections.ai || markdown))}
+        </div>
       </div>
     </div>
 
@@ -1259,6 +1312,54 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
             margin-bottom: 20px;
             color: #856404;
         }
+        .ai-insights-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .ai-insight-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .ai-insight-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-insight-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #495057;
+            margin-bottom: 0;
+        }
+        .ai-insight-list {
+            margin: 16px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+        .ai-insight-list li {
+            background: #fff;
+            margin: 8px 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 3px solid #007bff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .ai-insight-list li:before {
+            content: "•";
+            color: #007bff;
+            font-weight: bold;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -1266,7 +1367,7 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
         <strong>Not:</strong> Bu rapor alternatif PDF oluşturma yöntemi ile üretilmiştir. 
         Gotenberg servisi geçici olarak kullanılamıyor.
     </div>
-    ${cleanAIInsights(markdown)}
+    ${formatAIInsights(cleanAIInsights(markdown))}
     <div class="footer">
         <p><strong>Teknoloji Menajeri</strong> - Dijital Analiz Raporu</p>
         <p>🌐 www.teknolojimenajeri.com.tr | 📧 gulsah@teknolojimenajeri.com</p>
@@ -1350,6 +1451,64 @@ startxref
     
     return new Uint8Array(Buffer.from(basicContent, 'utf8'))
   }
+}
+
+// Format AI insights into modern, readable cards
+function formatAIInsights(insights: string): string {
+  if (!insights) return ''
+  
+  // Split insights into sections
+  const sections = insights.split(/(?=Öngörüler:|Öneriler:|Insights:|Recommendations:)/i)
+  
+  let formattedHTML = ''
+  
+  sections.forEach((section, index) => {
+    if (!section.trim()) return
+    
+    const title = section.includes('Öngörüler') || section.includes('Insights') ? 
+      '🔮 Öngörüler' : 
+      section.includes('Öneriler') || section.includes('Recommendations') ? 
+      '💡 Öneriler' : 
+      '📊 Analiz'
+    
+    const content = section.replace(/^(Öngörüler|Öneriler|Insights|Recommendations):\s*/i, '').trim()
+    
+    if (content) {
+      formattedHTML += `
+        <div class="ai-insight-card">
+          <div class="ai-insight-title">${title}</div>
+          <div class="ai-insight-content">${formatInsightContent(content)}</div>
+        </div>
+      `
+    }
+  })
+  
+  return formattedHTML || `
+    <div class="ai-insight-card">
+      <div class="ai-insight-title">📊 AI Analizi</div>
+      <div class="ai-insight-content">${formatInsightContent(insights)}</div>
+    </div>
+  `
+}
+
+// Format insight content with proper structure
+function formatInsightContent(content: string): string {
+  return content
+    // Convert bullet points to proper list items
+    .replace(/^•\s*/gm, '<li>')
+    .replace(/^-\s*/gm, '<li>')
+    .replace(/^\*\s*/gm, '<li>')
+    // Wrap consecutive list items in ul
+    .replace(/(<li>.*<\/li>)/gs, '<ul class="ai-insight-list">$1</ul>')
+    // Convert line breaks to paragraphs
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    // Wrap in paragraph if not already wrapped
+    .replace(/^(?!<[ou]l|<li>)/gm, '<p>')
+    .replace(/(?<!<\/li>)(?<!<\/ul>)(?<!<\/p>)$/gm, '</p>')
+    // Clean up any double paragraphs
+    .replace(/<\/p><p><\/p>/g, '</p>')
+    .replace(/<p><\/p>/g, '')
 }
 
 // Clean AI insights by removing markdown formatting
