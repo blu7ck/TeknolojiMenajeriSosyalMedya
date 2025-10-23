@@ -126,7 +126,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+              className="w-full px-3 py-2 rounded-lg border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+              style={{ backgroundColor: "#2A2C2C" }}
             />
           </div>
           
@@ -159,7 +160,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="px-2 py-1 rounded bg-gray-700 border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                style={{ backgroundColor: "#2A2C2C" }}
               />
               <input
                 type="text"
@@ -167,7 +169,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="px-2 py-1 rounded bg-gray-700 border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                style={{ backgroundColor: "#2A2C2C" }}
               />
             </div>
             <input
@@ -175,7 +178,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
               placeholder="Meslek (opsiyonel)"
               value={formData.profession}
               onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-              className="w-full px-2 py-1 rounded bg-gray-700 border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400 mb-3"
+              className="w-full px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400 mb-3"
+              style={{ backgroundColor: "#2A2C2C" }}
             />
             <div className="flex gap-2">
               <button
