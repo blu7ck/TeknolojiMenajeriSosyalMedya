@@ -109,8 +109,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   
   return (
     <div className="py-3" style={{ backgroundColor: "#151516" }}>
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Single Row Layout - Only show when step is email */}
+      <div className="max-w-4xl mx-auto px-4 flex justify-center">
+        {/* Single Row Layout - Centered */}
         {step === "email" && (
           <div className="flex items-center gap-4">
             {/* Left: Newsletter Text */}
@@ -120,7 +120,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
             </div>
             
             {/* Center: Email Input */}
-            <div className="flex-1 max-w-xs">
+            <div className="w-64">
               <input
                 type="email"
                 placeholder="E-posta adresiniz"
@@ -142,7 +142,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
           </div>
         )}
         
-        {/* Details Form - Single row when step is details */}
+        {/* Details Form - Centered single row */}
         {step === "details" && (
           <div className="flex items-center gap-4">
             {/* Left: Email display and back button */}
@@ -158,14 +158,14 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
             </div>
             
             {/* Center: Name inputs */}
-            <div className="flex gap-2 flex-1">
+            <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Ad"
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-24 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
               <input
@@ -174,7 +174,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-24 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
             </div>
