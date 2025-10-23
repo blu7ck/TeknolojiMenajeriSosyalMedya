@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProcessStep } from '../types';
-import { DigitalAnalysisForm } from './DigitalAnalysisForm';
+import DigitalAnalysisForm from './DigitalAnalysisForm';
 
 interface ProcessSectionProps {
   steps: ProcessStep[];
