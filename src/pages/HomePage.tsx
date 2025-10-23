@@ -123,6 +123,18 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="py-8" style={{ backgroundColor: "#D3DADD" }}>
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {/* Logo */}
+            <div className="mb-6 flex justify-center">
+              <img 
+                src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/Logo.svg" 
+                alt="Teknoloji Menajeri Logo" 
+                className="h-16 w-auto"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
+            </div>
+            
             <p className="text-gray-500 text-sm">
               Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
             </p>

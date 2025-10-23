@@ -15,10 +15,17 @@ export default function AdminPage() {
   const [isPasswordVerified, setIsPasswordVerified] = useState(false)
   const [passwordInput, setPasswordInput] = useState("")
   const [passwordError, setPasswordError] = useState("")
+  const [sessionTimeout, setSessionTimeout] = useState<NodeJS.Timeout | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     checkUser()
+    
+    // Check if user was previously authenticated
+    const wasAuthenticated = sessionStorage.getItem('admin_authenticated')
+    if (wasAuthenticated === 'true') {
+      setIsPasswordVerified(true)
+    }
   }, [])
 
   const checkUser = async () => {
@@ -34,6 +41,11 @@ export default function AdminPage() {
     const supabase = createClient()
     await supabase.auth.signOut()
     setUser(null)
+    setIsPasswordVerified(false)
+    sessionStorage.removeItem('admin_authenticated')
+    if (sessionTimeout) {
+      clearTimeout(sessionTimeout)
+    }
     navigate("/")
   }
 
@@ -44,11 +56,57 @@ export default function AdminPage() {
     if (trimmedPassword === ADMIN_PASSWORD) {
       setIsPasswordVerified(true)
       setPasswordError("")
+      // Store authentication in session storage
+      sessionStorage.setItem('admin_authenticated', 'true')
+      // Set 15-minute timeout
+      startSessionTimeout()
     } else {
       setPasswordError("Hatalı şifre!")
       setPasswordInput("")
     }
   }
+
+  const startSessionTimeout = () => {
+    // Clear existing timeout
+    if (sessionTimeout) {
+      clearTimeout(sessionTimeout)
+    }
+    
+    // Set new 15-minute timeout
+    const timeout = setTimeout(() => {
+      handleLogout()
+    }, 15 * 60 * 1000) // 15 minutes
+    
+    setSessionTimeout(timeout)
+  }
+
+  const resetSessionTimeout = () => {
+    if (isPasswordVerified) {
+      startSessionTimeout()
+    }
+  }
+
+  // Reset timeout on user activity
+  useEffect(() => {
+    if (isPasswordVerified) {
+      const handleActivity = () => {
+        resetSessionTimeout()
+      }
+
+      // Listen for user activity
+      window.addEventListener('mousedown', handleActivity)
+      window.addEventListener('keypress', handleActivity)
+      window.addEventListener('scroll', handleActivity)
+      window.addEventListener('touchstart', handleActivity)
+
+      return () => {
+        window.removeEventListener('mousedown', handleActivity)
+        window.removeEventListener('keypress', handleActivity)
+        window.removeEventListener('scroll', handleActivity)
+        window.removeEventListener('touchstart', handleActivity)
+      }
+    }
+  }, [isPasswordVerified])
 
   // Şifre kontrolü ekranı
   if (!isPasswordVerified) {

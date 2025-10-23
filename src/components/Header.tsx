@@ -36,7 +36,6 @@ export function Header() {
     { label: "Biz Kimiz?", href: "about", type: "scroll" },
     { label: "Neler Yapıyoruz?", href: "services", type: "scroll" },
     { label: "Blog", href: "/blog", type: "link" },
-    { label: "Bize Ulaşın!", href: "contact", type: "scroll" },
   ]
 
   // Blog sayfasında sadece logo ve ana sayfa butonunu göster
