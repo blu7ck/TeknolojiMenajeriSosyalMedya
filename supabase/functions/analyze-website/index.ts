@@ -1177,26 +1177,17 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     formData.append('scale', '1.0')
     formData.append('waitDelay', '1s')        // Wait for fonts and styles to load
     
-    // First check if Gotenberg is healthy
-    try {
-      const healthResponse = await fetch(`${gotenbergUrl}/health`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000)
-      })
-      
-      if (!healthResponse.ok) {
-        console.warn('⚠️ Gotenberg health check failed, using fallback')
-        return generateFallbackPDF(markdown, website)
-      }
-    } catch (healthError) {
-      console.warn('⚠️ Gotenberg health check error, using fallback:', healthError.message)
-      return generateFallbackPDF(markdown, website)
-    }
-
+    // Skip health check for free tier services - they can be slow but still work
+    // Note: Admin panel controls request volume (100 requests/day max)
+    console.log('⏳ Waiting for Gotenberg service (free tier can be slow)...')
+    console.log('📊 This is normal for free tier services - please be patient')
+    console.log('⏰ Timeout set to 10 minutes for free tier constraints')
+    console.log('🎛️ Request volume controlled via admin panel (100/day max)')
+    
     const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
       method: 'POST',
       body: formData,
-      signal: AbortSignal.timeout(30000) // 30 second timeout
+      signal: AbortSignal.timeout(600000) // 10 minutes timeout for free tier
     })
     
     if (!gotenbergResponse.ok) {
@@ -1207,7 +1198,8 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     }
     
     const pdfBuffer = await gotenbergResponse.arrayBuffer()
-    console.log('✅ PDF generated successfully with Gotenberg, size:', pdfBuffer.byteLength, 'bytes')
+    console.log('✅ PDF generated successfully with Gotenberg (free tier patience paid off!)')
+    console.log('📄 PDF size:', pdfBuffer.byteLength, 'bytes')
     
     // Return the PDF buffer
     return new Uint8Array(pdfBuffer)
