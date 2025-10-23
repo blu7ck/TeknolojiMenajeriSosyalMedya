@@ -230,9 +230,7 @@ function GalleryScene({
 		[images]
 	);
 
-	const textures = useTexture(normalizedImages.map((img) => img.src), undefined, (error) => {
-		console.warn('Texture loading error:', error);
-	});
+	const textures = useTexture(normalizedImages.map((img) => img.src));
 
 	const materials = useMemo(
 		() => Array.from({ length: visibleCount }, () => createClothMaterial()),
@@ -543,55 +541,7 @@ export default function InfiniteGallery({
 			<ErrorBoundary fallback={<FallbackGallery images={images} />}>
 				<Canvas
 					camera={{ position: [0, 0, 0], fov: 55 }}
-					gl={{ 
-						antialias: true, 
-						alpha: true,
-						powerPreference: "high-performance",
-						preserveDrawingBuffer: false,
-						premultipliedAlpha: false
-					}}
-					onCreated={({ gl, scene, camera }) => {
-						// WebGL context lost event handler
-						const handleContextLost = (event: Event) => {
-							event.preventDefault();
-							console.warn('WebGL context lost in gallery, attempting to restore...');
-							// Dispose of resources to free memory
-							scene.traverse((object) => {
-								if (object instanceof THREE.Mesh) {
-									if (object.geometry) object.geometry.dispose();
-									if (object.material) {
-										if (Array.isArray(object.material)) {
-											object.material.forEach(material => material.dispose());
-										} else {
-											object.material.dispose();
-										}
-									}
-								}
-							});
-						};
-						
-						const handleContextRestored = () => {
-							console.log('WebGL context restored in gallery');
-							// Force re-render after context restoration
-							gl.render(scene, camera);
-						};
-						
-						// Add error handling for WebGL
-						gl.domElement.addEventListener('webglcontextlost', handleContextLost);
-						gl.domElement.addEventListener('webglcontextrestored', handleContextRestored);
-						
-						// Set up error handling
-						gl.domElement.addEventListener('error', (event) => {
-							console.error('WebGL error in gallery:', event);
-						});
-						
-						// Cleanup function
-						return () => {
-							gl.domElement.removeEventListener('webglcontextlost', handleContextLost);
-							gl.domElement.removeEventListener('webglcontextrestored', handleContextRestored);
-							gl.domElement.removeEventListener('error', () => {});
-						};
-					}}
+					gl={{ antialias: true, alpha: true }}
 				>
 					<GalleryScene
 						images={images}
