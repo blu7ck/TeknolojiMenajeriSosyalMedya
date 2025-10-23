@@ -524,7 +524,7 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
     }
   }
 
-  const prompt = `Analyze ${website}. Scores: M${performance.mobile_score || 'N/A'} S${seo.seo_score || 'N/A'} So${social.social_score || 'N/A'}. Give 2 insights + 2 tips. Max 300 words.`
+  const prompt = `${website} web sitesini analiz et. Skorlar: Mobil ${performance.mobile_score || 'N/A'}, SEO ${seo.seo_score || 'N/A'}, Sosyal Medya ${social.social_score || 'N/A'}. 2 öngörü + 2 öneri ver. Maksimum 300 kelime. Türkçe yanıt ver.`
 
   // Retry mechanism with exponential backoff
   const maxRetries = 3
@@ -636,32 +636,32 @@ function generateFallbackInsights(website: string, performance: any, seo: any, s
   const socialGrade = social.social_score >= 80 ? 'A' : social.social_score >= 60 ? 'B' : 'C'
   
   const insights = `
-**Dijital Varlık Analizi - ${website}**
+DİJİTAL VARLIK ANALİZİ - ${website}
 
-**Genel Değerlendirme:**
+GENEL DEĞERLENDİRME:
 Toplam Skor: ${overallScore}/100
 Performans: ${performanceGrade} (${Math.round(performance.mobile_score || 0)}/100)
 SEO: ${seoGrade} (${Math.round(seo.seo_score || 0)}/100)
 Sosyal Medya: ${socialGrade} (${Math.round(social.social_score || 0)}/100)
 
-**Detaylı Analiz:**
+DETAYLI ANALİZ:
 
-**⚡ Performans Durumu:**
+⚡ PERFORMANS DURUMU:
 ${performance.mobile_score >= 80 ? '✅ Mobil performansınız mükemmel durumda.' : performance.mobile_score >= 60 ? '⚠️ Mobil performansınız orta seviyede, iyileştirme gerekiyor.' : '❌ Mobil performansınız kritik seviyede, acil iyileştirme gerekli.'}
 ${performance.accessibility_score >= 80 ? '✅ Erişilebilirlik standartlarına tam uyumlusunuz.' : '⚠️ Erişilebilirlik iyileştirmeleri yapılmalı.'}
 
-**🔍 SEO Optimizasyonu:**
+🔍 SEO OPTİMİZASYONU:
 ${seo.seo_score >= 80 ? '✅ SEO optimizasyonunuz başarılı.' : '⚠️ SEO iyileştirmeleri yapılmalı.'}
 ${seo.title && seo.title !== 'No title found' ? '✅ Sayfa başlığı optimize edilmiş.' : '❌ Sayfa başlığı eksik veya optimize edilmemiş.'}
 ${seo.description && seo.description !== 'No description found' ? '✅ Meta açıklaması mevcut.' : '❌ Meta açıklaması eksik.'}
 ${seo.headings?.h1 === 1 ? '✅ H1 başlık yapısı doğru.' : '⚠️ H1 başlık yapısını kontrol edin.'}
 
-**🌐 Sosyal Medya Entegrasyonu:**
+🌐 SOSYAL MEDYA ENTEGRASYONU:
 ${social.social_score >= 80 ? '✅ Sosyal medya entegrasyonunuz mükemmel.' : '⚠️ Sosyal medya optimizasyonu gerekiyor.'}
 ${social.open_graph?.title && social.open_graph.title !== 'No Open Graph title' ? '✅ Open Graph etiketleri mevcut.' : '❌ Open Graph etiketleri eksik.'}
 ${social.twitter_card && social.twitter_card !== 'No Twitter Card' ? '✅ Twitter Card yapılandırılmış.' : '❌ Twitter Card eksik.'}
 
-**🎯 Öncelikli Öneriler:**
+🎯 ÖNCELİKLİ ÖNERİLER:
 ${generatePriorityRecommendations(performance, seo, social)}
 `
   
@@ -755,93 +755,91 @@ function generateSummary(performance: any, seo: any, social: any, ai_insights: a
 function generateMarkdownReport(reportData: any): string {
   const { website, name, analysis_date, performance, seo, social, ai_insights, summary } = reportData
 
-  return `# Dijital Analiz Raporu
+  return `# DİJİTAL ANALİZ RAPORU
 
-**Website:** ${website}  
-**Müşteri:** ${name}  
-**Analiz Tarihi:** ${new Date(analysis_date).toLocaleDateString('tr-TR')}
+Website: ${website}
+Müşteri: ${name}
+Analiz Tarihi: ${new Date(analysis_date).toLocaleDateString('tr-TR')}
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## 📊 Genel Değerlendirme
+📊 GENEL DEĞERLENDİRME
 
-**Toplam Skor:** ${summary.overall_score}/100
+Toplam Skor: ${summary.overall_score}/100
 
-### Güçlü Yönler:
+Güçlü Yönler:
 ${summary.strengths.map((s: string) => `✅ ${s}`).join('\n')}
 
-### Geliştirilmesi Gerekenler:
+Geliştirilmesi Gerekenler:
 ${summary.improvements.map((i: string) => `⚠️ ${i}`).join('\n')}
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## ⚡ Performans Analizi
+⚡ PERFORMANS ANALİZİ
 
-**Mobil Performans Skoru:** ${Math.round(performance.mobile_score || 0)}/100  
-**Erişilebilirlik Skoru:** ${Math.round(performance.accessibility_score || 0)}/100  
-**En İyi Uygulamalar Skoru:** ${Math.round(performance.best_practices_score || 0)}/100
+Mobil Performans Skoru: ${Math.round(performance.mobile_score || 0)}/100
+Erişilebilirlik Skoru: ${Math.round(performance.accessibility_score || 0)}/100
+En İyi Uygulamalar Skoru: ${Math.round(performance.best_practices_score || 0)}/100
 
-### Temel Metrikler:
-- **First Contentful Paint (FCP):** ${performance.metrics?.fcp || 'N/A'}
-- **Largest Contentful Paint (LCP):** ${performance.metrics?.lcp || 'N/A'}
-- **Cumulative Layout Shift (CLS):** ${performance.metrics?.cls || 'N/A'}
-- **First Input Delay (FID):** ${performance.metrics?.fid || 'N/A'}
+Temel Metrikler:
+• First Contentful Paint (FCP): ${performance.metrics?.fcp || 'N/A'}
+• Largest Contentful Paint (LCP): ${performance.metrics?.lcp || 'N/A'}
+• Cumulative Layout Shift (CLS): ${performance.metrics?.cls || 'N/A'}
+• First Input Delay (FID): ${performance.metrics?.fid || 'N/A'}
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## 🔍 SEO Analizi
+🔍 SEO ANALİZİ
 
-**SEO Skoru:** ${Math.round(seo.seo_score || 0)}/100
+SEO Skoru: ${Math.round(seo.seo_score || 0)}/100
 
-### Sayfa Bilgileri:
-- **Başlık:** ${seo.title}
-- **Açıklama:** ${seo.description}
-- **H1 Başlık Sayısı:** ${seo.headings?.h1 || 0}
-- **H2 Başlık Sayısı:** ${seo.headings?.h2 || 0}
-- **H3 Başlık Sayısı:** ${seo.headings?.h3 || 0}
+Sayfa Bilgileri:
+• Başlık: ${seo.title}
+• Açıklama: ${seo.description}
+• H1 Başlık Sayısı: ${seo.headings?.h1 || 0}
+• H2 Başlık Sayısı: ${seo.headings?.h2 || 0}
+• H3 Başlık Sayısı: ${seo.headings?.h3 || 0}
 
-### Görseller:
-- **Toplam Görsel:** ${seo.total_images || 0}
-- **Alt Etiketi Eksik Görsel:** ${seo.images_without_alt || 0}
+Görseller:
+• Toplam Görsel: ${seo.total_images || 0}
+• Alt Etiketi Eksik Görsel: ${seo.images_without_alt || 0}
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## 🌐 Sosyal Medya Analizi
+🌐 SOSYAL MEDYA ANALİZİ
 
-**Sosyal Medya Skoru:** ${Math.round(social.social_score || 0)}/100
+Sosyal Medya Skoru: ${Math.round(social.social_score || 0)}/100
 
-### Open Graph Meta Tags:
-- **Başlık:** ${social.open_graph?.title || 'Yok'}
-- **Açıklama:** ${social.open_graph?.description || 'Yok'}
-- **Görsel:** ${social.open_graph?.image || 'Yok'}
+Open Graph Meta Tags:
+• Başlık: ${social.open_graph?.title || 'Yok'}
+• Açıklama: ${social.open_graph?.description || 'Yok'}
+• Görsel: ${social.open_graph?.image || 'Yok'}
 
-### Twitter Card:
-- **Twitter Card:** ${social.twitter_card || 'Yok'}
+Twitter Card:
+• Twitter Card: ${social.twitter_card || 'Yok'}
 
-### Sosyal Medya Bağlantıları:
-- **Facebook:** ${social.social_links?.facebook || 0} bağlantı
-- **Twitter:** ${social.social_links?.twitter || 0} bağlantı
-- **Instagram:** ${social.social_links?.instagram || 0} bağlantı
-- **LinkedIn:** ${social.social_links?.linkedin || 0} bağlantı
-- **YouTube:** ${social.social_links?.youtube || 0} bağlantı
+Sosyal Medya Bağlantıları:
+• Facebook: ${social.social_links?.facebook || 0} bağlantı
+• Twitter: ${social.social_links?.twitter || 0} bağlantı
+• Instagram: ${social.social_links?.instagram || 0} bağlantı
+• LinkedIn: ${social.social_links?.linkedin || 0} bağlantı
+• YouTube: ${social.social_links?.youtube || 0} bağlantı
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## 🤖 AI Öngörüleri ve Öneriler
+🤖 AI ÖNGÖRÜLERİ VE ÖNERİLER
 
 ${ai_insights.insights || 'AI analizi mevcut değil'}
 
----
+═══════════════════════════════════════════════════════════════════════════════
 
-## 📞 İletişim
+📞 İLETİŞİM
 
-Bu rapor hakkında sorularınız için:  
-**Email:** gulsah@teknolojimenajeri.com  
-**Website:** https://www.teknolojimenajeri.com.tr
+Bu rapor hakkında sorularınız için:
+Email: gulsah@teknolojimenajeri.com
+Website: https://www.teknolojimenajeri.com.tr
 
----
-
-*Bu rapor Teknoloji Menajeri tarafından otomatik olarak oluşturulmuştur.*
+Bu rapor Teknoloji Menajeri tarafından otomatik olarak oluşturulmuştur.
 `
 }
 
