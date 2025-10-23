@@ -28,17 +28,17 @@
   margin-bottom: 2rem;
 }
 
-/* Package Cards - Mobile Optimized */
+/* Package Cards */
 .package-card {
-  background: #151516;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 16px;
   border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 1.5rem;
+  padding: 2rem;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: all 0.5s ease-out;
   position: relative;
-  overflow: hidden;
-  min-height: 180px;
+  overflow: visible;
+  min-height: 200px;
 }
 
 .package-card.collapsed {
@@ -48,6 +48,8 @@
 
 .package-card:hover {
   border-color: rgba(239, 68, 68, 0.6);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .package-card.collapsed:hover {
