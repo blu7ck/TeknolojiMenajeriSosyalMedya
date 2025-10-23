@@ -1037,11 +1037,24 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
       padding: 40px;
       text-align: center;
     }
-    .footer-logo {
+    .footer-logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .footer-logo-img {
+      max-height: 60px;
+      max-width: 200px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+    
+    .footer-logo-text {
       font-size: 24px;
       font-weight: bold;
       color: #DC2626;
-      margin-bottom: 10px;
     }
     .footer-text {
       opacity: 0.8;
@@ -1160,7 +1173,13 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     </div>
 
     <div class="footer">
-      <div class="footer-logo">Teknoloji Menajeri</div>
+      <div class="footer-logo-container">
+        <img src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png" 
+             alt="Teknoloji Menajeri Logo" 
+             class="footer-logo-img" 
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="footer-logo-text" style="display: none;">Teknoloji Menajeri</div>
+      </div>
       <div class="footer-text">Dijital Pazarlama ve Web Analiz Hizmetleri</div>
       <div class="footer-text">🌐 www.teknolojimenajeri.com.tr</div>
       <div class="footer-text">📧 gulsah@teknolojimenajeri.com</div>
@@ -1328,6 +1347,23 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
             font-weight: bold;
             margin-right: 8px;
         }
+        .footer-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .footer-logo-img {
+            max-height: 60px;
+            max-width: 200px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+        .footer-logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #DC2626;
+        }
     </style>
 </head>
 <body>
@@ -1337,7 +1373,14 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
     </div>
     ${formatAIInsights(cleanAIInsights(markdown))}
     <div class="footer">
-        <p><strong>Teknoloji Menajeri</strong> - Dijital Analiz Raporu</p>
+        <div class="footer-logo-container">
+            <img src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png" 
+                 alt="Teknoloji Menajeri Logo" 
+                 class="footer-logo-img" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="footer-logo-text" style="display: none;">Teknoloji Menajeri</div>
+        </div>
+        <p>Dijital Pazarlama ve Web Analiz Hizmetleri</p>
         <p>🌐 www.teknolojimenajeri.com.tr | 📧 gulsah@teknolojimenajeri.com</p>
         <p style="margin-top: 10px; opacity: 0.7; font-size: 12px;">
             Bu rapor otomatik olarak oluşturulmuştur.
