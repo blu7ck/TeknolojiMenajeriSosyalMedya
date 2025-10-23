@@ -1008,6 +1008,17 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
       margin-bottom: 0;
     }
     
+    .ai-insight-paragraph {
+      margin: 0 0 16px 0;
+      padding: 0;
+      line-height: 1.6;
+      text-align: left;
+    }
+    
+    .ai-insight-paragraph:last-child {
+      margin-bottom: 0;
+    }
+    
     .ai-insight-list {
       margin: 16px 0;
       padding-left: 0;
@@ -1326,6 +1337,17 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
             color: #495057;
             margin-bottom: 0;
         }
+        
+        .ai-insight-paragraph {
+            margin: 0 0 16px 0;
+            padding: 0;
+            line-height: 1.6;
+            text-align: left;
+        }
+        
+        .ai-insight-paragraph:last-child {
+            margin-bottom: 0;
+        }
         .ai-insight-list {
             margin: 16px 0;
             padding-left: 0;
@@ -1468,8 +1490,14 @@ startxref
 function formatAIInsights(insights: string): string {
   if (!insights) return ''
   
+  // Clean up the insights first
+  const cleanedInsights = insights
+    .replace(/\n\s*\n\s*\n/g, '\n\n') // Remove excessive line breaks
+    .replace(/^\s+|\s+$/gm, '') // Trim each line
+    .trim()
+  
   // Split insights into sections
-  const sections = insights.split(/(?=Öngörüler:|Öneriler:|Insights:|Recommendations:)/i)
+  const sections = cleanedInsights.split(/(?=Öngörüler:|Öneriler:|Insights:|Recommendations:)/i)
   
   let formattedHTML = ''
   
@@ -1497,29 +1525,48 @@ function formatAIInsights(insights: string): string {
   return formattedHTML || `
     <div class="ai-insight-card">
       <div class="ai-insight-title">📊 AI Analizi</div>
-      <div class="ai-insight-content">${formatInsightContent(insights)}</div>
+      <div class="ai-insight-content">${formatInsightContent(cleanedInsights)}</div>
     </div>
   `
 }
 
 // Format insight content with proper structure
 function formatInsightContent(content: string): string {
-  return content
-    // Convert bullet points to proper list items
-    .replace(/^•\s*/gm, '<li>')
-    .replace(/^-\s*/gm, '<li>')
-    .replace(/^\*\s*/gm, '<li>')
-    // Wrap consecutive list items in ul
-    .replace(/(<li>.*<\/li>)/gs, '<ul class="ai-insight-list">$1</ul>')
-    // Convert line breaks to paragraphs
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>')
-    // Wrap in paragraph if not already wrapped
-    .replace(/^(?!<[ou]l|<li>)/gm, '<p>')
-    .replace(/(?<!<\/li>)(?<!<\/ul>)(?<!<\/p>)$/gm, '</p>')
-    // Clean up any double paragraphs
-    .replace(/<\/p><p><\/p>/g, '</p>')
-    .replace(/<p><\/p>/g, '')
+  if (!content.trim()) return ''
+  
+  // Clean up the content first
+  let cleaned = content
+    .replace(/\n\s*\n/g, '\n') // Remove multiple line breaks
+    .replace(/^\s+|\s+$/gm, '') // Trim each line
+    .replace(/\n{3,}/g, '\n\n') // Max 2 consecutive line breaks
+  
+  // Split into paragraphs and process each
+  const paragraphs = cleaned.split(/\n\s*\n/).filter(p => p.trim())
+  
+  let result = ''
+  
+  paragraphs.forEach(paragraph => {
+    const trimmed = paragraph.trim()
+    if (!trimmed) return
+    
+    // Check if it's a list (starts with bullet points)
+    if (/^[•\-\*]\s/.test(trimmed)) {
+      const listItems = trimmed.split(/\n(?=[•\-\*]\s)/)
+        .map(item => item.replace(/^[•\-\*]\s/, '').trim())
+        .filter(item => item)
+        .map(item => `<li>${item}</li>`)
+        .join('')
+      
+      if (listItems) {
+        result += `<ul class="ai-insight-list">${listItems}</ul>`
+      }
+    } else {
+      // Regular paragraph
+      result += `<p class="ai-insight-paragraph">${trimmed}</p>`
+    }
+  })
+  
+  return result || `<p class="ai-insight-paragraph">${cleaned}</p>`
 }
 
 // Clean AI insights by removing markdown formatting
