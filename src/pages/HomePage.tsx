@@ -128,7 +128,7 @@ export default function HomePage() {
             <div className="mb-6 flex justify-center">
               {!logoError ? (
                 <img 
-                  src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png" 
+                  src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
                   alt="Teknoloji Menajeri Logo" 
                   className="h-16 w-auto"
                   onError={() => {
