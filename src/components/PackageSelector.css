@@ -259,10 +259,17 @@
 
 @media (max-width: 768px) {
   .module-tooltip {
-    left: 0;
-    top: 100%;
-    margin-left: 0;
-    margin-top: 0.5rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    right: auto;
+    width: 90%;
+    max-width: 400px;
+    margin: 0;
+    z-index: 9999;
+    max-height: 80vh;
+    overflow-y: auto;
   }
 }
 
