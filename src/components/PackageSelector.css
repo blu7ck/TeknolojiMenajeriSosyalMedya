@@ -270,6 +270,22 @@
     z-index: 9999;
     max-height: 80vh;
     overflow-y: auto;
+    pointer-events: auto;
+  }
+  
+  /* Mobile touch improvements */
+  .module-item {
+    touch-action: manipulation;
+  }
+  
+  .module-checkbox {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .module-checkbox input[type="checkbox"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 

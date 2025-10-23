@@ -387,10 +387,16 @@ export function PackageSelector() {
                             onMouseLeave={() => setHoveredModule(null)}
                             onTouchStart={(e) => {
                               e.preventDefault()
+                              e.stopPropagation()
                               setHoveredModule(module)
                               setHoverPosition("right")
                             }}
-                            onTouchEnd={() => setHoveredModule(null)}
+                            onTouchEnd={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              // Delay to allow checkbox click
+                              setTimeout(() => setHoveredModule(null), 100)
+                            }}
                             onFocus={() => setHoveredModule(module)}
                             onBlur={() => setHoveredModule(null)}
                             tabIndex={0}
@@ -416,16 +422,16 @@ export function PackageSelector() {
                             {hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
                               <>
                                 {/* Mobile backdrop */}
-                                <div className="max-md:fixed max-md:inset-0 max-md:bg-black/50 max-md:z-[9998] md:hidden" />
+                                <div className="max-md:fixed max-md:inset-0 max-md:bg-black/50 max-md:z-[9998] md:hidden" onClick={() => setHoveredModule(null)} />
                                 
                                 <div
-                                  className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[9999] animate-fade-slide-in pointer-events-none
+                                  className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[9999] animate-fade-slide-in
                                     ${
                                       hoverPosition === "right"
-                                        ? "md:left-full md:top-0 md:ml-2"
-                                        : "md:right-full md:top-0 md:mr-2"
+                                        ? "md:left-full md:top-0 md:ml-2 md:pointer-events-none"
+                                        : "md:right-full md:top-0 md:mr-2 md:pointer-events-none"
                                     }
-                                    max-md:fixed max-md:top-1/2 max-md:left-1/2 max-md:transform max-md:-translate-x-1/2 max-md:-translate-y-1/2 max-md:w-[90vw] max-md:max-w-[400px] max-md:max-h-[80vh] max-md:overflow-y-auto`}
+                                    max-md:fixed max-md:top-1/2 max-md:left-1/2 max-md:transform max-md:-translate-x-1/2 max-md:-translate-y-1/2 max-md:w-[90vw] max-md:max-w-[400px] max-md:max-h-[80vh] max-md:overflow-y-auto max-md:pointer-events-auto`}
                                   style={{
                                     animation: "fadeSlideIn 0.3s ease-out forwards",
                                     maxWidth: "calc(100vw - 2rem)",
@@ -433,9 +439,18 @@ export function PackageSelector() {
                                 >
                                 <div className="flex justify-between items-start mb-2">
                                   <h4 className="text-white font-semibold flex-1">{module.name}</h4>
-                                  {module.price && (
-                                    <span className="text-red-500 font-bold text-lg ml-2">{module.price}</span>
-                                  )}
+                                  <div className="flex items-center gap-2">
+                                    {module.price && (
+                                      <span className="text-red-500 font-bold text-lg">{module.price}</span>
+                                    )}
+                                    {/* Mobile close button */}
+                                    <button
+                                      onClick={() => setHoveredModule(null)}
+                                      className="md:hidden text-gray-400 hover:text-white text-xl font-bold"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
                                 </div>
                                 {module.description && (
                                   <p className="text-gray-400 text-sm mb-3">{module.description}</p>
