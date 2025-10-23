@@ -42,7 +42,25 @@ export default function HomePage() {
       observer.observe(galleryRef.current)
     }
 
-    return () => observer.disconnect()
+    // WebGL context lost handler for homepage
+    const handleWebGLContextLost = (event: Event) => {
+      event.preventDefault()
+      console.warn('WebGL context lost on homepage')
+    }
+    
+    const handleWebGLContextRestored = () => {
+      console.log('WebGL context restored on homepage')
+    }
+    
+    // Add global event listeners
+    window.addEventListener('webglcontextlost', handleWebGLContextLost)
+    window.addEventListener('webglcontextrestored', handleWebGLContextRestored)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('webglcontextlost', handleWebGLContextLost)
+      window.removeEventListener('webglcontextrestored', handleWebGLContextRestored)
+    }
   }, [])
 
   return (
