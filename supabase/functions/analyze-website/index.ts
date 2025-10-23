@@ -281,26 +281,37 @@ serve(async (req) => {
     
     console.error('📊 Error context:', JSON.stringify(errorContext, null, 2))
     
-    // Try to update database with error status
-    try {
-      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-      const supabase = createClient(supabaseUrl, supabaseKey)
-      
-      if (requestId !== 'unknown') {
-        await supabase
-          .from('digital_analysis_requests')
-          .update({
-            status: 'failed',
-            error_message: error.message,
-            failed_at: new Date().toISOString()
-          })
-          .eq('id', requestId)
-          
-        console.log('✅ Error status updated in database')
+    // Only update database status to failed if this is a critical error
+    // (not just a temporary API issue that might be resolved by retries)
+    const isCriticalError = error.message.includes('Network') || 
+                          error.message.includes('Timeout') ||
+                          error.message.includes('Connection') ||
+                          error.message.includes('Database') ||
+                          error.message.includes('Supabase')
+    
+    if (isCriticalError) {
+      try {
+        const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+        const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+        const supabase = createClient(supabaseUrl, supabaseKey)
+        
+        if (requestId !== 'unknown') {
+          await supabase
+            .from('digital_analysis_requests')
+            .update({
+              status: 'failed',
+              error_message: error.message,
+              failed_at: new Date().toISOString()
+            })
+            .eq('id', requestId)
+            
+          console.log('✅ Critical error status updated in database')
+        }
+      } catch (dbError) {
+        console.error('❌ Failed to update error status in database:', dbError)
       }
-    } catch (dbError) {
-      console.error('❌ Failed to update error status in database:', dbError)
+    } else {
+      console.log('⚠️ Non-critical error, not updating database status (retries may succeed)')
     }
     
     return new Response(
