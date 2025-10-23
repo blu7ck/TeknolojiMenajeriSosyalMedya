@@ -23,7 +23,6 @@ export default function HomePage() {
   
   // Intersection Observer for gallery lazy loading
   const [shouldLoadGallery, setShouldLoadGallery] = useState(false)
-  const [logoError, setLogoError] = useState(false)
   const galleryRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -126,21 +125,23 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             {/* Logo */}
             <div className="mb-6 flex justify-center">
-              {!logoError ? (
-                <img 
-                  src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
-                  alt="Teknoloji Menajeri Logo" 
-                  className="h-16 w-auto"
-                  onError={() => {
-                    console.log('Logo yüklenemedi, metin logo gösteriliyor...')
-                    setLogoError(true)
-                  }}
-                />
-              ) : (
-                <div className="text-2xl font-bold text-red-600">
-                  TEKNOLOJİ MENAJERİ
-                </div>
-              )}
+              <img 
+                src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
+                alt="Teknoloji Menajeri Logo" 
+                className="h-16 w-auto"
+                onError={(e) => {
+                  console.log('Logo yüklenemedi, PNG deneniyor...')
+                  e.currentTarget.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'
+                  e.currentTarget.onError = (e2) => {
+                    console.log('PNG logo da yüklenemedi, metin logo gösteriliyor...')
+                    e2.currentTarget.style.display = 'none'
+                    const textLogo = document.createElement('div')
+                    textLogo.className = 'text-2xl font-bold text-red-600'
+                    textLogo.textContent = 'TEKNOLOJİ MENAJERİ'
+                    e2.currentTarget.parentNode.appendChild(textLogo)
+                  }
+                }}
+              />
             </div>
             
             <p className="text-gray-500 text-sm">
