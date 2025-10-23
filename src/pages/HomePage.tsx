@@ -1,11 +1,13 @@
 import { Header } from "../components/Header"
-import { ProcessSection } from "../components/ProcessSection"
-import { AboutUs } from "../components/AboutUs"
-import { Services } from "../components/Services"
-import { DigitalAnalysisForm } from "../components/DigitalAnalysisForm"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
 import { Suspense, lazy, useState, useEffect, useRef } from "react"
+
+// Lazy load heavy components for better performance
+const ProcessSection = lazy(() => import("../components/ProcessSection"))
+const AboutUs = lazy(() => import("../components/AboutUs"))
+const Services = lazy(() => import("../components/Services"))
+const DigitalAnalysisForm = lazy(() => import("../components/DigitalAnalysisForm"))
 
 // Lazy load heavy 3D gallery with error handling
 const GalleryPage = lazy(() => import("../components/GalleryPage").catch(() => ({
@@ -71,10 +73,14 @@ export default function HomePage() {
         )}
 
         {/* About Us Section */}
-        <AboutUs />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+          <AboutUs />
+        </Suspense>
 
         {/* Services Section */}
-        <Services />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+          <Services />
+        </Suspense>
 
         {/* Important Notes Section */}
         <section className="py-8" style={{ backgroundColor: "#D3DADD" }}>
@@ -118,7 +124,9 @@ export default function HomePage() {
           </div>
         </section>
 
-         <ProcessSection steps={processSteps} />
+         <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+           <ProcessSection steps={processSteps} />
+         </Suspense>
 
         {/* Footer */}
         <footer className="py-8" style={{ backgroundColor: "#D3DADD" }}>
@@ -129,6 +137,9 @@ export default function HomePage() {
                 src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
                 alt="Teknoloji Menajeri Logo" 
                 className="h-32 w-auto"
+                width="128"
+                height="128"
+                loading="lazy"
                 onError={(e) => {
                   console.log('Logo yüklenemedi, PNG deneniyor...')
                   e.currentTarget.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'

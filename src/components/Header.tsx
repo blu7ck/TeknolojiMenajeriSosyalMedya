@@ -62,6 +62,9 @@ export function Header() {
                 src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/Logo2.png" 
                 alt="Teknoloji Menajeri" 
                 className="w-10 h-10 md:w-12 md:h-12 object-contain"
+                width="48"
+                height="48"
+                loading="eager"
               />
               <span className="text-gray-800">#SosyalMedyaAjansı</span>
             </Link>
