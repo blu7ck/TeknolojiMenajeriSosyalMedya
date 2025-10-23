@@ -110,41 +110,44 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   return (
     <div className="py-3" style={{ backgroundColor: "#151516" }}>
       <div className="max-w-7xl mx-auto px-4">
-        {/* Newsletter Header */}
-        <div className="flex items-center gap-3 mb-3">
-          <Mail className="w-4 h-4 text-red-500" />
-          <h3 className="text-sm font-semibold text-white">Newsletter Aboneliği</h3>
-          <span className="text-xs text-gray-400">- Dijital pazarlama ipuçları ve teknoloji haberleri</span>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          {/* Email Input */}
-          <div className="flex-1 max-w-xs">
-            <input
-              type="email"
-              placeholder="E-posta adresiniz"
-              required
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
-              style={{ backgroundColor: "#2A2C2C" }}
-            />
+        {/* Single Row Layout - Only show when step is email */}
+        {step === "email" && (
+          <div className="flex items-center gap-4">
+            {/* Left: Newsletter Text */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Mail className="w-4 h-4 text-red-500" />
+              <span className="text-sm text-white">Newsletter</span>
+            </div>
+            
+            {/* Center: Email Input */}
+            <div className="flex-1 max-w-xs">
+              <input
+                type="email"
+                placeholder="E-posta adresiniz"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                style={{ backgroundColor: "#2A2C2C" }}
+              />
+            </div>
+            
+            {/* Right: Continue Button */}
+            <button
+              onClick={handleEmailSubmit}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors text-sm clickable flex-shrink-0"
+            >
+              Devam Et
+            </button>
           </div>
-          
-          {/* Subscribe Button */}
-          <button
-            onClick={handleEmailSubmit}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors text-sm clickable"
-          >
-            Devam Et
-          </button>
-        </div>
+        )}
         
-        {/* Hidden Details Form - Only show when needed */}
+        {/* Details Form - Single row when step is details */}
         {step === "details" && (
-          <div className="mt-3 p-3 bg-gray-800 rounded-lg border border-gray-600">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-red-400 font-medium">E-posta: {formData.email}</span>
+          <div className="flex items-center gap-4">
+            {/* Left: Email display and back button */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-sm text-white">E-posta: {formData.email}</span>
               <button
                 type="button"
                 onClick={handleBackToEmail}
@@ -153,7 +156,9 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 ← Geri
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-2">
+            
+            {/* Center: Name inputs */}
+            <div className="flex gap-2 flex-1">
               <input
                 type="text"
                 placeholder="Ad"
@@ -173,41 +178,33 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 style={{ backgroundColor: "#2A2C2C" }}
               />
             </div>
-            <input
-              type="text"
-              placeholder="Meslek (opsiyonel)"
-              value={formData.profession}
-              onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-              className="w-full px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400 mb-3"
-              style={{ backgroundColor: "#2A2C2C" }}
-            />
-            <div className="flex gap-2">
+            
+            {/* Right: Action buttons */}
+            <div className="flex gap-2 flex-shrink-0">
               <button
                 onClick={handleBackToEmail}
-                className="flex-1 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors text-sm clickable"
+                className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors text-sm clickable"
               >
                 İptal
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={status === "loading"}
-                className="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 text-sm clickable"
+                className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 text-sm clickable"
               >
                 {status === "loading" ? "Kaydediliyor..." : "Abone Ol"}
               </button>
             </div>
-            {message && (
-              <p className={`text-xs mt-2 font-medium ${status === "error" ? "text-red-400" : "text-green-400"}`}>{message}</p>
-            )}
+          </div>
+        )}
+        
+        {/* Status Message */}
+        {message && (
+          <div className="mt-2 text-left">
+            <p className={`text-xs font-medium ${status === "error" ? "text-red-400" : "text-green-400"}`}>{message}</p>
           </div>
         )}
 
-        {/* Status Message */}
-        {status === "success" && (
-          <div className="mt-2 text-left">
-            <p className="text-xs text-green-400 font-medium">{message}</p>
-          </div>
-        )}
 
       </div>
     </div>
