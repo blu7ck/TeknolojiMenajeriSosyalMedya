@@ -51,6 +51,14 @@
 - **User Tracking** - Kullanıcı davranış analizi
 - **Performance Monitoring** - Sayfa yükleme süreleri
 
+### 📄 **PDF Rapor Sistemi**
+- **Dijital Analiz** - Otomatik website analizi
+- **PDF Generation** - Gotenberg ile profesyonel PDF raporları
+- **AI Insights** - Google Gemini ile akıllı öneriler
+- **Performance Metrics** - Google PageSpeed Insights entegrasyonu
+- **SEO Analysis** - Detaylı SEO analizi ve öneriler
+- **Email Delivery** - Otomatik rapor gönderimi
+
 ---
 
 ## 🛠️ Teknoloji Stack
@@ -73,10 +81,16 @@
 - **Mailgun** - Email delivery service
 - **Newsletter Management** - Otomatik abonelik sistemi
 
+### **PDF Generation**
+- **Gotenberg** - Docker-based PDF converter
+- **Chromium** - HTML to PDF rendering
+- **Custom Templates** - Branded report templates
+
 ### **Development Tools**
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **Git** - Version control
+- **Docker** - Containerization
 
 ---
 
@@ -85,8 +99,11 @@
 ### **Gereksinimler**
 - Node.js 18+ 
 - npm veya yarn
+- Docker & Docker Compose (PDF raporları için)
 - Supabase hesabı
 - Mailgun hesabı
+- Google PageSpeed API Key (opsiyonel)
+- Google Gemini API Key (AI analizi için, opsiyonel)
 
 ### **1. Repository'yi Klonlayın**
 ```bash
@@ -99,14 +116,38 @@ cd TeknolojiMenajeriSosyalMedya
 npm install
 ```
 
-### **3. Environment Variables Ayarlayın**
+### **3. Gotenberg PDF Servisini Başlatın**
+```bash
+# Docker Compose ile Gotenberg'i başlatın
+docker-compose up -d
+
+# Servisin çalıştığını kontrol edin
+curl http://localhost:3000/health
+```
+
+> **💡 Not:** Gotenberg, dijital analiz raporlarını PDF formatında oluşturmak için kullanılır. Servis `http://localhost:3000` adresinde çalışacaktır.
+
+### **4. Environment Variables Ayarlayın**
 `.env` dosyası oluşturun:
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
 ```
 
-### **4. Supabase Kurulumu**
+Supabase Edge Functions için environment variables (Supabase Dashboard > Settings > Edge Functions):
+```env
+GOTENBERG_URL=http://host.docker.internal:3000
+MAILGUN_API_KEY=your_mailgun_api_key
+MAILGUN_DOMAIN=your_mailgun_domain
+GITHUB_TOKEN=your_github_token
+GOOGLE_PAGESPEED_API_KEY=your_pagespeed_api_key
+GEMINI_API_KEY=your_gemini_api_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+### **5. Supabase Kurulumu**
 ```bash
 # Supabase CLI kurulumu
 npm install -g supabase
@@ -118,7 +159,7 @@ supabase link --project-ref your_project_ref
 supabase functions deploy
 ```
 
-### **5. Veritabanı Kurulumu**
+### **6. Veritabanı Kurulumu**
 **📁 Scripts ve Docs Klasörü:** `scripts/` ve `docs/` klasörleri Git repository'ye dahil değildir. Bu dosyalar sadece lokalde kalır ve gerektiğinde ayrıca paylaşılabilir.
 
 **🔧 Veritabanı kurulumu için:** 
@@ -131,7 +172,7 @@ supabase functions deploy
 
 **📋 Detaylı Kurulum:** Tam kurulum rehberi, SQL script'leri ve dokümantasyon için iletişime geçin.
 
-### **6. Mailgun Kurulumu**
+### **7. Mailgun Kurulumu**
 1. Mailgun hesabı oluşturun
 2. Domain'inizi doğrulayın
 3. Template'leri oluşturun
@@ -140,9 +181,19 @@ supabase functions deploy
    - `MAILGUN_DOMAIN`
    - `MAILGUN_BASE_URL`
 
-### **7. Uygulamayı Başlatın**
+### **8. Uygulamayı Başlatın**
 ```bash
 npm run dev
+```
+
+### **9. PDF Servisini Test Edin (Opsiyonel)**
+Gotenberg servisinin çalıştığını test etmek için:
+```bash
+# Basit bir HTML'i PDF'e çevirin
+curl \
+  --request POST http://localhost:3000/forms/chromium/convert/html \
+  --form files=@test.html \
+  -o test.pdf
 ```
 
 ---
@@ -162,7 +213,8 @@ TeknolojiMenajeriSosyalMedya/
 │   ├── 📁 types/             # TypeScript type tanımları
 │   └── 📄 ...                # Ana dosyalar
 ├── 📁 supabase/
-│   └── 📁 functions/         # Edge Functions (Email, Notifications)
+│   └── 📁 functions/         # Edge Functions (Email, Website Analysis, PDF)
+├── 📄 docker-compose.yml     # Gotenberg PDF service
 ├── 📄 package.json           # Proje bağımlılıkları
 ├── 📄 index.html             # SEO optimized HTML
 └── 📄 README.md              # Bu dosya

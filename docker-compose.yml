@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Gotenberg - PDF Generator Service
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    container_name: gotenberg-pdf-service
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"  # Secure: only accessible from localhost
+    environment:
+      - CHROMIUM_DISABLE_WEB_SECURITY=true
+      - CHROMIUM_ALLOW_LIST=file:///tmp/.*
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: teknoloji-menajeri-network
+

@@ -2,6 +2,11 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { DOMParser } from 'https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts'
 
+// Simple in-memory rate limiting
+const requestQueue = new Map<string, number>()
+const RATE_LIMIT_WINDOW = 60000 // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 10
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -33,6 +38,39 @@ serve(async (req) => {
   try {
     const { requestId, website, name, email }: AnalysisRequest = await req.json()
 
+    // Simple rate limiting check
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
+    const now = Date.now()
+    const clientRequests = requestQueue.get(clientIp) || 0
+    
+    if (clientRequests >= MAX_REQUESTS_PER_WINDOW) {
+      console.warn(`⚠️ Rate limit exceeded for IP: ${clientIp}`)
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Rate limit exceeded. Please try again later.',
+          retryAfter: 60
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '60' },
+          status: 429 
+        }
+      )
+    }
+    
+    // Update rate limit counter
+    requestQueue.set(clientIp, clientRequests + 1)
+    
+    // Clean up old entries
+    if (requestQueue.size > 1000) {
+      const cutoff = now - RATE_LIMIT_WINDOW
+      for (const [ip, timestamp] of requestQueue.entries()) {
+        if (timestamp < cutoff) {
+          requestQueue.delete(ip)
+        }
+      }
+    }
+
     console.log(`🔍 Starting analysis for: ${website}`)
 
     // Initialize Supabase client
@@ -54,7 +92,7 @@ serve(async (req) => {
     console.log('✅ Performance analysis completed')
 
     // 2. SEO Analysis
-    const seo = await analyzeSEO(website)
+    const seo = await analyzeSEOMetrics(website)
     console.log('✅ SEO analysis completed')
 
     // 3. Social Media Analysis
@@ -82,71 +120,70 @@ serve(async (req) => {
     const markdownReport = generateMarkdownReport(report_data)
     console.log('✅ Markdown report generated')
 
-    // 7. Generate and upload report to both GitHub Gist and Supabase Storage
+    // 7. Generate PDF and upload to Supabase Storage
     let pdfUrl = null
     try {
-      console.log('📄 Generating and uploading report...')
-      const markdownContent = await generatePDFFromMarkdown(markdownReport, website)
+      console.log('📄 Generating PDF report...')
+      const pdfBuffer = await generatePDFFromMarkdown(markdownReport, website)
       
-      // Upload to Supabase Storage first
-      const fileName = `digital-analysis-report-${requestId}-${Date.now()}.md`
-      const markdownBuffer = new TextEncoder().encode(markdownContent)
+      // Upload PDF to Supabase Storage
+      const fileName = `digital-analysis-report-${requestId}-${Date.now()}.pdf`
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('digital-analysis-reports')
-        .upload(fileName, markdownBuffer, {
+        .upload(fileName, pdfBuffer, {
+          contentType: 'application/pdf',
           cacheControl: '3600'
         })
       
       if (uploadError) {
         console.error('❌ Supabase Storage upload error:', uploadError)
-      } else {
-        const { data: urlData } = supabase.storage
-          .from('digital-analysis-reports')
-          .getPublicUrl(fileName)
-        console.log('✅ Report uploaded to Supabase Storage:', urlData.publicUrl)
+        throw uploadError
       }
       
-      // Upload to GitHub Gist
-      const gistData = {
-        description: `Dijital Analiz Raporu - ${website}`,
-        public: false,
-        files: {
-          'rapor.md': {
-            content: markdownContent
+      const { data: urlData } = supabase.storage
+        .from('digital-analysis-reports')
+        .getPublicUrl(fileName)
+      
+      pdfUrl = urlData.publicUrl
+      console.log('✅ PDF uploaded to Supabase Storage:', pdfUrl)
+      
+      // Also upload Markdown to GitHub Gist as backup
+      try {
+        const gistData = {
+          description: `Dijital Analiz Raporu - ${website}`,
+          public: false,
+          files: {
+            'rapor.md': {
+              content: markdownReport
+            }
           }
         }
+        
+        const githubToken = Deno.env.get('GITHUB_TOKEN')
+        if (githubToken) {
+          const gistResponse = await fetch('https://api.github.com/gists', {
+            method: 'POST',
+            headers: {
+              'Authorization': `token ${githubToken}`,
+              'Content-Type': 'application/json',
+              'User-Agent': 'Teknoloji-Menajeri-Bot'
+            },
+            body: JSON.stringify(gistData)
+          })
+          
+          if (gistResponse.ok) {
+            const gistResult = await gistResponse.json()
+            console.log('✅ Markdown backup uploaded to GitHub Gist:', gistResult.html_url)
+          }
+        }
+      } catch (gistError) {
+        console.warn('⚠️ GitHub Gist backup failed (non-critical):', gistError)
       }
       
-      const githubToken = Deno.env.get('GITHUB_TOKEN')
-      if (!githubToken) {
-        console.warn('⚠️ GitHub token not found, skipping Gist upload')
-        throw new Error('GitHub token not configured')
-      }
-      
-      const gistResponse = await fetch('https://api.github.com/gists', {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'Teknoloji-Menajeri-Bot'
-        },
-        body: JSON.stringify(gistData)
-      })
-      
-      if (!gistResponse.ok) {
-        const errorText = await gistResponse.text()
-        console.error('❌ GitHub Gist upload error:', errorText)
-        throw new Error(`GitHub API error: ${gistResponse.status}`)
-      }
-      
-      const gistResult = await gistResponse.json()
-      pdfUrl = gistResult.html_url
-      console.log('✅ Report uploaded to GitHub Gist:', pdfUrl)
-      
-    } catch (gistError) {
-      console.error('❌ Report upload error:', gistError)
-      // Continue without Gist - don't fail the entire analysis
+    } catch (pdfError) {
+      console.error('❌ PDF generation/upload error:', pdfError)
+      // Continue without PDF - don't fail the entire analysis
     }
 
     // Save analysis results to database
@@ -219,10 +256,59 @@ serve(async (req) => {
   } catch (error) {
     console.error('❌ Analysis error:', error)
     
+    // Try to extract request details for error logging
+    let requestId = 'unknown'
+    let website = 'unknown'
+    
+    try {
+      const requestData = await req.json()
+      requestId = requestData.requestId || 'unknown'
+      website = requestData.website || 'unknown'
+    } catch (parseError) {
+      console.warn('Could not parse request data for error logging')
+    }
+    
+    // Enhanced error logging with context
+    const errorContext = {
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      stack: error.stack,
+      requestId,
+      website,
+      userAgent: req.headers.get('user-agent'),
+      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip')
+    }
+    
+    console.error('📊 Error context:', JSON.stringify(errorContext, null, 2))
+    
+    // Try to update database with error status
+    try {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      const supabase = createClient(supabaseUrl, supabaseKey)
+      
+      if (requestId !== 'unknown') {
+        await supabase
+          .from('digital_analysis_requests')
+          .update({
+            status: 'failed',
+            error_message: error.message,
+            failed_at: new Date().toISOString()
+          })
+          .eq('id', requestId)
+          
+        console.log('✅ Error status updated in database')
+      }
+    } catch (dbError) {
+      console.error('❌ Failed to update error status in database:', dbError)
+    }
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error.message,
+        requestId,
+        timestamp: new Date().toISOString()
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -313,7 +399,7 @@ async function analyzePerformance(website: string) {
 }
 
 // SEO Analysis
-async function analyzeSEO(website: string) {
+async function analyzeSEOMetrics(website: string) {
   try {
     console.log('🔍 Fetching website HTML for SEO analysis:', website)
     const response = await fetch(website)
@@ -416,117 +502,195 @@ async function analyzeSocialMedia(website: string) {
   }
 }
 
-// AI Insights Generation using Google Gemini
+// AI Insights Generation using Google Gemini with retry mechanism
 async function generateAIInsights(website: string, performance: any, seo: any, social: any) {
-  try {
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
-    if (!geminiApiKey) {
-      console.warn('Gemini API key not configured')
-      return { 
-        insights: 'AI analysis not configured',
-        recommendations: ['Configure Gemini API key for AI insights']
-      }
-    }
-
-    const prompt = `Analyze ${website}. Scores: M${performance.mobile_score || 'N/A'} S${seo.seo_score || 'N/A'} So${social.social_score || 'N/A'}. Give 2 insights + 2 tips. Max 100 words.`
-
-    // Updated model name for v1beta API
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
-    console.log('🤖 Calling Gemini API...')
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          maxOutputTokens: 200,
-          temperature: 0.7,
-        }
-      })
-    })
-
-    console.log('📡 Gemini API response status:', response.status)
-
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('❌ Gemini API error:', { status: response.status, error: errorText })
-      throw new Error(`Gemini API error: ${response.status} - ${errorText}`)
-    }
-
-    const data = await response.json()
-    console.log('📦 Gemini API response structure:', JSON.stringify(data).substring(0, 500))
-    
-    // Check if response has expected structure
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-      console.error('❌ Unexpected Gemini API response structure')
-      throw new Error('Invalid Gemini API response structure')
-    }
-    
-    // Handle different response structures
-    let aiResponse = ''
-    if (data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-      aiResponse = data.candidates[0].content.parts[0].text || ''
-    } else if (data.candidates[0].content.role) {
-      // Handle case where content only has role (MAX_TOKENS finish reason)
-      console.log('⚠️ Gemini response truncated (MAX_TOKENS), using fallback')
-      aiResponse = 'Dijital Varlık Analizi: Website analizi tamamlandı ancak AI yanıtı token limiti nedeniyle kesildi. Temel analiz sonuçları yukarıda mevcut.'
-    } else {
-      console.error('❌ No valid content found in Gemini response')
-      throw new Error('No valid content in Gemini response')
-    }
-    
-    console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
-
-    return {
-      insights: aiResponse,
-      recommendations: extractRecommendations(aiResponse)
-    }
-  } catch (error) {
-    console.error('AI insights error:', error)
-    
-    // Fallback: Generate basic insights based on scores
-    const fallbackInsights = `
-Dijital Varlık Analizi:
-
-**Performans Değerlendirmesi:**
-${performance.mobile_score >= 80 ? '✅ Mobil performansınız iyi durumda.' : '⚠️ Mobil performansınızı iyileştirmeniz önerilir.'}
-${performance.accessibility_score >= 80 ? '✅ Erişilebilirlik standartlarına uyumlusunuz.' : '⚠️ Erişilebilirlik iyileştirmeleri gerekiyor.'}
-
-**SEO Durumu:**
-${seo.seo_score >= 80 ? '✅ SEO optimizasyonunuz başarılı.' : '⚠️ SEO iyileştirmeleri yapılmalı.'}
-${seo.title && seo.title !== 'No title found' ? '✅ Sayfa başlığı mevcut.' : '❌ Sayfa başlığı eksik.'}
-${seo.description && seo.description !== 'No description found' ? '✅ Meta açıklaması mevcut.' : '❌ Meta açıklaması eksik.'}
-
-**Sosyal Medya:**
-${social.social_score >= 80 ? '✅ Sosyal medya entegrasyonunuz iyi.' : '⚠️ Sosyal medya optimizasyonu gerekiyor.'}
-${social.open_graph?.title && social.open_graph.title !== 'No Open Graph title' ? '✅ Open Graph etiketleri mevcut.' : '❌ Open Graph etiketleri eksik.'}
-
-**Öneriler:**
-1. Görselleri optimize edin ve sıkıştırın
-2. Meta etiketlerinizi güncelleyin
-3. Sosyal medya entegrasyonunu güçlendirin
-4. Mobil uyumluluğu test edin
-5. Sayfa yükleme hızını iyileştirin
-`
-    
+  const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
+  if (!geminiApiKey) {
+    console.warn('Gemini API key not configured')
     return { 
-      insights: fallbackInsights,
-      recommendations: [
-        'Görselleri optimize edin ve sıkıştırın',
-        'Meta etiketlerinizi güncelleyin',
-        'Sosyal medya entegrasyonunu güçlendirin',
-        'Mobil uyumluluğu test edin',
-        'Sayfa yükleme hızını iyileştirin'
-      ]
+      insights: 'AI analysis not configured',
+      recommendations: ['Configure Gemini API key for AI insights']
     }
   }
+
+  const prompt = `Analyze ${website}. Scores: M${performance.mobile_score || 'N/A'} S${seo.seo_score || 'N/A'} So${social.social_score || 'N/A'}. Give 2 insights + 2 tips. Max 300 words.`
+
+  // Retry mechanism with exponential backoff
+  const maxRetries = 3
+  const baseDelay = 1000 // 1 second
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🤖 Calling Gemini API (attempt ${attempt}/${maxRetries})...`)
+      
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }],
+          generationConfig: {
+            maxOutputTokens: 10000,
+            temperature: 0.7,
+          }
+        })
+      })
+
+      console.log('📡 Gemini API response status:', response.status)
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`❌ Gemini API error (attempt ${attempt}):`, { status: response.status, error: errorText })
+        
+        // Check if it's a retryable error (503, 429, 500, 502, 504)
+        const retryableStatuses = [503, 429, 500, 502, 504]
+        if (retryableStatuses.includes(response.status) && attempt < maxRetries) {
+          const delay = baseDelay * Math.pow(2, attempt - 1) // Exponential backoff
+          console.log(`⏳ Retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`)
+          await new Promise(resolve => setTimeout(resolve, delay))
+          continue
+        }
+        
+        // If not retryable or max retries reached, throw error
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`)
+      }
+
+      const data = await response.json()
+      console.log('📦 Gemini API response structure:', JSON.stringify(data).substring(0, 500))
+      
+      // Check if response has expected structure
+      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+        console.error('❌ Unexpected Gemini API response structure')
+        throw new Error('Invalid Gemini API response structure')
+      }
+      
+      // Handle different response structures
+      let aiResponse = ''
+      if (data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+        aiResponse = data.candidates[0].content.parts[0].text || ''
+      } else if (data.candidates[0].content.role) {
+        // Handle case where content only has role (MAX_TOKENS finish reason)
+        console.log('⚠️ Gemini response truncated (MAX_TOKENS), using fallback')
+        aiResponse = 'Dijital Varlık Analizi: Website analizi tamamlandı ancak AI yanıtı token limiti nedeniyle kesildi. Temel analiz sonuçları yukarıda mevcut.'
+      } else {
+        console.error('❌ No valid content found in Gemini response')
+        throw new Error('No valid content in Gemini response')
+      }
+      
+      console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
+
+      return {
+        insights: aiResponse,
+        recommendations: extractRecommendations(aiResponse)
+      }
+      
+    } catch (error) {
+      console.error(`❌ Gemini API attempt ${attempt} failed:`, error.message)
+      
+      // If this is the last attempt, fall through to fallback
+      if (attempt === maxRetries) {
+        console.log('🔄 All Gemini API attempts failed, using fallback insights')
+        break
+      }
+      
+      // Wait before retry
+      const delay = baseDelay * Math.pow(2, attempt - 1)
+      console.log(`⏳ Waiting ${delay}ms before retry...`)
+      await new Promise(resolve => setTimeout(resolve, delay))
+    }
+  }
+  
+  // Fallback: Generate enhanced insights based on scores
+  console.log('🔄 Using fallback AI insights generation')
+  return generateFallbackInsights(website, performance, seo, social)
+}
+
+// Enhanced fallback insights generation
+function generateFallbackInsights(website: string, performance: any, seo: any, social: any) {
+  const overallScore = Math.round((
+    (performance.mobile_score || 0) + 
+    (seo.seo_score || 0) + 
+    (social.social_score || 0)
+  ) / 3)
+  
+  const performanceGrade = performance.mobile_score >= 80 ? 'A' : performance.mobile_score >= 60 ? 'B' : 'C'
+  const seoGrade = seo.seo_score >= 80 ? 'A' : seo.seo_score >= 60 ? 'B' : 'C'
+  const socialGrade = social.social_score >= 80 ? 'A' : social.social_score >= 60 ? 'B' : 'C'
+  
+  const insights = `
+**Dijital Varlık Analizi - ${website}**
+
+**Genel Değerlendirme:**
+Toplam Skor: ${overallScore}/100
+Performans: ${performanceGrade} (${Math.round(performance.mobile_score || 0)}/100)
+SEO: ${seoGrade} (${Math.round(seo.seo_score || 0)}/100)
+Sosyal Medya: ${socialGrade} (${Math.round(social.social_score || 0)}/100)
+
+**Detaylı Analiz:**
+
+**⚡ Performans Durumu:**
+${performance.mobile_score >= 80 ? '✅ Mobil performansınız mükemmel durumda.' : performance.mobile_score >= 60 ? '⚠️ Mobil performansınız orta seviyede, iyileştirme gerekiyor.' : '❌ Mobil performansınız kritik seviyede, acil iyileştirme gerekli.'}
+${performance.accessibility_score >= 80 ? '✅ Erişilebilirlik standartlarına tam uyumlusunuz.' : '⚠️ Erişilebilirlik iyileştirmeleri yapılmalı.'}
+
+**🔍 SEO Optimizasyonu:**
+${seo.seo_score >= 80 ? '✅ SEO optimizasyonunuz başarılı.' : '⚠️ SEO iyileştirmeleri yapılmalı.'}
+${seo.title && seo.title !== 'No title found' ? '✅ Sayfa başlığı optimize edilmiş.' : '❌ Sayfa başlığı eksik veya optimize edilmemiş.'}
+${seo.description && seo.description !== 'No description found' ? '✅ Meta açıklaması mevcut.' : '❌ Meta açıklaması eksik.'}
+${seo.headings?.h1 === 1 ? '✅ H1 başlık yapısı doğru.' : '⚠️ H1 başlık yapısını kontrol edin.'}
+
+**🌐 Sosyal Medya Entegrasyonu:**
+${social.social_score >= 80 ? '✅ Sosyal medya entegrasyonunuz mükemmel.' : '⚠️ Sosyal medya optimizasyonu gerekiyor.'}
+${social.open_graph?.title && social.open_graph.title !== 'No Open Graph title' ? '✅ Open Graph etiketleri mevcut.' : '❌ Open Graph etiketleri eksik.'}
+${social.twitter_card && social.twitter_card !== 'No Twitter Card' ? '✅ Twitter Card yapılandırılmış.' : '❌ Twitter Card eksik.'}
+
+**🎯 Öncelikli Öneriler:**
+${generatePriorityRecommendations(performance, seo, social)}
+`
+  
+  return { 
+    insights: insights,
+    recommendations: generatePriorityRecommendations(performance, seo, social)
+  }
+}
+
+// Generate priority-based recommendations
+function generatePriorityRecommendations(performance: any, seo: any, social: any): string[] {
+  const recommendations: string[] = []
+  
+  // Performance recommendations
+  if (performance.mobile_score < 60) {
+    recommendations.push('🚀 Sayfa yükleme hızını optimize edin (kritik)')
+    recommendations.push('📱 Mobil uyumluluğu iyileştirin')
+  }
+  
+  // SEO recommendations
+  if (seo.seo_score < 60) {
+    recommendations.push('🔍 Meta etiketlerinizi optimize edin')
+    recommendations.push('📝 İçerik yapısını SEO standartlarına uygun hale getirin')
+  }
+  
+  if (seo.images_without_alt > 0) {
+    recommendations.push('🖼️ Görsellere alt etiketleri ekleyin')
+  }
+  
+  // Social media recommendations
+  if (social.social_score < 60) {
+    recommendations.push('📱 Sosyal medya meta etiketlerini ekleyin')
+    recommendations.push('🔗 Sosyal medya entegrasyonunu güçlendirin')
+  }
+  
+  // General recommendations
+  recommendations.push('📊 Düzenli performans analizi yapın')
+  recommendations.push('🔄 İçerikleri güncel tutun')
+  
+  return recommendations.slice(0, 5) // Limit to 5 recommendations
 }
 
 // Helper Functions
@@ -670,10 +834,10 @@ Bu rapor hakkında sorularınız için:
 `
 }
 
-// Generate professional PDF report using Puppeteer
+// Generate professional PDF report using Gotenberg
 async function generatePDFFromMarkdown(markdown: string, website: string): Promise<Uint8Array> {
   try {
-    console.log('📝 Generating PDF report with Puppeteer...')
+    console.log('📝 Generating PDF report with Gotenberg...')
     console.log('📝 Markdown length:', markdown.length)
     console.log('📝 Website:', website)
     
@@ -981,46 +1145,45 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     console.log('📝 HTML content length:', htmlContent.length)
     console.log('📝 HTML content preview:', htmlContent.substring(0, 200) + '...')
     
-    // Convert to simple Markdown
-    console.log('📝 Converting to simple Markdown...')
+    // Convert HTML to PDF using Gotenberg
+    const gotenbergUrl = Deno.env.get('GOTENBERG_URL') || 'http://localhost:3000'
+    console.log('📤 Sending HTML to Gotenberg at:', gotenbergUrl)
     
-    // Create simple markdown content
-    const markdownContent = `# Dijital Analiz Raporu
-
-**Website:** ${website}
-**Analiz Tarihi:** ${new Date().toLocaleDateString('tr-TR')}
-
-## Genel Değerlendirme
-
-**Toplam Skor:** ${sections.summary.totalScore || 'N/A'}/100
-
-## Performans Analizi
-
-- **Mobil Performans:** ${sections.performance.mobile || 'N/A'}
-- **Erişilebilirlik:** ${sections.performance.accessibility || 'N/A'}
-
-## SEO Analizi
-
-- **SEO Skoru:** ${sections.seo.score || 'N/A'}
-
-## Sosyal Medya Analizi
-
-- **Sosyal Medya Skoru:** ${sections.social.score || 'N/A'}
-
-## AI Öngörüleri ve Öneriler
-
-${sections.ai || 'AI analizi mevcut değil'}
-
----
-
-*Bu rapor Teknoloji Menajeri tarafından otomatik olarak oluşturulmuştur.*
-*Website: www.teknolojimenajeri.com.tr*
-*Email: gulsah@teknolojimenajeri.com*
-    `.trim()
+    // Create multipart form data
+    const formData = new FormData()
     
-    console.log('✅ Simple Markdown report generated, size:', markdownContent.length, 'characters')
+    // Add HTML file
+    const htmlBlob = new Blob([htmlContent], { type: 'text/html' })
+    formData.append('files', htmlBlob, 'index.html')
     
-    return markdownContent
+    // Add Gotenberg options for better PDF quality
+    formData.append('marginTop', '0')
+    formData.append('marginBottom', '0')
+    formData.append('marginLeft', '0')
+    formData.append('marginRight', '0')
+    formData.append('paperWidth', '8.27')     // A4 width in inches
+    formData.append('paperHeight', '11.7')    // A4 height in inches
+    formData.append('preferCssPageSize', 'false')
+    formData.append('printBackground', 'true')
+    formData.append('scale', '1.0')
+    formData.append('waitDelay', '1s')        // Wait for fonts and styles to load
+    
+    const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
+      method: 'POST',
+      body: formData,
+    })
+    
+    if (!gotenbergResponse.ok) {
+      const errorText = await gotenbergResponse.text()
+      console.error('❌ Gotenberg error:', { status: gotenbergResponse.status, error: errorText })
+      throw new Error(`Gotenberg PDF generation failed: ${gotenbergResponse.status} - ${errorText}`)
+    }
+    
+    const pdfBuffer = await gotenbergResponse.arrayBuffer()
+    console.log('✅ PDF generated successfully, size:', pdfBuffer.byteLength, 'bytes')
+    
+    // Return the PDF buffer
+    return new Uint8Array(pdfBuffer)
   } catch (error) {
     console.error('❌ HTML generation error:', error)
     console.error('❌ Error stack:', error.stack)
@@ -1028,42 +1191,3 @@ ${sections.ai || 'AI analizi mevcut değil'}
   }
 }
 
-// Simple Markdown to HTML converter
-function markdownToHTML(markdown: string): string {
-  let html = markdown
-  
-  // Headers
-  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>')
-  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>')
-  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>')
-  
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-  
-  // Italic
-  html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>')
-  
-  // Links
-  html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>')
-  
-  // Lists
-  html = html.replace(/^\* (.*$)/gim, '<li>$1</li>')
-  html = html.replace(/^\- (.*$)/gim, '<li>$1</li>')
-  html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-  
-  // Horizontal rule
-  html = html.replace(/^---$/gim, '<hr>')
-  
-  // Line breaks
-  html = html.replace(/\n\n/g, '</p><p>')
-  html = '<p>' + html + '</p>'
-  
-  // Clean up
-  html = html.replace(/<p><h/g, '<h')
-  html = html.replace(/<\/h([1-6])><\/p>/g, '</h$1>')
-  html = html.replace(/<p><ul>/g, '<ul>')
-  html = html.replace(/<\/ul><\/p>/g, '</ul>')
-  html = html.replace(/<p><hr><\/p>/g, '<hr>')
-  
-  return html
-}
