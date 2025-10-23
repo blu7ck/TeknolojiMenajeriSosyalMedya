@@ -41,13 +41,7 @@ GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 # - PageSpeed: https://console.cloud.google.com > APIs & Services
 # - Gemini: https://makersuite.google.com/app/apikey
 
-# 2.4 GitHub (Opsiyonel - Markdown Backup)
-GITHUB_TOKEN=YOUR_GITHUB_TOKEN
-# Nasıl alınır:
-# - https://github.com/settings/tokens
-# - Permission: gist (Create gists)
-
-# 2.5 Supabase Internal
+# 2.4 Supabase Internal
 SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
 # Nasıl alınır:

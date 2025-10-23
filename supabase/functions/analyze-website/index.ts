@@ -148,38 +148,6 @@ serve(async (req) => {
       pdfUrl = urlData.publicUrl
       console.log('✅ PDF uploaded to Supabase Storage:', pdfUrl)
       
-      // Also upload Markdown to GitHub Gist as backup
-      try {
-        const gistData = {
-          description: `Dijital Analiz Raporu - ${website}`,
-          public: false,
-          files: {
-            'rapor.md': {
-              content: markdownReport
-            }
-          }
-        }
-        
-        const githubToken = Deno.env.get('GITHUB_TOKEN')
-        if (githubToken) {
-          const gistResponse = await fetch('https://api.github.com/gists', {
-            method: 'POST',
-            headers: {
-              'Authorization': `token ${githubToken}`,
-              'Content-Type': 'application/json',
-              'User-Agent': 'Teknoloji-Menajeri-Bot'
-            },
-            body: JSON.stringify(gistData)
-          })
-          
-          if (gistResponse.ok) {
-            const gistResult = await gistResponse.json()
-            console.log('✅ Markdown backup uploaded to GitHub Gist:', gistResult.html_url)
-          }
-        }
-      } catch (gistError) {
-        console.warn('⚠️ GitHub Gist backup failed (non-critical):', gistError)
-      }
       
     } catch (pdfError) {
       console.error('❌ PDF generation/upload error:', pdfError)
