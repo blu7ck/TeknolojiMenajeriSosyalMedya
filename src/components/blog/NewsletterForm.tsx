@@ -111,8 +111,8 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
     <div className="py-4">
       <div className="max-w-4xl mx-auto">
         {/* Newsletter Header */}
-        <div className="text-center mb-4">
-          <div className="flex items-center justify-center gap-2 mb-2">
+        <div className="text-left mb-4">
+          <div className="flex items-center gap-2 mb-2">
             <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Newsletter Aboneliği</h3>
           </div>
