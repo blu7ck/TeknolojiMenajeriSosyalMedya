@@ -83,7 +83,7 @@ export default function HomePage() {
               <h3 className="text-xl font-bold text-gray-900">Önemli Noktalar</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
+              <div className="bg-white rounded-lg p-4 text-center border border-red-500/20">
                 <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">1</span>
                 </div>
@@ -91,7 +91,7 @@ export default function HomePage() {
                 <p className="text-xs text-gray-600">Her içerik seti için 1 revizyon hakkı dahil</p>
               </div>
               
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
+              <div className="bg-white rounded-lg p-4 text-center border border-red-500/20">
                 <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">©</span>
                 </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 <p className="text-xs text-gray-600">Kullanım hakları net olarak tanımlanır</p>
               </div>
               
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
+              <div className="bg-white rounded-lg p-4 text-center border border-red-500/20">
                 <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">24</span>
                 </div>
@@ -107,7 +107,7 @@ export default function HomePage() {
                 <p className="text-xs text-gray-600">24-48 saat destek süresi</p>
               </div>
               
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
+              <div className="bg-white rounded-lg p-4 text-center border border-red-500/20">
                 <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <span className="text-white text-sm font-bold">↗</span>
                 </div>

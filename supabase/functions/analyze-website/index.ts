@@ -483,14 +483,14 @@ async function analyzeSocialMedia(website: string) {
 
 // AI Insights Generation using Google Gemini with retry mechanism
 async function generateAIInsights(website: string, performance: any, seo: any, social: any) {
-  const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
-  if (!geminiApiKey) {
-    console.warn('Gemini API key not configured')
-    return { 
-      insights: 'AI analysis not configured',
-      recommendations: ['Configure Gemini API key for AI insights']
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
+    if (!geminiApiKey) {
+      console.warn('Gemini API key not configured')
+      return { 
+        insights: 'AI analysis not configured',
+        recommendations: ['Configure Gemini API key for AI insights']
+      }
     }
-  }
 
   const prompt = `${website} web sitesini analiz et. Skorlar: Mobil ${performance.mobile_score || 'N/A'}, SEO ${seo.seo_score || 'N/A'}, Sosyal Medya ${social.social_score || 'N/A'}. 2 öngörü + 2 öneri ver. Maksimum 300 kelime. Türkçe yanıt ver.`
 
@@ -502,30 +502,30 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
     try {
       console.log(`🤖 Calling Gemini API (attempt ${attempt}/${maxRetries})...`)
       
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
-          generationConfig: {
-            maxOutputTokens: 10000,
-            temperature: 0.7,
-          }
-        })
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          maxOutputTokens: 10000,
+          temperature: 0.7,
+        }
       })
+    })
 
-      console.log('📡 Gemini API response status:', response.status)
+    console.log('📡 Gemini API response status:', response.status)
 
-      if (!response.ok) {
-        const errorText = await response.text()
+    if (!response.ok) {
+      const errorText = await response.text()
         console.error(`❌ Gemini API error (attempt ${attempt}):`, { status: response.status, error: errorText })
         
         // Check if it's a retryable error (503, 429, 500, 502, 504)
@@ -538,39 +538,39 @@ async function generateAIInsights(website: string, performance: any, seo: any, s
         }
         
         // If not retryable or max retries reached, throw error
-        throw new Error(`Gemini API error: ${response.status} - ${errorText}`)
-      }
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`)
+    }
 
-      const data = await response.json()
-      console.log('📦 Gemini API response structure:', JSON.stringify(data).substring(0, 500))
-      
-      // Check if response has expected structure
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        console.error('❌ Unexpected Gemini API response structure')
-        throw new Error('Invalid Gemini API response structure')
-      }
-      
-      // Handle different response structures
-      let aiResponse = ''
-      if (data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-        aiResponse = data.candidates[0].content.parts[0].text || ''
-      } else if (data.candidates[0].content.role) {
-        // Handle case where content only has role (MAX_TOKENS finish reason)
-        console.log('⚠️ Gemini response truncated (MAX_TOKENS), using fallback')
-        aiResponse = 'Dijital Varlık Analizi: Website analizi tamamlandı ancak AI yanıtı token limiti nedeniyle kesildi. Temel analiz sonuçları yukarıda mevcut.'
-      } else {
-        console.error('❌ No valid content found in Gemini response')
-        throw new Error('No valid content in Gemini response')
-      }
-      
-      console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
+    const data = await response.json()
+    console.log('📦 Gemini API response structure:', JSON.stringify(data).substring(0, 500))
+    
+    // Check if response has expected structure
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      console.error('❌ Unexpected Gemini API response structure')
+      throw new Error('Invalid Gemini API response structure')
+    }
+    
+    // Handle different response structures
+    let aiResponse = ''
+    if (data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+      aiResponse = data.candidates[0].content.parts[0].text || ''
+    } else if (data.candidates[0].content.role) {
+      // Handle case where content only has role (MAX_TOKENS finish reason)
+      console.log('⚠️ Gemini response truncated (MAX_TOKENS), using fallback')
+      aiResponse = 'Dijital Varlık Analizi: Website analizi tamamlandı ancak AI yanıtı token limiti nedeniyle kesildi. Temel analiz sonuçları yukarıda mevcut.'
+    } else {
+      console.error('❌ No valid content found in Gemini response')
+      throw new Error('No valid content in Gemini response')
+    }
+    
+    console.log('✅ AI response extracted, length:', aiResponse?.length || 0)
 
-      return {
-        insights: aiResponse,
-        recommendations: extractRecommendations(aiResponse)
-      }
+    return {
+      insights: aiResponse,
+      recommendations: extractRecommendations(aiResponse)
+    }
       
-    } catch (error) {
+  } catch (error) {
       console.error(`❌ Gemini API attempt ${attempt} failed:`, error.message)
       
       // If this is the last attempt, fall through to fallback
@@ -632,8 +632,8 @@ ${social.twitter_card && social.twitter_card !== 'No Twitter Card' ? '✅ Twitte
 🎯 ÖNCELİKLİ ÖNERİLER:
 ${generatePriorityRecommendations(performance, seo, social)}
 `
-  
-  return { 
+    
+    return { 
     insights: insights,
     recommendations: generatePriorityRecommendations(performance, seo, social)
   }
@@ -803,7 +803,7 @@ ${ai_insights.insights || 'AI analizi mevcut değil'}
 
 📞 İLETİŞİM
 
-Bu rapor hakkında sorularınız için:
+Bu rapor hakkında sorularınız için:  
 Email: gulsah@teknolojimenajeri.com
 Website: https://www.teknolojimenajeri.com.tr
 

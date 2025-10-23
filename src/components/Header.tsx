@@ -47,11 +47,10 @@ export function Header() {
         <div
           className={`relative overflow-hidden rounded-3xl transition-all duration-500 ${
             isScrolled
-              ? "bg-white/70 backdrop-blur-xl shadow-lg border border-white/20"
-              : "bg-white/40 backdrop-blur-md border border-white/30"
+              ? "bg-white shadow-lg border border-gray-200"
+              : "bg-white/90 border border-gray-200"
           }`}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 animate-gradient pointer-events-none" />
 
           <nav className="relative flex items-center justify-between px-6 md:px-8 py-4">
             <Link
@@ -124,7 +123,7 @@ export function Header() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200/50 bg-white/80 backdrop-blur-xl">
+            <div className="md:hidden border-t border-gray-200 bg-white">
               <div className="px-6 py-4 space-y-3">
                 {/* Blog sayfasında navigation gizle */}
                 {!isBlogPage && navItems.map((item, index) =>
