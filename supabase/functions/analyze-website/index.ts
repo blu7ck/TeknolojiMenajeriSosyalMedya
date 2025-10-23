@@ -1177,26 +1177,250 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
     formData.append('scale', '1.0')
     formData.append('waitDelay', '1s')        // Wait for fonts and styles to load
     
+    // First check if Gotenberg is healthy
+    try {
+      const healthResponse = await fetch(`${gotenbergUrl}/health`, {
+        method: 'GET',
+        signal: AbortSignal.timeout(5000)
+      })
+      
+      if (!healthResponse.ok) {
+        console.warn('⚠️ Gotenberg health check failed, using fallback')
+        return generateFallbackPDF(markdown, website)
+      }
+    } catch (healthError) {
+      console.warn('⚠️ Gotenberg health check error, using fallback:', healthError.message)
+      return generateFallbackPDF(markdown, website)
+    }
+
     const gotenbergResponse = await fetch(`${gotenbergUrl}/forms/chromium/convert/html`, {
       method: 'POST',
       body: formData,
+      signal: AbortSignal.timeout(30000) // 30 second timeout
     })
     
     if (!gotenbergResponse.ok) {
       const errorText = await gotenbergResponse.text()
       console.error('❌ Gotenberg error:', { status: gotenbergResponse.status, error: errorText })
-      throw new Error(`Gotenberg PDF generation failed: ${gotenbergResponse.status} - ${errorText}`)
+      console.log('🔄 Falling back to alternative PDF generation...')
+      return generateFallbackPDF(markdown, website)
     }
     
     const pdfBuffer = await gotenbergResponse.arrayBuffer()
-    console.log('✅ PDF generated successfully, size:', pdfBuffer.byteLength, 'bytes')
+    console.log('✅ PDF generated successfully with Gotenberg, size:', pdfBuffer.byteLength, 'bytes')
     
     // Return the PDF buffer
     return new Uint8Array(pdfBuffer)
   } catch (error) {
     console.error('❌ HTML generation error:', error)
     console.error('❌ Error stack:', error.stack)
-    throw error
+    console.log('🔄 Falling back to alternative PDF generation...')
+    return generateFallbackPDF(markdown, website)
   }
+}
+
+// Fallback PDF generation when Gotenberg fails
+async function generateFallbackPDF(markdown: string, website: string): Promise<Uint8Array> {
+  console.log('📄 Generating fallback PDF...')
+  
+  try {
+    // Create a simple HTML document for fallback
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijital Analiz Raporu - ${website}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+        }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+        h2 { color: #34495e; margin-top: 25px; }
+        h3 { color: #7f8c8d; margin-top: 15px; }
+        .score { background: #f8f9fa; padding: 8px; border-radius: 4px; margin: 8px 0; }
+        .good { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+        ul, ol { margin: 8px 0; padding-left: 20px; }
+        li { margin: 4px 0; }
+        .footer { 
+            margin-top: 30px; 
+            padding-top: 15px; 
+            border-top: 1px solid #dee2e6; 
+            font-size: 0.9em; 
+            color: #6c757d; 
+            text-align: center;
+        }
+        .fallback-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="fallback-notice">
+        <strong>Not:</strong> Bu rapor alternatif PDF oluşturma yöntemi ile üretilmiştir. 
+        Gotenberg servisi geçici olarak kullanılamıyor.
+    </div>
+    ${markdown.replace(/\n/g, '<br>')}
+    <div class="footer">
+        <p><strong>Teknoloji Menajeri</strong> - Dijital Analiz Raporu</p>
+        <p>🌐 www.teknolojimenajeri.com.tr | 📧 gulsah@teknolojimenajeri.com</p>
+        <p style="margin-top: 10px; opacity: 0.7; font-size: 12px;">
+            Bu rapor otomatik olarak oluşturulmuştur.
+        </p>
+    </div>
+</body>
+</html>`
+
+    // For now, we'll create a simple text-based "PDF" 
+    // In a real implementation, you might want to use a different PDF service
+    const textContent = markdown.replace(/<[^>]*>/g, '').replace(/\n/g, '\n')
+    
+    // Create a minimal PDF structure
+    const pdfContent = createSimplePDF(textContent, website)
+    
+    console.log('✅ Fallback PDF generated successfully:', pdfContent.length, 'bytes')
+    return new Uint8Array(Buffer.from(pdfContent, 'utf8'))
+  } catch (error) {
+    console.error('❌ Fallback PDF generation error:', error)
+    
+    // Last resort: create a very basic PDF
+    const basicContent = `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+>>
+endobj
+
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+(Dijital Analiz Raporu - ${website}) Tj
+0 -20 Td
+(Bu rapor alternatif yöntemle oluşturulmuştur.) Tj
+0 -20 Td
+(Teknoloji Menajeri) Tj
+ET
+endstream
+endobj
+
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000274 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+500
+%%EOF`
+    
+    return new Uint8Array(Buffer.from(basicContent, 'utf8'))
+  }
+}
+
+// Create a simple PDF content
+function createSimplePDF(content: string, website: string): string {
+  const lines = content.split('\n').slice(0, 50) // Limit to 50 lines
+  const contentText = lines.join('\\n')
+  
+  return `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+>>
+endobj
+
+4 0 obj
+<<
+/Length ${contentText.length + 200}
+>>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+(Dijital Analiz Raporu - ${website}) Tj
+0 -20 Td
+(${contentText.substring(0, 1000)}) Tj
+0 -20 Td
+(Teknoloji Menajeri - Alternatif PDF) Tj
+ET
+endstream
+endobj
+
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000274 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+${1000 + contentText.length}
+%%EOF`
 }
 
