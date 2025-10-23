@@ -157,7 +157,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
               </button>
             </div>
             
-            {/* Center: Name inputs */}
+            {/* Center: Name and profession inputs */}
             <div className="flex gap-2">
               <input
                 type="text"
@@ -165,7 +165,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-24 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-20 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
               <input
@@ -174,7 +174,15 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-24 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-20 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                style={{ backgroundColor: "#2A2C2C" }}
+              />
+              <input
+                type="text"
+                placeholder="Meslek (opsiyonel)"
+                value={formData.profession}
+                onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                className="w-32 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
             </div>
