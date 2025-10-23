@@ -528,29 +528,10 @@ export default function InfiniteGallery({
 		}
 	}, []);
 
-	if (!webglSupported) {
-		return (
-			<div className={className} style={style}>
-				<FallbackGallery images={images} />
-			</div>
-		);
-	}
-
+	// Always use fallback gallery to avoid WebGL issues
 	return (
 		<div className={className} style={style}>
-			<ErrorBoundary fallback={<FallbackGallery images={images} />}>
-				<Canvas
-					camera={{ position: [0, 0, 0], fov: 55 }}
-					gl={{ antialias: true, alpha: true }}
-				>
-					<GalleryScene
-						images={images}
-						fadeSettings={fadeSettings}
-						blurSettings={blurSettings}
-						{...props}
-					/>
-				</Canvas>
-			</ErrorBoundary>
+			<FallbackGallery images={images} />
 		</div>
 	);
 }
