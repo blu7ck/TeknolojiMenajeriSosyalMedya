@@ -6,7 +6,7 @@ interface ProcessSectionProps {
   steps: ProcessStep[];
 }
 
-export const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
+const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
   return (
     <section id="process" className="py-20" style={{ backgroundColor: "#151516" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,3 +46,5 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
     </section>
   );
 };
+
+export default ProcessSection;

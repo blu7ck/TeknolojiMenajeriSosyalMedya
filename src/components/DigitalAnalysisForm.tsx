@@ -30,7 +30,7 @@ interface FormState {
   message: string
 }
 
-export function DigitalAnalysisForm() {
+function DigitalAnalysisForm() {
   const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY
   
   console.log('🎬 DigitalAnalysisForm component mounted')
@@ -601,3 +601,5 @@ export function DigitalAnalysisForm() {
     </div>
   )
 }
+
+export default DigitalAnalysisForm;

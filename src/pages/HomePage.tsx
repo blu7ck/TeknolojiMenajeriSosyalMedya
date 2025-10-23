@@ -4,10 +4,10 @@ import { setHomePageSEO } from "../lib/seo-utils"
 import { Suspense, lazy, useState, useEffect, useRef } from "react"
 
 // Lazy load heavy components for better performance
-const ProcessSection = lazy(() => import("../components/ProcessSection"))
-const AboutUs = lazy(() => import("../components/AboutUs"))
-const Services = lazy(() => import("../components/Services"))
-const DigitalAnalysisForm = lazy(() => import("../components/DigitalAnalysisForm"))
+const ProcessSection = lazy(() => import("../components/ProcessSection").then(module => ({ default: module.ProcessSection })))
+const AboutUs = lazy(() => import("../components/AboutUs").then(module => ({ default: module.AboutUs })))
+const Services = lazy(() => import("../components/Services").then(module => ({ default: module.Services })))
+const DigitalAnalysisForm = lazy(() => import("../components/DigitalAnalysisForm").then(module => ({ default: module.DigitalAnalysisForm })))
 
 // Lazy load heavy 3D gallery with error handling
 const GalleryPage = lazy(() => import("../components/GalleryPage").catch(() => ({
