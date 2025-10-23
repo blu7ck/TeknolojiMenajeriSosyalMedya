@@ -132,7 +132,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-200" style={{ overflowX: 'hidden' }}>
+      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border border-gray-800" style={{ overflowX: 'hidden', backgroundColor: '#151516' }}>
         {/* Theme Toggle Button */}
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
@@ -152,7 +152,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
         </button>
 
         {/* Content */}
-        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`} style={{ overflowX: 'hidden', maxWidth: '100%' }}>
+        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'text-white' : 'bg-white text-gray-900'}`} style={{ overflowX: 'hidden', maxWidth: '100%', backgroundColor: isDarkMode ? '#151516' : undefined }}>
           {/* Featured Image */}
           {post.cover_image && (
             <div className="relative overflow-hidden rounded-xl aspect-video mb-8 bg-muted">
