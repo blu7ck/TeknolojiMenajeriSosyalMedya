@@ -128,7 +128,7 @@ export default function HomePage() {
               <img 
                 src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
                 alt="Teknoloji Menajeri Logo" 
-                className="h-64 w-auto"
+                className="h-32 w-auto"
                 onError={(e) => {
                   console.log('Logo yüklenemedi, PNG deneniyor...')
                   e.currentTarget.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'
