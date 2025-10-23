@@ -34,8 +34,24 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
     // Blog view tracking
     trackBlogView(post.id)
     
+    // WebGL context lost handler for blog modal
+    const handleWebGLContextLost = (event: Event) => {
+      event.preventDefault()
+      console.warn('WebGL context lost in blog modal')
+    }
+    
+    const handleWebGLContextRestored = () => {
+      console.log('WebGL context restored in blog modal')
+    }
+    
+    // Add global event listeners
+    window.addEventListener('webglcontextlost', handleWebGLContextLost)
+    window.addEventListener('webglcontextrestored', handleWebGLContextRestored)
+    
     return () => {
       document.body.style.overflow = "unset"
+      window.removeEventListener('webglcontextlost', handleWebGLContextLost)
+      window.removeEventListener('webglcontextrestored', handleWebGLContextRestored)
     }
   }, [post.id])
 
