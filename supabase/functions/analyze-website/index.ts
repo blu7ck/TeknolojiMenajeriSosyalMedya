@@ -1134,7 +1134,7 @@ async function generatePDFFromMarkdown(markdown: string, website: string): Promi
       <!-- AI Öngörüleri -->
       <div class="section">
         <h2 class="section-title">🤖 AI Öngörüleri ve Öneriler</h2>
-        <div class="ai-insights">${sections.ai || markdown}</div>
+        <div class="ai-insights">${cleanAIInsights(sections.ai || markdown)}</div>
       </div>
     </div>
 
@@ -1266,7 +1266,7 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
         <strong>Not:</strong> Bu rapor alternatif PDF oluşturma yöntemi ile üretilmiştir. 
         Gotenberg servisi geçici olarak kullanılamıyor.
     </div>
-    ${markdown.replace(/\n/g, '<br>')}
+    ${cleanAIInsights(markdown)}
     <div class="footer">
         <p><strong>Teknoloji Menajeri</strong> - Dijital Analiz Raporu</p>
         <p>🌐 www.teknolojimenajeri.com.tr | 📧 gulsah@teknolojimenajeri.com</p>
@@ -1350,6 +1350,39 @@ startxref
     
     return new Uint8Array(Buffer.from(basicContent, 'utf8'))
   }
+}
+
+// Clean AI insights by removing markdown formatting
+function cleanAIInsights(insights: string): string {
+  if (!insights) return ''
+  
+  return insights
+    // Remove markdown headers
+    .replace(/^#{1,6}\s+/gm, '')
+    // Remove bold/italic markdown
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Remove links but keep text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove list markers and convert to HTML
+    .replace(/^\s*[-*+]\s+/gm, '• ')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    // Remove horizontal rules
+    .replace(/^[-*_]{3,}$/gm, '')
+    // Remove blockquotes
+    .replace(/^>\s*/gm, '')
+    // Clean up extra whitespace
+    .replace(/\n\s*\n/g, '\n\n')
+    .replace(/^\s+|\s+$/gm, '')
+    // Convert line breaks to HTML
+    .replace(/\n/g, '<br>')
+    // Remove any remaining markdown artifacts
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .replace(/`/g, '')
 }
 
 // Create a simple PDF content
