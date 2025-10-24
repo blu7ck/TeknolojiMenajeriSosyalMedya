@@ -90,6 +90,8 @@ function FallbackGallery({ images }: { images: ImageItem[] }) {
 								alt={img.alt}
 								className="w-64 h-48 object-cover transition-transform duration-500 hover:scale-110"
 								loading="lazy"
+								crossOrigin="anonymous"
+								referrerPolicy="no-referrer"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
 								<div className="absolute bottom-4 left-4 right-4">
@@ -100,7 +102,7 @@ function FallbackGallery({ images }: { images: ImageItem[] }) {
 					</div>
 				))}
 			</div>
-			<style jsx>{`
+			<style>{`
 				.scrollbar-hide {
 					-ms-overflow-style: none;
 					scrollbar-width: none;

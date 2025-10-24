@@ -22,9 +22,9 @@ export function getUserIdentifier(): string {
     const cookieOptions = {
       expires: 365,
       secure: true,
-      sameSite: 'none' as const, // Cloudflare için 'none' kullan
+      sameSite: 'lax' as const, // Cloudflare için 'lax' kullan
       path: '/',
-      domain: window.location.hostname // Açık domain belirt
+      // domain belirtme - otomatik domain kullan
     }
     
     try {
