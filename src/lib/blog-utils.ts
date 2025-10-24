@@ -9,16 +9,22 @@ export function getUserIdentifier(): string {
   if (!userId) {
     userId = localStorage.getItem(cookieName) || undefined
   }
+  
+  // Cloudflare __cf_bm hatası durumunda localStorage'a güven
+  if (!userId) {
+    userId = localStorage.getItem(cookieName) || undefined
+  }
 
   if (!userId) {
     userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    // Cookie domain ayarları - Vercel için güvenli
+    // Cookie domain ayarları - Cloudflare uyumlu
     const cookieOptions = {
       expires: 365,
       secure: true,
-      sameSite: 'lax' as const,
-      path: '/'
+      sameSite: 'none' as const, // Cloudflare için 'none' kullan
+      path: '/',
+      domain: window.location.hostname // Açık domain belirt
     }
     
     try {
@@ -26,7 +32,7 @@ export function getUserIdentifier(): string {
       // localStorage'a da kaydet (fallback için)
       localStorage.setItem(cookieName, userId)
     } catch (error) {
-      console.warn("Cookie set failed, using localStorage:", error)
+      console.warn("Cookie set failed (Cloudflare __cf_bm hatası olabilir), using localStorage:", error)
       // Sadece localStorage kullan
       localStorage.setItem(cookieName, userId)
     }
