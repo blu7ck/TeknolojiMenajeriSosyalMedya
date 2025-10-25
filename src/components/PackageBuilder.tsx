@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Calculator } from 'lucide-react';
 import { Module, SelectedModule, ContactForm } from '../types';
 import { individualModules, influencerModules, businessModules } from '../data/packages';
+import AnimatedQuoteButton from './AnimatedQuoteButton';
 
 interface PackageBuilderProps {
   isOpen: boolean;
@@ -222,13 +223,11 @@ export const PackageBuilder: React.FC<PackageBuilderProps> = ({
                 >
                   İptal
                 </button>
-                <button
-                  onClick={() => setShowContactForm(true)}
-                  disabled={selectedModules.length === 0}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Teklif Al
-                </button>
+                <AnimatedQuoteButton 
+                  packageTitle={selectedPackageType === 'individual' ? 'Bireysel Paket' : selectedPackageType === 'influencer' ? 'İnfluencer Paket' : 'Kurumsal Paket'}
+                  packagePrice={`${calculateTotal().toFixed(2)} TL`}
+                  selectedModules={selectedModules.map(m => m.name)}
+                />
               </div>
             </>
           ) : (

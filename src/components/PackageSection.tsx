@@ -1,6 +1,7 @@
 import React from 'react';
 import { Package } from '../types';
 import { CheckCircle } from 'lucide-react';
+import AnimatedQuoteButton from './AnimatedQuoteButton';
 
 interface PackageSectionProps {
   packages: Package[];
@@ -60,12 +61,11 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
                 </div>
               </div>
 
-              <button 
-                onClick={() => onPackageSelect(getPackageType(pkg.id))}
-                className="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Kendi Paketini Oluştur
-              </button>
+              <AnimatedQuoteButton 
+                packageTitle={pkg.title}
+                packagePrice={pkg.pricing}
+                selectedModules={pkg.features}
+              />
             </div>
           ))}
         </div>
