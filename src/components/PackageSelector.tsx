@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { Check, X, Play, ArrowLeft } from "lucide-react"
 import "./PackageSelector.css"
+import AnimatedQuoteButton from './AnimatedQuoteButton'
 
 interface Module {
   id: string
@@ -488,15 +489,13 @@ export function PackageSelector() {
                       })}
                     </div>
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setShowForm(true)
-                      }}
-                      className="w-full mt-4 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105"
-                    >
-                      TEKLİF AL
-                    </button>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <AnimatedQuoteButton 
+                        packageTitle={pkg.title}
+                        packagePrice={pkg.pricing}
+                        selectedModules={pkg.modules.map((m: any) => m.name)}
+                      />
+                    </div>
                   </div>
                 </div>
               )
