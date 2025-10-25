@@ -48,7 +48,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <div className="pt-24">
+      <div className="pt-0">
         {/* Gallery with Intersection Observer */}
         {shouldLoadGallery ? (
           <div ref={galleryRef}>

@@ -55,7 +55,7 @@ export function MarvelColumns() {
   }
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-black flex">
+    <div className="h-screen w-full overflow-hidden bg-black flex" style={{ marginTop: '0' }}>
       {columns.map((column) => {
         const isExpanded = expandedColumn === column.id
         const isOtherExpanded = expandedColumn !== null && !isExpanded
