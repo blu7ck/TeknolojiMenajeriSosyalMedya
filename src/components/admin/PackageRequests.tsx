@@ -29,7 +29,8 @@ interface PackageRequest {
   selected_modules: string[]
   social_media_accounts: Array<{
     platform: string
-    username: string
+    username?: string
+    value?: string
   }>
   status: 'pending' | 'contacted' | 'quoted' | 'accepted' | 'rejected'
   admin_notes?: string
@@ -357,7 +358,7 @@ export default function PackageRequests() {
                         <div key={index} className="flex items-center">
                           {getSocialMediaIcon(social.platform)}
                           <span className="ml-2 text-sm">
-                            {social.platform}: @{social.username}
+                            {social.platform}: @{social.username || social.value || ''}
                           </span>
                         </div>
                       ))}
