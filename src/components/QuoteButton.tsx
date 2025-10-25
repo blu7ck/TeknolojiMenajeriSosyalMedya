@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import { X, Plus } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Instagram, Youtube, Music2, Twitter, Facebook, Linkedin } from "lucide-react"
+import { MeshGradient } from "@paper-design/shaders-react"
+import { createClient } from "../lib/supabase/client"
+import { getUserIP } from "../lib/blog-utils"
 
 const socialMediaPlatforms = [
   { value: "Instagram", label: "Instagram", icon: Instagram },
@@ -14,17 +17,17 @@ const socialMediaPlatforms = [
   { value: "LinkedIn", label: "LinkedIn", icon: Linkedin },
 ]
 
-interface AnimatedQuoteButtonProps {
+interface QuoteButtonProps {
   packageTitle?: string
   packagePrice?: string
   selectedModules?: string[]
 }
 
-export default function AnimatedQuoteButton({ 
+export default function QuoteButton({ 
   packageTitle = "Özel Paket", 
   packagePrice = "Fiyat Teklifi", 
   selectedModules = [] 
-}: AnimatedQuoteButtonProps) {
+}: QuoteButtonProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [socialMediaFields, setSocialMediaFields] = useState<Array<{ id: string; platform: string; value: string }>>([])
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -65,73 +68,169 @@ export default function AnimatedQuoteButton({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Form verilerini topla
-    const formData = new FormData(e.target as HTMLFormElement)
-    const data = {
-      name: formData.get('name'),
-      surname: formData.get('surname'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      corporateInfo: formData.get('corporate-info'),
-      packageTitle,
-      packagePrice,
-      selectedModules,
-      socialMediaAccounts: socialMediaFields
-    }
+    try {
+      // Form verilerini topla
+      const formData = new FormData(e.target as HTMLFormElement)
+      const data = {
+        name: formData.get('name') as string,
+        surname: formData.get('surname') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        corporateInfo: formData.get('corporate-info') as string,
+        packageTitle,
+        packagePrice,
+        selectedModules,
+        socialMediaAccounts: socialMediaFields,
+        createdAt: new Date().toISOString()
+      }
 
-    console.log('Teklif formu gönderildi:', data)
-    
-    // Burada API çağrısı yapılabilir
-    // await submitQuoteRequest(data)
-    
-    // Başarı mesajı göster
-    alert('Teklif talebiniz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.')
-    
-    // Formu kapat
-    handleClose()
+      console.log('Teklif formu gönderiliyor:', data)
+
+      // Supabase client oluştur
+      const supabase = createClient()
+
+      // Veritabanına kaydet
+      const { data: quoteData, error: quoteError } = await supabase
+        .from('package_requests')
+        .insert([
+          {
+            first_name: data.name,
+            last_name: data.surname,
+            email: data.email,
+            phone: data.phone,
+            company_info: data.corporateInfo,
+            package_type: 'custom', // veya packageTitle'dan türetilebilir
+            package_title: data.packageTitle,
+            selected_modules: data.selectedModules,
+            social_media_accounts: data.socialMediaAccounts,
+            status: 'pending',
+            ip_address: await getUserIP(),
+            user_agent: navigator.userAgent
+          }
+        ])
+        .select()
+
+      if (quoteError) {
+        console.error('Veritabanı hatası:', quoteError)
+        alert('Form kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.')
+        return
+      }
+
+      console.log('Teklif başarıyla kaydedildi:', quoteData)
+
+      // Mail gönderimi için mevcut send-email function'ını kullan
+      try {
+        console.log('Mail gönderim parametreleri:', {
+          type: 'package_request',
+          to: 'furkan@fixurelabs.dev,mucahit@fixurelabs.dev',
+          data: {
+            package: data.packageTitle,
+            modules: data.selectedModules,
+            formData: {
+              firstName: data.name,
+              lastName: data.surname,
+              email: data.email,
+              phone: data.phone,
+              companyInfo: data.corporateInfo,
+              socialMedia: data.socialMediaAccounts.map(account => ({
+                platform: account.platform,
+                username: account.username || ''
+              }))
+            }
+          }
+        })
+
+        const { data: emailData, error: emailError } = await supabase.functions.invoke('send-email', {
+          body: {
+            type: 'package_request',
+            to: 'furkan@fixurelabs.dev,mucahit@fixurelabs.dev',
+            data: {
+              package: data.packageTitle,
+              modules: data.selectedModules,
+              formData: {
+                firstName: data.name,
+                lastName: data.surname,
+                email: data.email,
+                phone: data.phone,
+                companyInfo: data.corporateInfo,
+                socialMedia: data.socialMediaAccounts.map(account => ({
+                  platform: account.platform,
+                  username: account.username || ''
+                }))
+              }
+            }
+          }
+        })
+
+        if (emailError) {
+          console.error('Mail gönderim hatası:', emailError)
+          console.error('Email error details:', JSON.stringify(emailError, null, 2))
+          // Mail hatası olsa bile veritabanına kaydedildi, kullanıcıya bilgi ver
+          alert('Teklif talebiniz kaydedildi ancak mail gönderiminde sorun yaşandı. En kısa sürede size dönüş yapacağız.')
+        } else {
+          console.log('Mail başarıyla gönderildi:', emailData)
+          alert('Teklif talebiniz başarıyla gönderildi! En kısa sürede size dönüş yapacağız.')
+        }
+      } catch (emailError) {
+        console.error('Mail gönderim hatası:', emailError)
+        // Mail hatası olsa bile veritabanına kaydedildi, kullanıcıya bilgi ver
+        alert('Teklif talebiniz kaydedildi ancak mail gönderiminde sorun yaşandı. En kısa sürede size dönüş yapacağız.')
+      }
+      
+      // Formu kapat
+      handleClose()
+      
+    } catch (error) {
+      console.error('Form gönderim hatası:', error)
+      alert('Bir hata oluştu. Lütfen tekrar deneyin.')
+    }
   }
 
   return (
     <>
-      <div className="relative flex items-center justify-center">
-        <AnimatePresence initial={false}>
-          {!isExpanded && (
-            <motion.div className="inline-block relative">
-              <motion.div
-                style={{
-                  borderRadius: "100px",
-                }}
-                layout
-                layoutId="cta-card"
-                className="absolute inset-0 bg-[#DC2626] items-center justify-center transform-gpu will-change-transform"
-              ></motion.div>
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                layout={false}
-                onClick={handleExpand}
-                className="h-15 px-6 sm:px-8 py-3 text-lg sm:text-xl font-regular text-[#DBDBDB] tracking-[-0.01em] relative"
-              >
-                TEKLİF AL
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      <AnimatePresence initial={false}>
+        {!isExpanded && (
+          <motion.div className="inline-block relative">
+            <motion.div
+              style={{
+                borderRadius: "100px",
+              }}
+              layout
+              layoutId="quote-card"
+              className="absolute inset-0 bg-[#DC2626] items-center justify-center transform-gpu will-change-transform"
+            ></motion.div>
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              layout={false}
+              onClick={handleExpand}
+              className="w-full py-3 px-6 text-lg font-regular text-[#DBDBDB] tracking-[-0.01em] relative"
+            >
+              TEKLİF AL
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence initial={false}>
         {isExpanded && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-2">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
+            
+            {/* Modal */}
             <motion.div
-              layoutId="cta-card"
+              layoutId="quote-card"
               transition={{ duration: 0.3 }}
               style={{
                 borderRadius: "24px",
+                width: "85vw",
+                height: "85vh",
               }}
               layout
-              className="relative flex h-full w-full overflow-y-auto bg-[#DC2626] transform-gpu will-change-transform"
+              className="relative flex overflow-y-auto bg-[#DC2626] transform-gpu will-change-transform shadow-2xl border border-gray-800"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 2 }}
@@ -144,8 +243,17 @@ export default function AnimatedQuoteButton({
                   borderRadius: "24px",
                 }}
               >
-                {/* Gradient background */}
-                <div className="inset-0 sticky top-0 bg-gradient-to-br from-[#DC2626] via-[#991B1B] to-[#7F1D1D]" style={{ height: "100%", width: "100%" }} />
+                {/* MeshGradient - Dynamic background */}
+                <MeshGradient
+                  speed={1}
+                  colors={["#DC2626", "#991B1B", "#B91C1C", "#7F1D1D"]}
+                  distortion={0.8}
+                  swirl={0.1}
+                  grainMixer={0}
+                  grainOverlay={0}
+                  className="inset-0 sticky top-0"
+                  style={{ height: "100%", width: "100%" }}
+                />
               </motion.div>
               
               <motion.div
@@ -154,6 +262,26 @@ export default function AnimatedQuoteButton({
                 transition={{ delay: 0.15, duration: 0.4 }}
                 className="relative z-10 flex flex-col h-full w-full max-w-[1200px] mx-auto p-6 sm:p-8 lg:p-12 gap-6"
               >
+                {/* Seçilen Paket ve Modüller */}
+                <div className="mb-6 p-4 bg-[#DBDBDB]/10 backdrop-blur-sm border border-[#DBDBDB]/20 rounded-lg">
+                  <h3 className="text-lg font-semibold text-[#DBDBDB] mb-2">Seçilen Paket</h3>
+                  <p className="text-[#DBDBDB] font-medium">{packageTitle}</p>
+                  <p className="text-[#DBDBDB]/80 text-sm">{packagePrice}</p>
+                  
+                  {selectedModules.length > 0 && (
+                    <div className="mt-3">
+                      <h4 className="text-sm font-semibold text-[#DBDBDB] mb-2">Seçilen Modüller:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedModules.map((module, index) => (
+                          <span key={index} className="px-3 py-1 bg-[#DBDBDB]/20 text-[#DBDBDB] rounded-full text-sm">
+                            {module}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 h-full overflow-y-auto">
                   <div className="space-y-5">
                     <h2 className="text-xl sm:text-2xl font-semibold text-[#DBDBDB] mb-6 tracking-tight">
@@ -231,11 +359,11 @@ export default function AnimatedQuoteButton({
                       >
                         KURUMSAL BİLGİ (İSTEĞE BAĞLI)
                       </label>
-                      <textarea
+                      <input
+                        type="text"
                         id="corporate-info"
                         name="corporate-info"
-                        rows={4}
-                        className="w-full px-4 py-3 rounded-lg bg-[#DBDBDB]/10 backdrop-blur-sm border border-[#DBDBDB]/20 text-[#DBDBDB] placeholder:text-[#DBDBDB]/50 focus:outline-none focus:ring-2 focus:ring-[#DBDBDB]/40 transition-all resize-none text-sm"
+                        className="w-full px-4 py-2.5 rounded-lg bg-[#DBDBDB]/10 backdrop-blur-sm border border-[#DBDBDB]/20 text-[#DBDBDB] placeholder:text-[#DBDBDB]/50 focus:outline-none focus:ring-2 focus:ring-[#DBDBDB]/40 transition-all text-sm"
                       />
                     </div>
                   </div>

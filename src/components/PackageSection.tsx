@@ -1,7 +1,7 @@
 import React from 'react';
 import { Package } from '../types';
 import { CheckCircle } from 'lucide-react';
-import AnimatedQuoteButton from './AnimatedQuoteButton';
+import QuoteButton from './QuoteButton';
 
 interface PackageSectionProps {
   packages: Package[];
@@ -61,11 +61,13 @@ export const PackageSection: React.FC<PackageSectionProps> = ({ packages, onPack
                 </div>
               </div>
 
-              <AnimatedQuoteButton 
-                packageTitle={pkg.title}
-                packagePrice={pkg.pricing}
-                selectedModules={pkg.features}
-              />
+              <div className="relative">
+                <QuoteButton 
+                  packageTitle={pkg.title}
+                  packagePrice={pkg.pricing}
+                  selectedModules={pkg.features}
+                />
+              </div>
             </div>
           ))}
         </div>

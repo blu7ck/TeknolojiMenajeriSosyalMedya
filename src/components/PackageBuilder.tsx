@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Calculator } from 'lucide-react';
 import { Module, SelectedModule, ContactForm } from '../types';
 import { individualModules, influencerModules, businessModules } from '../data/packages';
-import AnimatedQuoteButton from './AnimatedQuoteButton';
+import QuoteButton from './QuoteButton';
 
 interface PackageBuilderProps {
   isOpen: boolean;
@@ -17,22 +17,7 @@ export const PackageBuilder: React.FC<PackageBuilderProps> = ({
 }) => {
   const [selectedPackageType, setSelectedPackageType] = useState<'individual' | 'influencer' | 'business'>(initialPackageType);
   const [selectedModules, setSelectedModules] = useState<SelectedModule[]>([]);
-  const [showContactForm, setShowContactForm] = useState(false);
-  const [contactForm, setContactForm] = useState<ContactForm>({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    packageType: initialPackageType,
-    selectedModules: [],
-    totalPrice: 0,
-    message: ''
-  });
 
-  useEffect(() => {
-    setSelectedPackageType(initialPackageType);
-    setContactForm(prev => ({ ...prev, packageType: initialPackageType }));
-  }, [initialPackageType]);
 
   const getModulesForPackage = (packageType: 'individual' | 'influencer' | 'business'): Module[] => {
     switch (packageType) {
@@ -74,18 +59,6 @@ export const PackageBuilder: React.FC<PackageBuilderProps> = ({
     setContactForm(prev => ({ ...prev, packageType }));
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = {
-      ...contactForm,
-      selectedModules,
-      totalPrice: calculateTotal()
-    };
-    
-    console.log('Form submitted:', formData);
-    alert('Talebiniz alındı! En kısa sürede sizinle iletişime geçeceğiz.');
-    onClose();
-  };
 
   const getPackageTitle = (type: 'individual' | 'influencer' | 'business'): string => {
     switch (type) {
@@ -223,112 +196,30 @@ export const PackageBuilder: React.FC<PackageBuilderProps> = ({
                 >
                   İptal
                 </button>
-                <AnimatedQuoteButton 
-                  packageTitle={selectedPackageType === 'individual' ? 'Bireysel Paket' : selectedPackageType === 'influencer' ? 'İnfluencer Paket' : 'Kurumsal Paket'}
-                  packagePrice={`${calculateTotal().toFixed(2)} TL`}
-                  selectedModules={selectedModules.map(m => m.name)}
-                />
               </div>
             </>
-          ) : (
-            /* Contact Form */
-            <form onSubmit={handleContactSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Ad Soyad *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={contactForm.name}
-                    onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    E-posta *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={contactForm.email}
-                    onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Telefon *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={contactForm.phone}
-                    onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Şirket/Kurum
-                  </label>
-                  <input
-                    type="text"
-                    value={contactForm.company}
-                    onChange={(e) => setContactForm(prev => ({ ...prev, company: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-600 rounded-lg bg-slate-800 text-slate-100 focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Ek Mesaj
-                </label>
-                <textarea
-                  rows={4}
-                  value={contactForm.message}
-                  onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  placeholder="Projeniz hakkında detaylar, özel istekler..."
-                />
-              </div>
-
-              {/* Selected Package Summary */}
-              <div className="bg-slate-800 p-4 rounded-lg">
-                <h4 className="font-semibold text-slate-100 mb-2">Seçilen Paket Özeti</h4>
-                <p className="text-sm text-slate-300 mb-2">
-                  Paket Türü: <span className="font-medium">{getPackageTitle(selectedPackageType)}</span>
-                </p>
-                <p className="text-sm text-slate-300 mb-2">
-                  Seçilen Modül Sayısı: <span className="font-medium">{selectedModules.length}</span>
-                </p>
-                <p className="text-sm text-slate-300">
-                  Tahmini Fiyat: <span className="font-medium text-blue-400">
-                    {calculateTotal().toLocaleString('tr-TR')} TRY'den başlayan fiyatlarla
-                  </span>
-                </p>
-              </div>
-
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setShowContactForm(false)}
-                  className="px-6 py-2 text-slate-300 border border-slate-600 rounded-lg hover:bg-slate-800 transition-colors"
-                >
-                  Geri Dön
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-400 transition-colors"
-                >
-                  Teklif Talep Et
-                </button>
-              </div>
-            </form>
           )}
+
+          <div className="flex justify-between items-center gap-4 mt-8">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 text-slate-300 border border-slate-600 rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              İptal
+            </button>
+            
+            {selectedModules.length > 0 && (
+              <div className="flex-1 max-w-xs">
+                <div className="relative">
+                  <QuoteButton 
+                    packageTitle={getPackageTitle(selectedPackageType)}
+                    packagePrice={`${calculateTotal().toFixed(2)} TL`}
+                    selectedModules={selectedModules.map(m => m.name)}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
