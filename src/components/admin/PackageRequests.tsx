@@ -313,24 +313,24 @@ export default function PackageRequests() {
 
               <div className="space-y-4">
                 {/* Customer Info */}
-                <div className="bg-gray-800 p-4 rounded-lg">
-                  <h4 className="font-semibold text-[#DBDBDB] mb-2">Müşteri Bilgileri</h4>
+                <div className="bg-[#DBDBDB] p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-900 mb-2">Müşteri Bilgileri</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-[#DBDBDB]">İsim</p>
+                      <p className="text-sm text-gray-600">İsim</p>
                       <p className="font-medium text-gray-900">{selectedRequest.first_name} {selectedRequest.last_name}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#DBDBDB]">E-posta</p>
+                      <p className="text-sm text-gray-600">E-posta</p>
                       <p className="font-medium text-gray-900">{selectedRequest.email}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#DBDBDB]">Telefon</p>
+                      <p className="text-sm text-gray-600">Telefon</p>
                       <p className="font-medium text-gray-900">{selectedRequest.phone}</p>
                     </div>
                     {selectedRequest.company_info && (
                       <div>
-                        <p className="text-sm text-[#DBDBDB]">Kurumsal Bilgi</p>
+                        <p className="text-sm text-gray-600">Kurumsal Bilgi</p>
                         <p className="font-medium text-gray-900">{selectedRequest.company_info}</p>
                       </div>
                     )}
@@ -338,11 +338,11 @@ export default function PackageRequests() {
                 </div>
 
                 {/* Package Info */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-[#DBDBDB] p-4 rounded-lg">
                   <h4 className="font-semibold text-gray-900 mb-2">Paket Bilgileri</h4>
                   <p className="text-sm text-gray-600 mb-1">Paket: {selectedRequest.package_title}</p>
                   <p className="text-sm text-gray-600 mb-2">Seçili Modüller:</p>
-                  <ul className="list-disc list-inside text-sm">
+                  <ul className="list-disc list-inside text-sm text-gray-900">
                     {selectedRequest.selected_modules.map((module, index) => (
                       <li key={index}>{module}</li>
                     ))}
@@ -351,13 +351,13 @@ export default function PackageRequests() {
 
                 {/* Social Media */}
                 {selectedRequest.social_media_accounts.length > 0 && (
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-[#DBDBDB] p-4 rounded-lg">
                     <h4 className="font-semibold text-gray-900 mb-2">Sosyal Medya Hesapları</h4>
                     <div className="space-y-2">
                       {selectedRequest.social_media_accounts.map((social, index) => (
                         <div key={index} className="flex items-center">
                           {getSocialMediaIcon(social.platform)}
-                          <span className="ml-2 text-sm">
+                          <span className="ml-2 text-sm text-gray-900">
                             {social.platform}: @{social.username || social.value || ''}
                           </span>
                         </div>
@@ -368,18 +368,18 @@ export default function PackageRequests() {
 
                 {/* Existing Data */}
                 {(selectedRequest.admin_notes || selectedRequest.quoted_price) && (
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                    <h4 className="font-semibold text-blue-900 mb-2">📋 Kayıtlı Bilgiler</h4>
+                  <div className="bg-[#DBDBDB] p-4 rounded-lg border border-gray-300">
+                    <h4 className="font-semibold text-gray-900 mb-2">📋 Kayıtlı Bilgiler</h4>
                     {selectedRequest.admin_notes && (
                       <div className="mb-2">
-                        <p className="text-sm text-blue-600 font-medium">Admin Notu:</p>
-                        <p className="text-sm text-gray-700">{selectedRequest.admin_notes}</p>
+                        <p className="text-sm text-gray-600 font-medium">Admin Notu:</p>
+                        <p className="text-sm text-gray-900">{selectedRequest.admin_notes}</p>
                       </div>
                     )}
                     {selectedRequest.quoted_price && (
                       <div>
-                        <p className="text-sm text-blue-600 font-medium">Teklif Edilen Fiyat:</p>
-                        <p className="text-sm text-gray-700">₺{selectedRequest.quoted_price.toLocaleString('tr-TR')}</p>
+                        <p className="text-sm text-gray-600 font-medium">Teklif Edilen Fiyat:</p>
+                        <p className="text-sm text-gray-900">₺{selectedRequest.quoted_price.toLocaleString('tr-TR')}</p>
                         {selectedRequest.quoted_at && (
                           <p className="text-xs text-gray-500">
                             Tarih: {new Date(selectedRequest.quoted_at).toLocaleDateString('tr-TR')}
@@ -391,7 +391,7 @@ export default function PackageRequests() {
                 )}
 
                 {/* Admin Actions */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-[#DBDBDB] p-4 rounded-lg">
                   <h4 className="font-semibold text-gray-900 mb-2">Admin İşlemleri</h4>
                   
                   <div className="space-y-3">
