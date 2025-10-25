@@ -84,7 +84,7 @@ export default function BlogPage() {
         {/* Year Selector */}
         {availableYears.length > 1 && (
           <div className="fixed top-32 right-8 z-40">
-            <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-2">
+            <div className="bg-[#DBDBDB] dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-2">
               <select
                 value={selectedYear || ""}
                 onChange={(e) => setSelectedYear(e.target.value || null)}

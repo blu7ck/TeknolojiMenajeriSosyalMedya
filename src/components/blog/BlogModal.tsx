@@ -136,7 +136,7 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
         {/* Theme Toggle Button */}
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
-          className="absolute top-4 left-4 p-2 rounded-full bg-white/90 hover:bg-gray-100 transition-colors z-10 clickable"
+          className="absolute top-4 left-4 p-2 rounded-full bg-[#DBDBDB]/90 hover:bg-gray-100 transition-colors z-10 clickable"
           aria-label="Toggle theme"
         >
           {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-600" />}
@@ -145,14 +145,14 @@ export function BlogModal({ post, onClose }: BlogModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-white/90 hover:bg-gray-100 transition-colors z-10 clickable"
+          className="absolute top-4 right-4 p-2 rounded-full bg-[#DBDBDB]/90 hover:bg-gray-100 transition-colors z-10 clickable"
           aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Content */}
-        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'text-white' : 'bg-white text-gray-900'}`} style={{ overflowX: 'hidden', maxWidth: '100%', backgroundColor: isDarkMode ? '#151516' : undefined }}>
+        <div className={`p-8 sm:p-12 transition-colors duration-300 ${isDarkMode ? 'text-white' : 'bg-[#DBDBDB] text-gray-900'}`} style={{ overflowX: 'hidden', maxWidth: '100%', backgroundColor: isDarkMode ? '#151516' : undefined }}>
           {/* Featured Image */}
           {post.cover_image && (
             <div className="relative overflow-hidden rounded-xl aspect-video mb-8 bg-muted">

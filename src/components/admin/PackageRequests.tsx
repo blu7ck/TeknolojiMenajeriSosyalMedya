@@ -203,34 +203,34 @@ export default function PackageRequests() {
       </div>
 
       {/* Requests List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-[#DBDBDB] rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   Müşteri
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   Paket
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   Modüller
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   Durum
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   Tarih
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#DBDBDB] uppercase tracking-wider">
                   İşlemler
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[#DBDBDB] divide-y divide-gray-200">
               {filteredRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-gray-50">
+                <tr key={request.id} className="hover:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -242,11 +242,11 @@ export default function PackageRequests() {
                         <div className="text-sm font-medium text-gray-900">
                           {request.first_name} {request.last_name}
                         </div>
-                        <div className="text-sm text-gray-500 flex items-center">
+                        <div className="text-sm text-gray-700 flex items-center">
                           <Mail className="w-3 h-3 mr-1" />
                           {request.email}
                         </div>
-                        <div className="text-sm text-gray-500 flex items-center">
+                        <div className="text-sm text-gray-700 flex items-center">
                           <Phone className="w-3 h-3 mr-1" />
                           {request.phone}
                         </div>
@@ -255,7 +255,7 @@ export default function PackageRequests() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">{request.package_title}</div>
-                    <div className="text-sm text-gray-500">{request.package_type}</div>
+                    <div className="text-sm text-gray-700">{request.package_type}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
@@ -271,7 +271,7 @@ export default function PackageRequests() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {new Date(request.created_at).toLocaleDateString('tr-TR')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -297,7 +297,7 @@ export default function PackageRequests() {
       {/* Modal */}
       {showModal && selectedRequest && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-[#DBDBDB]">
             <div className="mt-3">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-900">
@@ -313,25 +313,25 @@ export default function PackageRequests() {
 
               <div className="space-y-4">
                 {/* Customer Info */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-gray-900 mb-2">Müşteri Bilgileri</h4>
+                <div className="bg-gray-800 p-4 rounded-lg">
+                  <h4 className="font-semibold text-[#DBDBDB] mb-2">Müşteri Bilgileri</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">İsim</p>
-                      <p className="font-medium">{selectedRequest.first_name} {selectedRequest.last_name}</p>
+                      <p className="text-sm text-[#DBDBDB]">İsim</p>
+                      <p className="font-medium text-gray-900">{selectedRequest.first_name} {selectedRequest.last_name}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">E-posta</p>
-                      <p className="font-medium">{selectedRequest.email}</p>
+                      <p className="text-sm text-[#DBDBDB]">E-posta</p>
+                      <p className="font-medium text-gray-900">{selectedRequest.email}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Telefon</p>
-                      <p className="font-medium">{selectedRequest.phone}</p>
+                      <p className="text-sm text-[#DBDBDB]">Telefon</p>
+                      <p className="font-medium text-gray-900">{selectedRequest.phone}</p>
                     </div>
                     {selectedRequest.company_info && (
                       <div>
-                        <p className="text-sm text-gray-600">Kurumsal Bilgi</p>
-                        <p className="font-medium">{selectedRequest.company_info}</p>
+                        <p className="text-sm text-[#DBDBDB]">Kurumsal Bilgi</p>
+                        <p className="font-medium text-gray-900">{selectedRequest.company_info}</p>
                       </div>
                     )}
                   </div>

@@ -53,7 +53,7 @@ export default function HomePage() {
         {shouldLoadGallery ? (
           <div ref={galleryRef}>
             <Suspense fallback={
-              <div className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+              <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#DBDBDB] to-[#DBDBDB]">
                 <div className="text-center">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
                   <p className="text-gray-600">3D Galeri yükleniyor...</p>
@@ -64,7 +64,7 @@ export default function HomePage() {
             </Suspense>
           </div>
         ) : (
-          <div ref={galleryRef} className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+          <div ref={galleryRef} className="h-screen flex items-center justify-center bg-gradient-to-br from-[#DBDBDB] to-[#DBDBDB]">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
               <p className="text-gray-600">3D Galeri hazırlanıyor...</p>
