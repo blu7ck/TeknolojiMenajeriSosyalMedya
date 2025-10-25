@@ -134,7 +134,7 @@ export default function QuoteButton({
               companyInfo: data.corporateInfo,
               socialMedia: data.socialMediaAccounts.map(account => ({
                 platform: account.platform,
-                username: account.username || ''
+                username: account.value || account.username || ''
               }))
             }
           }
@@ -155,7 +155,7 @@ export default function QuoteButton({
                 companyInfo: data.corporateInfo,
                 socialMedia: data.socialMediaAccounts.map(account => ({
                   platform: account.platform,
-                  username: account.username || ''
+                  username: account.value || account.username || ''
                 }))
               }
             }
