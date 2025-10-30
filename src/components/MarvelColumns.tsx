@@ -99,7 +99,7 @@ export function MarvelColumns() {
                 style={{
                   writingMode: "vertical-rl",
                   textOrientation: "mixed",
-                  transform: "rotate(180deg)",
+                  transform: "rotate(180deg) scale(0.6)",
                   textShadow: "0 0 20px rgba(0,0,0,0.8), 0 0 40px rgba(59,130,246,0.3)",
                   letterSpacing: "0.15em",
                 }}
