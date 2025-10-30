@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { ProcessStep } from '../types';
-import DigitalAnalysisForm from './DigitalAnalysisForm';
+
+const DigitalAnalysisForm = lazy(() => import('./DigitalAnalysisForm'));
 
 interface ProcessSectionProps {
   steps: ProcessStep[];
@@ -34,7 +35,13 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
                   {/* İlk adımda form göster */}
                   {step.step === 1 && (
                     <div className="mt-6">
-                      <DigitalAnalysisForm />
+                      <Suspense fallback={
+                        <div className="flex items-center justify-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div>
+                        </div>
+                      }>
+                        <DigitalAnalysisForm />
+                      </Suspense>
                     </div>
                   )}
                 </div>

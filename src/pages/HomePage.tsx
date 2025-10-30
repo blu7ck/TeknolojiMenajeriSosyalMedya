@@ -1,76 +1,24 @@
 import { Header } from "../components/Header"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
-import { Suspense, lazy, useState, useEffect, useRef } from "react"
+import { Suspense, lazy } from "react"
+import { MarvelColumns } from "../components/MarvelColumns"
 
 // Lazy load heavy components for better performance
 const ProcessSection = lazy(() => import("../components/ProcessSection"))
 const AboutUs = lazy(() => import("../components/AboutUs"))
 const Services = lazy(() => import("../components/Services"))
-const DigitalAnalysisForm = lazy(() => import("../components/DigitalAnalysisForm"))
-
-// Lazy load heavy 3D gallery with error handling
-const GalleryPage = lazy(() => import("../components/GalleryPage").catch(() => ({
-  default: () => <div className="h-96 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">3D Galeri yükleniyor...</p>
-    </div>
-  </div>
-})))
 
 export default function HomePage() {
   // SEO ayarlarını güncelle
   setHomePageSEO()
-  
-  // Intersection Observer for gallery lazy loading
-  const [shouldLoadGallery, setShouldLoadGallery] = useState(false)
-  const galleryRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setShouldLoadGallery(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '100px' } // Load 100px before gallery comes into view
-    )
-
-    if (galleryRef.current) {
-      observer.observe(galleryRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
 
   return (
     <>
       <Header />
       <div className="pt-0">
-        {/* Gallery with Intersection Observer */}
-        {shouldLoadGallery ? (
-          <div ref={galleryRef}>
-            <Suspense fallback={
-              <div className="h-screen flex items-center justify-center bg-gradient-to-br from-[#DBDBDB] to-[#DBDBDB]">
-                <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-                  <p className="text-gray-600">3D Galeri yükleniyor...</p>
-                </div>
-              </div>
-            }>
-              <GalleryPage />
-            </Suspense>
-          </div>
-        ) : (
-          <div ref={galleryRef} className="h-screen flex items-center justify-center bg-gradient-to-br from-[#DBDBDB] to-[#DBDBDB]">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-              <p className="text-gray-600">3D Galeri hazırlanıyor...</p>
-            </div>
-          </div>
-        )}
+        {/* Marvel Columns Section */}
+        <MarvelColumns />
 
         {/* About Us Section */}
         <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
@@ -142,14 +90,17 @@ export default function HomePage() {
                 loading="lazy"
                 onError={(e) => {
                   console.log('Logo yüklenemedi, PNG deneniyor...')
-                  e.currentTarget.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'
-                  e.currentTarget.onError = (e2) => {
+                  const img = e.currentTarget
+                  img.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'
+                  img.onerror = () => {
                     console.log('PNG logo da yüklenemedi, metin logo gösteriliyor...')
-                    e2.currentTarget.style.display = 'none'
+                    img.style.display = 'none'
                     const textLogo = document.createElement('div')
                     textLogo.className = 'text-2xl font-bold text-red-600'
                     textLogo.textContent = 'TEKNOLOJİ MENAJERİ'
-                    e2.currentTarget.parentNode.appendChild(textLogo)
+                    if (img.parentNode) {
+                      img.parentNode.appendChild(textLogo)
+                    }
                   }
                 }}
               />

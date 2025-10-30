@@ -48,6 +48,15 @@ const TestPage = lazy(() => import("./pages/TestPage").catch(() => ({
   </div>
 })))
 
+const MorePage = lazy(() => import("./pages/MorePage").catch(() => ({
+  default: () => <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-4"></div>
+      <p className="text-white">Detay sayfası yükleniyor...</p>
+    </div>
+  </div>
+})))
+
 // Loading component
 function PageLoader() {
   return (
@@ -61,6 +70,8 @@ function PageLoader() {
 }
 
 function App() {
+  const isDev = import.meta.env.MODE === 'development'
+
   return (
     <div className="min-h-screen custom-cursor custom-cursor custom-cursor" style={{ backgroundColor: "#D3DADD" }}>
       <Suspense fallback={<PageLoader />}>
@@ -69,7 +80,8 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blu4ck" element={<AdminPage />} />
           <Route path="/unsubscribe" element={<UnsubscribePage />} />
-          <Route path="/test" element={<TestPage />} />
+          <Route path="/more" element={<MorePage />} />
+          {isDev && <Route path="/test" element={<TestPage />} />}
         </Routes>
       </Suspense>
     </div>

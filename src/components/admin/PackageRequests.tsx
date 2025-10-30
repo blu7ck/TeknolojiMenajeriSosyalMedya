@@ -158,10 +158,10 @@ export default function PackageRequests() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-800 min-h-screen">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Paket Teklifleri</h1>
-        <p className="text-gray-600">Müşterilerden gelen paket tekliflerini yönetin</p>
+        <h1 className="text-3xl font-bold text-[#DBDBDB] mb-2">Paket Teklifleri</h1>
+        <p className="text-[#DBDBDB]">Müşterilerden gelen paket tekliflerini yönetin</p>
       </div>
 
       {/* Status Filter */}
@@ -170,7 +170,7 @@ export default function PackageRequests() {
           <button
             onClick={() => setStatusFilter('all')}
             className={`px-4 py-2 rounded-lg ${
-              statusFilter === 'all' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+              statusFilter === 'all' ? 'bg-red-500 text-white' : 'bg-[#DBDBDB] text-gray-700'
             }`}
           >
             Tümü ({requests.length})
@@ -178,7 +178,7 @@ export default function PackageRequests() {
           <button
             onClick={() => setStatusFilter('pending')}
             className={`px-4 py-2 rounded-lg ${
-              statusFilter === 'pending' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+              statusFilter === 'pending' ? 'bg-red-500 text-white' : 'bg-[#DBDBDB] text-gray-700'
             }`}
           >
             Beklemede ({requests.filter(r => r.status === 'pending').length})
@@ -186,7 +186,7 @@ export default function PackageRequests() {
           <button
             onClick={() => setStatusFilter('contacted')}
             className={`px-4 py-2 rounded-lg ${
-              statusFilter === 'contacted' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+              statusFilter === 'contacted' ? 'bg-red-500 text-white' : 'bg-[#DBDBDB] text-gray-700'
             }`}
           >
             İletişim Kuruldu ({requests.filter(r => r.status === 'contacted').length})
@@ -194,7 +194,7 @@ export default function PackageRequests() {
           <button
             onClick={() => setStatusFilter('quoted')}
             className={`px-4 py-2 rounded-lg ${
-              statusFilter === 'quoted' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'
+              statusFilter === 'quoted' ? 'bg-red-500 text-white' : 'bg-[#DBDBDB] text-gray-700'
             }`}
           >
             Teklif Verildi ({requests.filter(r => r.status === 'quoted').length})
@@ -203,7 +203,7 @@ export default function PackageRequests() {
       </div>
 
       {/* Requests List */}
-      <div className="bg-[#DBDBDB] rounded-lg shadow overflow-hidden">
+      <div className="bg-gray-800 rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-800">
@@ -228,9 +228,9 @@ export default function PackageRequests() {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-[#DBDBDB] divide-y divide-gray-200">
+            <tbody className="bg-gray-800 divide-y divide-gray-600">
               {filteredRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-gray-700">
+                <tr key={request.id} className="bg-[#DBDBDB] hover:bg-[#DBDBDB]">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -242,11 +242,11 @@ export default function PackageRequests() {
                         <div className="text-sm font-medium text-gray-900">
                           {request.first_name} {request.last_name}
                         </div>
-                        <div className="text-sm text-gray-700 flex items-center">
+                        <div className="text-sm text-gray-600 flex items-center">
                           <Mail className="w-3 h-3 mr-1" />
                           {request.email}
                         </div>
-                        <div className="text-sm text-gray-700 flex items-center">
+                        <div className="text-sm text-gray-600 flex items-center">
                           <Phone className="w-3 h-3 mr-1" />
                           {request.phone}
                         </div>
@@ -255,7 +255,7 @@ export default function PackageRequests() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">{request.package_title}</div>
-                    <div className="text-sm text-gray-700">{request.package_type}</div>
+                    <div className="text-sm text-gray-600">{request.package_type}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
@@ -271,7 +271,7 @@ export default function PackageRequests() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {new Date(request.created_at).toLocaleDateString('tr-TR')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
