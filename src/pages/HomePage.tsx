@@ -16,69 +16,63 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <div className="pt-0">
+      <div className="pt-0 bg-[#050505] text-[#E5E7EB]">
         {/* Marvel Columns Section */}
         <MarvelColumns />
 
         {/* About Us Section */}
-        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
           <AboutUs />
         </Suspense>
 
         {/* Services Section */}
-        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
           <Services />
         </Suspense>
 
         {/* Important Notes Section */}
-        <section className="py-8" style={{ backgroundColor: "#D3DADD" }}>
+        <section className="py-12 border-t border-red-500/15 bg-[#0E0F0F]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Önemli Noktalar</h3>
+            <div className="text-center mb-8">
+              <h3 className="text-xl font-semibold uppercase tracking-[0.2em] text-red-400">Önemli Noktalar</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
-                <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">1</span>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {[{
+                title: "Revizyon Hakkı",
+                body: "Her içerik seti için 1 revizyon hakkı dahil",
+                icon: "1"
+              }, {
+                title: "Telif Hakları",
+                body: "Kullanım hakları net olarak tanımlanır",
+                icon: "©"
+              }, {
+                title: "SLA Garantisi",
+                body: "24-48 saat destek süresi",
+                icon: "24"
+              }, {
+                title: "Ölçeklenebilirlik",
+                body: "Paket genişletme imkanı",
+                icon: "↗"
+              }].map((item) => (
+                <div key={item.title} className="rounded-xl border border-red-500/30 bg-black/75 p-6 text-center shadow-lg shadow-red-900/15 transition-transform duration-200 hover:-translate-y-1">
+                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-red-500/90 text-sm font-bold text-white">
+                    {item.icon}
+                  </div>
+                  <h4 className="mb-2 text-sm font-semibold text-[#F3F4F6] uppercase tracking-[0.18em]">{item.title}</h4>
+                  <p className="text-xs text-[#9CA3AF]">{item.body}</p>
                 </div>
-                <h4 className="font-semibold text-gray-900 text-sm mb-1">Revizyon Hakkı</h4>
-                <p className="text-xs text-gray-600">Her içerik seti için 1 revizyon hakkı dahil</p>
-              </div>
-              
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
-                <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">©</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 text-sm mb-1">Telif Hakları</h4>
-                <p className="text-xs text-gray-600">Kullanım hakları net olarak tanımlanır</p>
-              </div>
-              
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
-                <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">24</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 text-sm mb-1">SLA Garantisi</h4>
-                <p className="text-xs text-gray-600">24-48 saat destek süresi</p>
-              </div>
-              
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-4 text-center border border-red-500/20">
-                <div className="w-8 h-8 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">↗</span>
-                </div>
-                <h4 className="font-semibold text-gray-900 text-sm mb-1">Ölçeklenebilirlik</h4>
-                <p className="text-xs text-gray-600">Paket genişletme imkanı</p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-         <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div></div>}>
+         <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
            <ProcessSection steps={processSteps} />
          </Suspense>
 
         {/* Footer */}
-        <footer className="py-8" style={{ backgroundColor: "#D3DADD" }}>
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <footer className="py-12" style={{ backgroundColor: "#DBDBDB" }}>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-800">
             {/* Logo */}
             <div className="mb-6 flex justify-center">
               <img 
@@ -106,16 +100,16 @@ export default function HomePage() {
               />
             </div>
             
-            <p className="text-gray-500 text-sm">
+            <p className="text-sm text-gray-600">
               Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
             </p>
-            <p className="text-gray-600 mt-2">
+            <p className="mt-3 text-gray-700">
               © 2025{' '}
               <a 
                 href="https://www.teknolojimenajeri.com.tr" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-gray-900 font-semibold transition-colors"
+                className="font-semibold text-red-600 transition-colors hover:text-red-500"
               >
                 TEKNOLOJİ MENAJERİ
               </a>

@@ -10,10 +10,9 @@ import { MonthlyCards } from "../components/blog/MonthlyCards"
 import { BlogList } from "../components/blog/BlogList"
 import { BlogModal } from "../components/blog/BlogModal"
 import { NewsletterForm } from "../components/blog/NewsletterForm"
-import { Calendar } from "lucide-react"
 
 export default function BlogPage() {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark] = useState(true)
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null)
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
@@ -78,9 +77,10 @@ export default function BlogPage() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <div className="min-h-screen bg-[#F2F4F7] text-[#1F2933] transition-colors duration-300">
         <Header />
 
+        {/* Year Selector */}
         {/* Year Selector */}
         {availableYears.length > 1 && (
           <div className="fixed top-32 right-8 z-40">
@@ -103,15 +103,15 @@ export default function BlogPage() {
           <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-16">
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-balance">Teknoloji Menajeri Blog</h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-[#0F172A] text-balance">Teknoloji Menajeri Blog</h1>
+              <p className="text-xl text-[#3E4C59] max-w-2xl mx-auto text-pretty">
                 Dijital dünyada başarıya giden yolculuğunuzda size ilham verecek içerikler
               </p>
             </div>
 
             {loading ? (
               <div className="text-center py-20">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-400 border-t-transparent"></div>
               </div>
             ) : selectedMonth ? (
               <BlogList

@@ -9,43 +9,41 @@ interface ProcessSectionProps {
 
 const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
   return (
-    <section id="process" className="py-20" style={{ backgroundColor: "#151516" }}>
+    <section id="process" className="py-20 bg-[#0A0B0C] text-[#E5E7EB]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-red-400 sm:text-4xl">
             Çalışma Süreci
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Başlangıçtan teslimat sonrasına kadar standart iş akış sürecimiz
+          <p className="mx-auto max-w-2xl text-lg text-[#AEB3C2]">
+            Başlangıçtan teslimat sonrasına kadar standart iş akışımızın her adımında şeffaf ve ölçülebilir ilerleriz.
           </p>
         </div>
 
         <div className="space-y-8">
-          {steps.map((step, index) => (
-            <div key={step.step} className="flex items-center">
-              <div className="flex items-center flex-1">
-                <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center 
-                               justify-center font-bold text-lg mr-6 flex-shrink-0 border-2 border-red-500/30">
+          {steps.map((step) => (
+            <div key={step.step} className="flex flex-col gap-4 rounded-2xl border border-red-500/25 bg-black/70 p-6 shadow-lg shadow-red-900/15 md:flex-row md:items-center">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-red-500/40 bg-red-600/90 text-lg font-bold text-white">
                   {step.step}
                 </div>
-                <div className="flex-1 bg-black/60 border border-red-500/20 rounded-lg p-4">
-                  <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
-                  <p className="text-gray-300 mb-4">{step.description}</p>
-                  
-                  {/* İlk adımda form göster */}
-                  {step.step === 1 && (
-                    <div className="mt-6">
-                      <Suspense fallback={
-                        <div className="flex items-center justify-center py-8">
-                          <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div>
-                        </div>
-                      }>
-                        <DigitalAnalysisForm />
-                      </Suspense>
-                    </div>
-                  )}
+                <div>
+                  <h3 className="text-xl font-semibold text-[#F3F4F6]">{step.title}</h3>
+                  <p className="text-sm text-[#AEB3C2]">{step.description}</p>
                 </div>
               </div>
+
+              {step.step === 1 && (
+                <div className="w-full md:ml-auto md:w-1/2">
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center py-8">
+                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-red-500 border-t-transparent"></div>
+                    </div>
+                  }>
+                    <DigitalAnalysisForm />
+                  </Suspense>
+                </div>
+              )}
             </div>
           ))}
         </div>

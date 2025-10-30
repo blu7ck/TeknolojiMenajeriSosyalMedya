@@ -200,7 +200,7 @@ export default function QuoteButton({
               }}
               layout
               layoutId="quote-card"
-              className="absolute inset-0 bg-[#DC2626] items-center justify-center transform-gpu will-change-transform"
+              className="absolute inset-0 bg-[#DC2626] items-center justify-center transform-gpu"
             ></motion.div>
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
@@ -239,7 +239,7 @@ export default function QuoteButton({
                 height: "85vh",
               }}
               layout
-              className="relative flex overflow-y-auto bg-[#DC2626] transform-gpu will-change-transform shadow-2xl border border-gray-800"
+              className="relative flex overflow-y-auto bg-[#DC2626] transform-gpu shadow-2xl border border-gray-800"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 2 }}

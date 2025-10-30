@@ -159,15 +159,13 @@ export function MarvelColumns() {
               isExpanded ? "flex-[4]" : isOtherExpanded ? "flex-[0.5]" : "flex-1"
             }`}
             onClick={() => handleColumnClick(column.id)}
-            style={{ willChange: 'flex' }}
           >
             {/* Background Image */}
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-out"
               style={{
                 backgroundImage: `url(${column.image})`,
-                transform: isExpanded ? "scale(1.05)" : "scale(1)",
-                willChange: 'transform'
+                transform: isExpanded ? "scale(1.05)" : "scale(1)"
               }}
             >
               {/* Dark Overlay */}
@@ -175,7 +173,6 @@ export function MarvelColumns() {
                 className={`absolute inset-0 bg-black transition-opacity duration-500 ease-out ${
                   isExpanded ? "opacity-70" : "opacity-40"
                 }`}
-                style={{ willChange: 'opacity' }}
               />
             </div>
 
@@ -184,7 +181,6 @@ export function MarvelColumns() {
               className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ease-out ${
                 isExpanded ? "pointer-events-none opacity-0" : "opacity-100"
               }`}
-              style={{ willChange: 'opacity' }}
             >
               <h2
                 className="text-3xl font-extrabold tracking-[0.3em] text-white md:text-4xl lg:text-5xl"
@@ -192,7 +188,7 @@ export function MarvelColumns() {
                   writingMode: "vertical-rl",
                   textOrientation: "mixed",
                   transform: "rotate(180deg) scale(0.6)",
-                  textShadow: "0 0 20px rgba(0,0,0,0.8), 0 0 40px rgba(59,130,246,0.3)",
+                  textShadow: "0 0 20px rgba(0,0,0,0.8), 0 0 40px rgba(239,68,68,0.35)",
                   letterSpacing: "0.15em",
                 }}
               >
@@ -205,14 +201,13 @@ export function MarvelColumns() {
               className={`absolute inset-0 flex flex-col justify-center px-8 transition-all duration-500 ease-out md:px-16 lg:px-24 ${
                 isExpanded ? "translate-x-0 opacity-100" : "pointer-events-none translate-x-8 opacity-0"
               }`}
-              style={{ willChange: 'opacity, transform' }}
             >
               <div className="max-w-2xl space-y-4">
                 <div className="space-y-2">
-                  <h3 className="text-3xl font-extrabold tracking-[0.08em] text-blue-300 leading-tight text-balance md:text-4xl lg:text-5xl">
+                  <h3 className="text-3xl font-extrabold tracking-[0.08em] text-red-300 leading-tight text-balance md:text-4xl lg:text-5xl">
                     {column.title}
                   </h3>
-                  <p className="text-lg font-semibold tracking-[0.16em] text-blue-200 md:text-xl">{column.description}</p>
+                  <p className="text-lg font-semibold tracking-[0.16em] text-red-200 md:text-xl">{column.description}</p>
                 </div>
 
                 <p className="max-w-xl text-sm leading-relaxed text-white/90 md:text-base">
@@ -220,7 +215,7 @@ export function MarvelColumns() {
                 </p>
 
                 <button
-                  className="flex items-center gap-2 rounded-md bg-blue-600 px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-xl md:px-6 md:text-base"
+                  className="flex items-center gap-2 rounded-md bg-red-600 px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-red-700 hover:shadow-xl md:px-6 md:text-base"
                   onClick={(e) => {
                     e.stopPropagation()
                     window.location.href = `/more?section=${column.id}`
@@ -234,8 +229,8 @@ export function MarvelColumns() {
 
             {/* Hover Indicator (when collapsed) */}
             {!isExpanded && !isOtherExpanded && (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-out hover:opacity-100" style={{ willChange: 'opacity' }}>
-                <div className="rounded-sm border-2 border-blue-400 bg-blue-600/20 px-6 py-3 backdrop-blur-sm">
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-out hover:opacity-100">
+                <div className="rounded-sm border-2 border-red-400 bg-red-600/15 px-6 py-3 backdrop-blur-sm">
                   <p className="text-sm font-bold tracking-wider text-white">GENİŞLETMEK İÇİN TIKLAYIN</p>
                 </div>
               </div>

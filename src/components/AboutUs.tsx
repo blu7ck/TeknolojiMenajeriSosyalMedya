@@ -2,42 +2,39 @@ import React from 'react';
 
 const AboutUs: React.FC = () => {
   return (
-    <section id="about" className="py-20" style={{ backgroundColor: '#D3DADD' }}>
+    <section id="about" className="py-20 bg-[#0B0C0D] text-[#E5E7EB]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-red-400 sm:text-4xl">
             Biz Kimiz?
           </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Teknoloji Menajeri, alanında uzmanlaşmış, güçlü referans portföyü ve teknolojik uzmanlıkla donatılmış bir şirkettir. Artık bu alanda da hizmet vermektir.
+          <p className="mx-auto max-w-4xl text-lg leading-relaxed text-[#AEB3C2]">
+            Teknoloji Menajeri, alanında uzmanlaşmış, güçlü referans portföyü ve teknolojik uzmanlıkla donatılmış bir ekiptir. Dijital varlığınızı büyütmek için strateji, üretim ve yönetimi tek çatı altında topluyoruz.
           </p>
         </div>
-        
-        {/* Additional content can be added here */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">T</span>
+
+        <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {[{
+            key: 'T',
+            title: 'Teknolojik Uzmanlık',
+            body: 'En güncel araçlar ve veri odaklı yaklaşım ile ölçülebilir sonuçlar üretiriz.'
+          }, {
+            key: 'R',
+            title: 'Referans Portföyü',
+            body: 'Çeşitli sektörlerden markalara başarı hikâyeleri ekleyerek büyüyoruz.'
+          }, {
+            key: 'U',
+            title: 'Uzmanlaşma',
+            body: 'Disiplinler arası güçlü ekip yapımız ile uçtan uca çözümler sunarız.'
+          }].map((item) => (
+            <div key={item.title} className="rounded-xl border border-red-500/30 bg-black/70 p-8 text-center shadow-lg shadow-red-900/15 transition-transform duration-200 hover:-translate-y-1">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-600/90 text-2xl font-bold text-white">
+                {item.key}
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-[#F3F4F6]">{item.title}</h3>
+              <p className="text-sm text-[#AEB3C2]">{item.body}</p>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Teknolojik Uzmanlık</h3>
-            <p className="text-gray-600">En güncel teknolojiler ve araçlarla donatılmış ekibimiz</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">R</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Referans Portföyü</h3>
-            <p className="text-gray-600">Güçlü referanslar ve başarılı proje geçmişi</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl font-bold text-white">U</span>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Uzmanlaşma</h3>
-            <p className="text-gray-600">Alanında uzmanlaşmış profesyonel hizmet anlayışı</p>
-          </div>
+          ))}
         </div>
       </div>
     </section>
