@@ -211,7 +211,7 @@ export default function MorePage() {
               </button>
             </div>
 
-            <div className="flex w-full items-center justify-center gap-2 overflow-x-auto pb-2 sm:flex-1 sm:flex-wrap sm:pb-0">
+            <div className="flex w-full items-center justify-start gap-2 overflow-x-auto pb-2 pl-2 pr-2 sm:flex-1 sm:flex-wrap sm:justify-center sm:pb-0">
               {sections.map((section, index) => (
                 <button
                   key={section.id}

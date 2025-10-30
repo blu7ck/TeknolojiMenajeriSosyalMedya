@@ -83,8 +83,8 @@ export function MarvelColumns() {
 
   if (isMobile) {
     return (
-      <div className="w-full bg-black text-white">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-10">
+      <div className="w-full bg-black text-white" style={{ paddingTop: "112px" }}>
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 pb-10">
           {columns.map((column) => {
             const isExpanded = expandedColumn === column.id
             const contentId = `${column.id}-content`
