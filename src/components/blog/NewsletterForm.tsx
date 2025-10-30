@@ -108,64 +108,59 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   console.log("NewsletterForm render - step:", step)
   
   return (
-    <div className="py-3" style={{ backgroundColor: "#151516" }}>
-      <div className="max-w-4xl mx-auto px-4 flex justify-center">
-        {/* Single Row Layout - Centered */}
+    <div className="py-4" style={{ backgroundColor: "#151516" }}>
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4">
         {step === "email" && (
-          <div className="flex items-center gap-4">
-            {/* Left: Newsletter Text */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Mail className="w-4 h-4 text-red-500" />
-              <span className="text-sm text-white">Newsletter</span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-white">
+              <Mail className="h-4 w-4 text-red-500" />
+              <span className="text-sm">Newsletter</span>
             </div>
-            
-            {/* Center: Email Input */}
-            <div className="w-64">
-              <input
-                type="email"
-                placeholder="E-posta adresiniz"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
-                style={{ backgroundColor: "#2A2C2C" }}
-              />
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 sm:flex-1">
+              <div className="w-full sm:max-w-xs">
+                <input
+                  type="email"
+                  placeholder="E-posta adresiniz"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full rounded-lg border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
+                  style={{ backgroundColor: "#2A2C2C" }}
+                />
+              </div>
+
+              <button
+                onClick={handleEmailSubmit}
+                className="clickable w-full rounded-lg bg-red-600 px-4 py-2 text-center text-sm font-medium text-white transition-colors hover:bg-red-700 sm:w-auto"
+              >
+                Devam Et
+              </button>
             </div>
-            
-            {/* Right: Continue Button */}
-            <button
-              onClick={handleEmailSubmit}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors text-sm clickable flex-shrink-0"
-            >
-              Devam Et
-            </button>
           </div>
         )}
-        
-        {/* Details Form - Centered single row */}
+
         {step === "details" && (
-          <div className="flex items-center gap-4">
-            {/* Left: Email display and back button */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-sm text-white">E-posta: {formData.email}</span>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-white">
+              <span>E-posta: {formData.email}</span>
               <button
                 type="button"
                 onClick={handleBackToEmail}
-                className="text-xs text-red-400 hover:text-red-300 hover:underline clickable"
+                className="clickable text-xs text-red-400 transition-colors hover:text-red-300 hover:underline"
               >
                 ← Geri
               </button>
             </div>
-            
-            {/* Center: Name and profession inputs */}
-            <div className="flex gap-2">
+
+            <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
               <input
                 type="text"
                 placeholder="Ad"
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-20 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
               <input
@@ -174,7 +169,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-20 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
               <input
@@ -182,38 +177,34 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
                 placeholder="Meslek (opsiyonel)"
                 value={formData.profession}
                 onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                className="w-32 px-2 py-1 rounded border border-gray-600 focus:border-red-500 focus:outline-none transition-colors text-sm text-white placeholder-gray-400"
+                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
                 style={{ backgroundColor: "#2A2C2C" }}
               />
             </div>
-            
-            {/* Right: Action buttons */}
-            <div className="flex gap-2 flex-shrink-0">
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
               <button
                 onClick={handleBackToEmail}
-                className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors text-sm clickable"
+                className="clickable w-full rounded-lg bg-gray-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 sm:w-auto"
               >
                 İptal
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={status === "loading"}
-                className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 text-sm clickable"
+                className="clickable w-full rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 {status === "loading" ? "Kaydediliyor..." : "Abone Ol"}
               </button>
             </div>
           </div>
         )}
-        
-        {/* Status Message */}
+
         {message && (
-          <div className="mt-2 text-left">
+          <div className="text-center sm:text-left">
             <p className={`text-xs font-medium ${status === "error" ? "text-red-400" : "text-green-400"}`}>{message}</p>
           </div>
         )}
-
-
       </div>
     </div>
   )

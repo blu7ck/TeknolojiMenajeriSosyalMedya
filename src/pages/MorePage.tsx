@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-const NAV_HEIGHT = 96
+const DESKTOP_NAV_HEIGHT = 96
+const MOBILE_NAV_HEIGHT = 72
 
 const sections = [
   {
@@ -89,9 +90,33 @@ const sections = [
 export default function MorePage() {
   const [searchParams] = useSearchParams()
   const [activeSection, setActiveSection] = useState(0)
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+    return window.innerWidth >= 1024
+  })
   const navigate = useNavigate()
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-  const contentHeight = `calc(100vh - ${NAV_HEIGHT}px)`
+  const navHeight = isDesktop ? DESKTOP_NAV_HEIGHT : MOBILE_NAV_HEIGHT
+  const navHeightPx = `${navHeight}px`
+  const contentHeight = `calc(var(--app-vh, 1vh) * 100 - ${navHeight}px)`
+
+  useEffect(() => {
+    const updateViewportMetrics = () => {
+      if (typeof window === 'undefined') return
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--app-vh', `${vh}px`)
+      setIsDesktop(window.innerWidth >= 1024)
+    }
+
+    updateViewportMetrics()
+    window.addEventListener('resize', updateViewportMetrics)
+
+    return () => {
+      window.removeEventListener('resize', updateViewportMetrics)
+    }
+  }, [])
 
   const scrollToSection = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
     setActiveSection(index)
@@ -168,20 +193,25 @@ export default function MorePage() {
   return (
     <div
       className="min-h-screen bg-black text-white"
-      style={{ paddingTop: NAV_HEIGHT }}
+      style={{ paddingTop: navHeightPx }}
     >
       {/* Custom Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex h-[96px] items-center justify-between gap-4">
-            <button
-              onClick={() => navigate('/')}
-              className="rounded-xl px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-300 transition-colors duration-200 hover:bg-gray-800/80 hover:text-white sm:text-xs"
-            >
-              Anasayfa
-            </button>
+          <div
+            className="flex w-full flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
+            style={{ minHeight: navHeightPx }}
+          >
+            <div className="flex items-center justify-between gap-3 sm:justify-start">
+              <button
+                onClick={() => navigate('/')}
+                className="w-full rounded-xl px-4 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-300 transition-colors duration-200 hover:bg-gray-800/80 hover:text-white sm:w-auto sm:text-xs"
+              >
+                Anasayfa
+              </button>
+            </div>
 
-            <div className="flex flex-1 flex-wrap items-center justify-center gap-2">
+            <div className="flex w-full items-center justify-center gap-2 overflow-x-auto pb-2 sm:flex-1 sm:flex-wrap sm:pb-0">
               {sections.map((section, index) => (
                 <button
                   key={section.id}
@@ -199,7 +229,7 @@ export default function MorePage() {
 
             <button
               onClick={handleDirectContact}
-              className="rounded-xl border border-red-500/70 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-red-400 transition-colors duration-200 hover:bg-red-500 hover:text-white sm:text-xs"
+              className="w-full rounded-xl border border-red-500/70 px-4 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-red-400 transition-colors duration-200 hover:bg-red-500 hover:text-white sm:w-auto sm:text-xs"
             >
               Doğrudan İletişim
             </button>
@@ -211,7 +241,7 @@ export default function MorePage() {
       <div className="relative">
         <div
           ref={scrollContainerRef}
-          className="overflow-y-auto snap-y snap-mandatory"
+          className="overflow-y-auto md:snap-y md:snap-mandatory"
           style={{ height: contentHeight }}
         >
           {sections.map((section, index) => (
@@ -219,17 +249,17 @@ export default function MorePage() {
               key={section.id}
               id={`section-${index}`}
               data-index={index}
-              className="relative flex snap-start items-center justify-center"
+              className="relative flex snap-start items-center justify-center px-4 py-12 sm:px-6 md:px-8 md:py-16"
               style={{
                 backgroundImage: `linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.78)), url(${section.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                backgroundAttachment: 'fixed',
+                backgroundAttachment: isDesktop ? 'fixed' : 'scroll',
                 minHeight: contentHeight
               }}
             >
-              <div className="mx-auto max-w-4xl px-4 py-12 text-center md:px-8 md:py-16">
-                <h1 className="mb-5 whitespace-nowrap text-3xl font-extrabold uppercase tracking-[0.25em] text-red-400 md:mb-6 md:text-5xl">
+              <div className="mx-auto max-w-4xl px-2 text-center sm:px-4 md:px-8">
+                <h1 className="mb-5 text-3xl font-extrabold uppercase tracking-[0.18em] text-red-400 sm:text-4xl md:mb-6 md:text-5xl">
                   {section.title}
                 </h1>
                 <p className="mb-5 text-base font-semibold text-red-200 md:mb-7 md:text-xl">
