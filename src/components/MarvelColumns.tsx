@@ -92,16 +92,16 @@ export function MarvelColumns() {
             return (
               <div
                 key={column.id}
-                className="overflow-hidden rounded-2xl border border-blue-500/30 bg-[#0c1020]/90 shadow-lg shadow-blue-900/20 backdrop-blur"
+                className="overflow-hidden rounded-2xl border border-red-500/30 bg-black/80 shadow-lg shadow-red-900/15 backdrop-blur"
               >
                 <button
                   type="button"
                   onClick={() => handleColumnClick(column.id)}
-                  className="flex w-full items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-blue-500/5"
+                  className="flex w-full items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-red-500/5"
                   aria-expanded={isExpanded}
                   aria-controls={contentId}
                 >
-                  <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl border border-white/10">
+                  <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl border border-red-500/40">
                     <img
                       src={column.image}
                       alt={column.title}
@@ -110,16 +110,16 @@ export function MarvelColumns() {
                     />
                   </div>
                   <div className="flex-1 space-y-1">
-                    <h3 className="text-base font-semibold uppercase tracking-[0.18em] text-blue-200">
+                    <h3 className="text-base font-semibold uppercase tracking-[0.18em] text-red-200">
                       {column.title}
                     </h3>
-                    <p className="text-xs text-blue-100/80">
+                    <p className="text-xs text-red-100/80">
                       {column.description}
                     </p>
                   </div>
                   <ChevronRight
                     className={`h-5 w-5 flex-shrink-0 transition-transform ${
-                      isExpanded ? "rotate-90 text-blue-300" : "text-blue-200"
+                      isExpanded ? "rotate-90 text-red-300" : "text-red-200"
                     }`}
                   />
                 </button>
@@ -128,7 +128,7 @@ export function MarvelColumns() {
                   <div id={contentId} className="space-y-4 px-4 pb-5 text-sm text-white/90">
                     <p>{column.content}</p>
                     <button
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold uppercase tracking-[0.1em] transition-colors hover:bg-blue-700"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-3 text-sm font-semibold uppercase tracking-[0.1em] transition-colors hover:bg-red-700"
                       onClick={() => {
                         window.location.href = `/more?section=${column.id}`
                       }}

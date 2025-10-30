@@ -148,6 +148,14 @@ export function PackageSelector() {
   const [hoveredModule, setHoveredModule] = useState<Module | null>(null)
   const [hoverPosition, setHoverPosition] = useState<"left" | "right">("right")
 
+  const selectedPackageData = selectedPackage ? packages.find((pkg) => pkg.id === selectedPackage) || null : null
+  const selectedModuleNames = selectedPackageData
+    ? (selectedModules[selectedPackageData.id] || []).map((moduleId: string) => {
+        const module = selectedPackageData.modules.find((mod) => mod.id === moduleId)
+        return module?.name || moduleId
+      })
+    : []
+
   const handleContainerClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setSelectedPackage(null)
@@ -237,6 +245,9 @@ export function PackageSelector() {
                       <p className="text-gray-400 text-sm mb-2">{pkg.description}</p>
                       <p className="text-gray-500 text-xs leading-relaxed">{pkg.target}</p>
                     </div>
+                    <p className="mt-auto text-[11px] text-red-300/80 leading-relaxed">
+                      Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
+                    </p>
                   </div>
 
                   {/* Kartın Arka Yüzü */}
@@ -271,16 +282,12 @@ export function PackageSelector() {
                             }}
                             onMouseLeave={() => setHoveredModule(null)}
                             onTouchStart={(e) => {
-                              e.preventDefault()
                               e.stopPropagation()
                               setHoveredModule(module)
                               setHoverPosition("right")
                             }}
                             onTouchEnd={(e) => {
-                              e.preventDefault()
                               e.stopPropagation()
-                              // Delay to allow checkbox click
-                              setTimeout(() => setHoveredModule(null), 100)
                             }}
                             onFocus={() => setHoveredModule(module)}
                             onBlur={() => setHoveredModule(null)}
@@ -371,6 +378,9 @@ export function PackageSelector() {
                           </div>
                         )
                       })}
+                    <p className="mt-4 text-xs text-gray-400">
+                      Modül seçmekte kararsız kaldıysanız, daha fazla bilgi ve yönlendirme için TEKLİF AL butonuna tıklayabilirsiniz.
+                    </p>
                     </div>
 
                   </div>
@@ -381,21 +391,16 @@ export function PackageSelector() {
         </div>
 
         {/* TEKLİF AL Butonu - Kartların Altında */}
-        {selectedPackage && (
-          <div className="mt-12 flex justify-center items-center">
-            <div className="flex justify-center items-center">
-              <QuoteButton 
-                packageTitle={packages.find(p => p.id === selectedPackage)?.title || ''}
-                packagePrice={packages.find(p => p.id === selectedPackage)?.pricing || ''}
-                selectedModules={selectedModules[selectedPackage]?.map((moduleId: string) => {
-                  const pkg = packages.find(p => p.id === selectedPackage)
-                  const module = pkg?.modules.find((m: any) => m.id === moduleId)
-                  return module?.name || moduleId
-                }) || []}
-              />
-            </div>
+        <div className="mt-12 flex justify-center items-center">
+          <div className="flex justify-center items-center">
+            <QuoteButton 
+              packageTitle={selectedPackageData?.title || 'Paket Seçimi Bekleniyor'}
+              packagePrice={selectedPackageData?.pricing || ''}
+              selectedModules={selectedModuleNames}
+              disabled={!selectedPackageData}
+            />
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

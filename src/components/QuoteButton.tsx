@@ -21,18 +21,21 @@ interface QuoteButtonProps {
   packageTitle?: string
   packagePrice?: string
   selectedModules?: string[]
+  disabled?: boolean
 }
 
 export default function QuoteButton({ 
   packageTitle = "Özel Paket", 
   packagePrice = "Fiyat Teklifi", 
-  selectedModules = [] 
+  selectedModules = [],
+  disabled = false
 }: QuoteButtonProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [socialMediaFields, setSocialMediaFields] = useState<Array<{ id: string; platform: string; value: string }>>([])
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
   const handleExpand = () => {
+    if (disabled) return
     setIsExpanded(true)
   }
 
@@ -206,7 +209,13 @@ export default function QuoteButton({
               exit={{ opacity: 0, scale: 0.8 }}
               layout={false}
               onClick={handleExpand}
-              className="w-full py-3 px-6 text-lg font-regular text-[#DBDBDB] tracking-[-0.01em] relative"
+              className={`w-full py-3 px-6 text-lg font-regular tracking-[-0.01em] relative ${
+                disabled
+                  ? 'cursor-not-allowed text-[#DBDBDB]/50'
+                  : 'text-[#DBDBDB]'
+              }`}
+              disabled={disabled}
+              aria-disabled={disabled}
             >
               TEKLİF AL
             </motion.button>
@@ -357,7 +366,7 @@ export default function QuoteButton({
                         htmlFor="corporate-info"
                         className="block text-[10px] font-mono font-normal text-[#DBDBDB] mb-2 tracking-[0.5px] uppercase"
                       >
-                        KURUMSAL BİLGİ (İSTEĞE BAĞLI)
+                        KURUMSAL BİLGİ / EK AÇIKLAMA (İSTEĞE BAĞLI)
                       </label>
                       <input
                         type="text"
