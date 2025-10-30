@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, X, Play, ArrowLeft } from "lucide-react"
 import "./PackageSelector.css"
 import QuoteButton from './QuoteButton'
@@ -147,6 +147,33 @@ export function PackageSelector() {
   const [selectedModules, setSelectedModules] = useState<Record<string, string[]>>({})
   const [hoveredModule, setHoveredModule] = useState<Module | null>(null)
   const [hoverPosition, setHoverPosition] = useState<"left" | "right">("right")
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+    return window.innerWidth < 768
+  })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isMobile) {
+      setHoveredModule(null)
+    }
+  }, [isMobile])
 
   const selectedPackageData = selectedPackage ? packages.find((pkg) => pkg.id === selectedPackage) || null : null
   const selectedModuleNames = selectedPackageData
@@ -271,27 +298,20 @@ export function PackageSelector() {
                           <div
                             key={module.id}
                             className="relative overflow-visible z-50"
-                            onMouseEnter={(e) => {
+                            onMouseEnter={!isMobile ? (e) => {
                               setHoveredModule(module)
-                              // Check if popup would overflow to the right
                               const rect = e.currentTarget.getBoundingClientRect()
                               const viewportWidth = window.innerWidth
-                              const popupWidth = 288 // w-72 = 18rem = 288px
+                              const popupWidth = 288
                               const wouldOverflow = rect.right + popupWidth > viewportWidth - 20
                               setHoverPosition(wouldOverflow ? "left" : "right")
-                            }}
-                            onMouseLeave={() => setHoveredModule(null)}
-                            onTouchStart={(e) => {
-                              e.stopPropagation()
-                              setHoveredModule(module)
-                              setHoverPosition("right")
-                            }}
-                            onTouchEnd={(e) => {
-                              e.stopPropagation()
-                            }}
-                            onFocus={() => setHoveredModule(module)}
-                            onBlur={() => setHoveredModule(null)}
-                            tabIndex={0}
+                            } : undefined}
+                            onMouseLeave={!isMobile ? () => setHoveredModule(null) : undefined}
+                            onTouchStart={undefined}
+                            onTouchEnd={undefined}
+                            onFocus={!isMobile ? () => setHoveredModule(module) : undefined}
+                            onBlur={!isMobile ? () => setHoveredModule(null) : undefined}
+                            tabIndex={isMobile ? -1 : 0}
                           >
                             <label
                               className="flex items-center gap-2 p-2 rounded-lg bg-black/60 hover:bg-black/80 border border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer group"
@@ -311,10 +331,9 @@ export function PackageSelector() {
                               )}
                             </label>
 
-                            {hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
+                            {!isMobile && hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
                               <>
                                 {/* Mobile backdrop */}
-                                <div className="max-md:fixed max-md:inset-0 max-md:bg-black/50 max-md:z-[9998] md:hidden" onClick={() => setHoveredModule(null)} />
                                 
                                 <div
                                   className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[9999] animate-fade-slide-in
