@@ -128,7 +128,7 @@ export default function BlogPage() {
 
         {/* Fixed Newsletter Footer */}
         <div className="fixed bottom-0 left-0 right-0 shadow-lg z-50" style={{ backgroundColor: "#151516" }}>
-          <div className="container mx-auto px-4">
+          <div className="w-full px-0">
             <NewsletterForm isDark={isDark} />
           </div>
         </div>

@@ -108,17 +108,17 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   console.log("NewsletterForm render - step:", step)
   
   return (
-    <div className="py-4" style={{ backgroundColor: "#151516" }}>
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4">
+    <div className="py-4 px-4 sm:px-8" style={{ backgroundColor: "#151516" }}>
+      <div className="flex w-full flex-col items-start gap-4">
         {step === "email" && (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2 text-white">
+          <div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <div className="flex items-center gap-2 text-white sm:flex-shrink-0">
               <Mail className="h-4 w-4 text-red-500" />
-              <span className="text-sm">Newsletter</span>
+              <span className="text-sm sm:whitespace-nowrap">Güncel teknoloji haberlerini kaçırmamak için abone olun.</span>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 sm:flex-1">
-              <div className="w-full sm:max-w-xs">
+            <div className="flex w-full flex-col gap-3 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-4">
+              <div className="w-full sm:w-64">
                 <input
                   type="email"
                   placeholder="E-posta adresiniz"
@@ -141,19 +141,12 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
         )}
 
         {step === "details" && (
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center gap-2 text-sm text-white">
+          <div className="flex w-full flex-col gap-3 sm:mx-auto sm:max-w-3xl sm:items-center">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-white">
               <span>E-posta: {formData.email}</span>
-              <button
-                type="button"
-                onClick={handleBackToEmail}
-                className="clickable text-xs text-red-400 transition-colors hover:text-red-300 hover:underline"
-              >
-                ← Geri
-              </button>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
+            <div className="grid w-full gap-2 sm:grid-cols-3 sm:gap-3">
               <input
                 type="text"
                 placeholder="Ad"
@@ -182,7 +175,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
               />
             </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
               <button
                 onClick={handleBackToEmail}
                 className="clickable w-full rounded-lg bg-gray-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 sm:w-auto"
