@@ -13,6 +13,58 @@ export default function HomePage() {
   // SEO ayarlarını güncelle
   setHomePageSEO()
 
+  const socialLinks = [
+    {
+      href: "https://www.linkedin.com/company/teknoloji-menajeri",
+      label: "LinkedIn",
+      title: "Teknoloji Menajeri LinkedIn",
+      icon: (
+        <svg
+          aria-hidden="true"
+          className="h-6 w-6"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M22.225 0H1.771C.792 0 0 .771 0 1.723v20.555C0 23.23.792 24 1.771 24h20.451C23.2 24 24 23.23 24 22.278V1.723C24 .771 23.2 0 22.225 0zM7.336 20.452H3.777V9h3.559v11.452zM5.556 7.433c-1.139 0-2.062-.926-2.062-2.068 0-1.144.923-2.069 2.062-2.069 1.139 0 2.062.925 2.062 2.069 0 1.142-.923 2.068-2.062 2.068zM20.452 20.452h-3.555v-5.569c0-1.328-.025-3.036-1.849-3.036-1.849 0-2.132 1.445-2.132 2.939v5.666H9.361V9h3.414v1.561h.049c.476-.9 1.639-1.851 3.37-1.851 3.601 0 4.258 2.37 4.258 5.455v6.287z" />
+        </svg>
+      )
+    },
+    {
+      href: "https://www.instagram.com/teknolojimenajeri",
+      label: "Instagram",
+      title: "Teknoloji Menajeri Instagram",
+      icon: (
+        <svg
+          aria-hidden="true"
+          className="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          viewBox="0 0 24 24"
+        >
+          <rect height="16" rx="4" width="16" x="4" y="4" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="18" cy="6" r="1.3" fill="currentColor" stroke="none" />
+        </svg>
+      )
+    },
+    {
+      href: "https://x.com/teknomenajer",
+      label: "X",
+      title: "Teknoloji Menajeri X (Twitter)",
+      icon: (
+        <svg
+          aria-hidden="true"
+          className="h-6 w-6"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 3h3.3l5.47 7.56L17.25 3H21l-7.19 9.36L21.55 21h-3.3l-5.87-8.11L6.48 21H3.06l7.39-9.63L3 3z" />
+        </svg>
+      )
+    }
+  ]
+
   return (
     <>
       <Header />
@@ -99,10 +151,24 @@ export default function HomePage() {
                 }}
               />
             </div>
-            
-            <p className="text-sm text-gray-600">
-              Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
-            </p>
+            <div className="mb-6 flex justify-center">
+              <div className="flex items-center gap-4">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-400/60 text-gray-700 transition-colors hover:border-red-500 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-200"
+                    aria-label={link.label}
+                    title={link.title}
+                  >
+                    <span className="sr-only">{link.label}</span>
+                    {link.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
             <p className="mt-3 text-gray-700">
               © 2025{' '}
               <a 

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "../components/Header"
 import { createClient } from "../lib/supabase/client"
 import { setBlogPageSEO } from "../lib/seo-utils"
 import type { BlogPost } from "../types/blog"
@@ -78,7 +77,25 @@ export default function BlogPage() {
   return (
     <div className={isDark ? "dark" : ""}>
       <div className="min-h-screen bg-[#F2F4F7] text-[#1F2933] transition-colors duration-300">
-        <Header />
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-red-500/25 bg-[#151516]/95 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 text-white">
+            <a
+              href="/"
+              className="clickable rounded-lg border border-white/25 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:border-white hover:bg-white/10"
+            >
+              S0C1ETY
+            </a>
+            <span className="text-sm sm:text-base font-semibold uppercase tracking-[0.35em] text-red-300">#Blog</span>
+            <a
+              href="https://teknolojimenajeri.com.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="clickable rounded-lg border border-red-400 px-4 py-2 text-sm font-semibold text-red-200 transition-all duration-300 hover:border-red-200 hover:bg-red-500/20 hover:text-white"
+            >
+              Teknoloji Menajeri
+            </a>
+          </div>
+        </nav>
 
         {/* Year Selector */}
         {/* Year Selector */}
@@ -99,14 +116,16 @@ export default function BlogPage() {
           </div>
         )}
 
-        <div className="pt-32 px-4 sm:px-6 lg:px-8" style={{ paddingBottom: '80px' }}>
+        <div className="pt-36 px-4 sm:px-6 lg:px-8" style={{ paddingBottom: '80px' }}>
           <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-16">
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-[#0F172A] text-balance">Teknoloji Menajeri Blog</h1>
-              <p className="text-xl text-[#3E4C59] max-w-2xl mx-auto text-pretty">
+              <h1
+                className="inline-block whitespace-nowrap text-[20px] sm:text-[24px] lg:text-[28px] italic text-[#0F172A]/90"
+                style={{ fontFamily: '"Caveat", "Patrick Hand", "Segoe Script", "Comic Sans MS", cursive' }}
+              >
                 Dijital dünyada başarıya giden yolculuğunuzda size ilham verecek içerikler
-              </p>
+              </h1>
             </div>
 
             {loading ? (

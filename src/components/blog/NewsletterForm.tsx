@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { createClient } from "../../lib/supabase/client"
-import { Mail } from "lucide-react"
+import { Mail, ChevronDown } from "lucide-react"
 
 interface NewsletterFormProps {
   isDark: boolean
@@ -20,6 +20,7 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   })
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [message, setMessage] = useState("")
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -108,9 +109,18 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
   console.log("NewsletterForm render - step:", step)
   
   return (
-    <div className="py-4 px-4 sm:px-8" style={{ backgroundColor: "#151516" }}>
-      <div className="flex w-full flex-col items-start gap-4">
-        {step === "email" && (
+    <div className="relative py-4 px-4 sm:px-8" style={{ backgroundColor: "#151516" }}>
+      <button
+        type="button"
+        onClick={() => setIsCollapsed((prev) => !prev)}
+        className="clickable absolute left-1/2 top-0 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-gray-600 bg-[#2A2C2C] text-white shadow-md transition-transform hover:border-red-500"
+      >
+        <ChevronDown className={`h-3 w-3 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
+      </button>
+
+      {!isCollapsed && (
+        <div className="flex w-full flex-col items-start gap-4">
+          {step === "email" && (
           <div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
             <div className="flex items-center gap-2 text-white sm:flex-shrink-0">
               <Mail className="h-4 w-4 text-red-500" />
@@ -138,67 +148,68 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
               </button>
             </div>
           </div>
-        )}
+          )}
 
-        {step === "details" && (
-          <div className="flex w-full flex-col gap-3 sm:mx-auto sm:max-w-3xl sm:items-center">
-            <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-white">
-              <span>E-posta: {formData.email}</span>
+          {step === "details" && (
+            <div className="flex w-full flex-col gap-3 sm:mx-auto sm:max-w-3xl sm:items-center">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-white">
+                <span>E-posta: {formData.email}</span>
+              </div>
+
+              <div className="grid w-full gap-2 sm:grid-cols-3 sm:gap-3">
+                <input
+                  type="text"
+                  placeholder="Ad"
+                  required
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
+                  style={{ backgroundColor: "#2A2C2C" }}
+                />
+                <input
+                  type="text"
+                  placeholder="Soyad"
+                  required
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
+                  style={{ backgroundColor: "#2A2C2C" }}
+                />
+                <input
+                  type="text"
+                  placeholder="Meslek (opsiyonel)"
+                  value={formData.profession}
+                  onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                  className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
+                  style={{ backgroundColor: "#2A2C2C" }}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                <button
+                  onClick={handleBackToEmail}
+                  className="clickable w-full rounded-lg bg-gray-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 sm:w-auto"
+                >
+                  İptal
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={status === "loading"}
+                  className="clickable w-full rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                >
+                  {status === "loading" ? "Kaydediliyor..." : "Abone Ol"}
+                </button>
+              </div>
             </div>
+          )}
 
-            <div className="grid w-full gap-2 sm:grid-cols-3 sm:gap-3">
-              <input
-                type="text"
-                placeholder="Ad"
-                required
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
-                style={{ backgroundColor: "#2A2C2C" }}
-              />
-              <input
-                type="text"
-                placeholder="Soyad"
-                required
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
-                style={{ backgroundColor: "#2A2C2C" }}
-              />
-              <input
-                type="text"
-                placeholder="Meslek (opsiyonel)"
-                value={formData.profession}
-                onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                className="w-full rounded border border-gray-600 px-3 py-2 text-sm text-white placeholder-gray-400 transition-colors focus:border-red-500 focus:outline-none"
-                style={{ backgroundColor: "#2A2C2C" }}
-              />
+          {message && (
+            <div className="text-center sm:text-left">
+              <p className={`text-xs font-medium ${status === "error" ? "text-red-400" : "text-green-400"}`}>{message}</p>
             </div>
-
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-              <button
-                onClick={handleBackToEmail}
-                className="clickable w-full rounded-lg bg-gray-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 sm:w-auto"
-              >
-                İptal
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={status === "loading"}
-                className="clickable w-full rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-              >
-                {status === "loading" ? "Kaydediliyor..." : "Abone Ol"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {message && (
-          <div className="text-center sm:text-left">
-            <p className={`text-xs font-medium ${status === "error" ? "text-red-400" : "text-green-400"}`}>{message}</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
