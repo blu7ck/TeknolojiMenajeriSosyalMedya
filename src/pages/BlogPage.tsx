@@ -76,7 +76,7 @@ export default function BlogPage() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen bg-[#F2F4F7] text-[#1F2933] transition-colors duration-300">
+      <div className="min-h-screen overflow-x-hidden bg-[#F2F4F7] text-[#1F2933] transition-colors duration-300">
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-red-500/25 bg-[#151516]/95 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-4 py-3 text-white">
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -142,7 +142,7 @@ export default function BlogPage() {
             {/* Hero Section */}
             <div className="text-center mb-16">
               <h1
-                className="inline-block whitespace-nowrap text-[20px] sm:text-[24px] lg:text-[28px] italic text-[#0F172A]/90"
+                className="mx-auto max-w-3xl text-balance text-[20px] text-[#0F172A]/90 sm:text-[24px] lg:text-[28px] italic"
                 style={{ fontFamily: '"Caveat", "Patrick Hand", "Segoe Script", "Comic Sans MS", cursive' }}
               >
                 Dijital dünyada başarıya giden yolculuğunuzda size ilham verecek içerikler

@@ -16,6 +16,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.38.4",
     "@types/react-google-recaptcha": "^2.1.9",
+    "@vercel/speed-insights": "^1.2.0",
     "framer-motion": "^10.18.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.263.1",

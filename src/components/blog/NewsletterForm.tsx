@@ -122,9 +122,9 @@ export function NewsletterForm({ isDark }: NewsletterFormProps) {
         <div className="flex w-full flex-col items-start gap-4">
           {step === "email" && (
           <div className="flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            <div className="flex items-center gap-2 text-white sm:flex-shrink-0">
+            <div className="flex w-full flex-wrap items-center gap-2 text-white sm:w-auto sm:flex-nowrap sm:flex-shrink-0">
               <Mail className="h-4 w-4 text-red-500" />
-              <span className="text-sm sm:whitespace-nowrap">Güncel teknoloji haberlerini kaçırmamak için abone olun.</span>
+              <span className="text-sm leading-snug">Güncel teknoloji haberlerini kaçırmamak için abone olun.</span>
             </div>
 
             <div className="flex w-full flex-col gap-3 sm:ml-auto sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-4">

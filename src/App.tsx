@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import { Suspense, lazy } from "react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 import "./components/PackageSelector.css"
 
 // Lazy load components with error handling
@@ -93,6 +94,7 @@ function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           {isDev && <Route path="/test" element={<TestPage />} />}
         </Routes>
+        <SpeedInsights />
       </Suspense>
     </div>
   )
