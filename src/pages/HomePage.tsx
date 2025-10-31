@@ -2,6 +2,7 @@ import { Header } from "../components/Header"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
 import { Suspense, lazy } from "react"
+import { Link } from "react-router-dom"
 import { MarvelColumns } from "../components/MarvelColumns"
 
 // Lazy load heavy components for better performance
@@ -184,6 +185,41 @@ export default function HomePage() {
           </div>
         </footer>
       </div>
+
+      <Link
+        to="/gallery"
+        className="group fixed bottom-6 right-5 z-50 flex items-center gap-3 rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-amber-400 px-5 py-3 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-xl shadow-red-900/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
+        aria-label="Galeri sayfasına git"
+      >
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm">
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5 text-white"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            viewBox="0 0 24 24"
+          >
+            <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h1l.4-.8A1.5 1.5 0 0 1 9.3 3.5h5.4a1.5 1.5 0 0 1 1.4.9l.4.8h1A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5zm8 2.75A3.25 3.25 0 1 0 15.25 13.5 3.25 3.25 0 0 0 12 10.25Z" />
+          </svg>
+        </span>
+        <span className="flex flex-col items-start leading-tight tracking-normal">
+          <span className="text-[0.55rem] font-medium uppercase tracking-[0.42em] text-white/70">Teknoloji</span>
+          <span className="text-base font-semibold uppercase tracking-[0.28em]">Galeri</span>
+        </span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white transition-all duration-300 group-hover:bg-white/25">
+          <svg
+            aria-hidden="true"
+            className="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            viewBox="0 0 24 24"
+          >
+            <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </Link>
     </>
   )
 }

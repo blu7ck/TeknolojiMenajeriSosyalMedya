@@ -57,6 +57,15 @@ const MorePage = lazy(() => import("./pages/MorePage").catch(() => ({
   </div>
 })))
 
+const GalleryPage = lazy(() => import("./pages/GalleryPage").catch(() => ({
+  default: () => <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+    <div className="text-center text-gray-200">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-4"></div>
+      <p className="text-sm tracking-[0.3em] uppercase">Galeri yükleniyor...</p>
+    </div>
+  </div>
+})))
+
 // Loading component
 function PageLoader() {
   return (
@@ -81,6 +90,7 @@ function App() {
           <Route path="/blu4ck" element={<AdminPage />} />
           <Route path="/unsubscribe" element={<UnsubscribePage />} />
           <Route path="/more" element={<MorePage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           {isDev && <Route path="/test" element={<TestPage />} />}
         </Routes>
       </Suspense>

@@ -173,3 +173,13 @@ export function setHomePageSEO() {
     url: 'https://teknolojimenajeri.com'
   })
 }
+
+// Galeri sayfası için SEO
+export function setGalleryPageSEO() {
+  updatePageSEO({
+    title: 'Galeri | Teknoloji Menajeri - Proje Vitrini',
+    description: 'Teknoloji Menajeri projelerinden seçili görseller ve deneyimler. Sosyal medya tasarımları, VR deneyimleri ve marka hikayeleri.',
+    keywords: 'teknoloji menajeri galeri, sosyal medya tasarım galeri, yapay zeka projeleri, dijital deneyim vitrini, ai, ai generated images, ai generated videos',
+    url: 'https://teknolojimenajeri.com/gallery'
+  })
+}
