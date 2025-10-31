@@ -78,45 +78,66 @@ export default function BlogPage() {
     <div className={isDark ? "dark" : ""}>
       <div className="min-h-screen bg-[#F2F4F7] text-[#1F2933] transition-colors duration-300">
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-red-500/25 bg-[#151516]/95 backdrop-blur-md">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 text-white">
-            <a
-              href="/"
-              className="clickable rounded-lg border border-white/25 px-4 py-2 text-sm font-semibold transition-all duration-300 hover:border-white hover:bg-white/10"
-            >
-              S0C1ETY
-            </a>
-            <span className="text-sm sm:text-base font-semibold uppercase tracking-[0.35em] text-red-300">#Blog</span>
-            <a
-              href="https://teknolojimenajeri.com.tr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="clickable rounded-lg border border-red-400 px-4 py-2 text-sm font-semibold text-red-200 transition-all duration-300 hover:border-red-200 hover:bg-red-500/20 hover:text-white"
-            >
-              Teknoloji Menajeri
-            </a>
+          <div className="mx-auto max-w-7xl px-4 py-3 text-white">
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <a
+                href="/"
+                className="clickable w-full rounded-lg border border-white/25 px-4 py-2 text-center text-sm font-semibold transition-all duration-300 hover:border-white hover:bg-white/10 sm:w-auto"
+              >
+                S0C1ETY
+              </a>
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-red-300 sm:text-sm sm:tracking-[0.35em]">#Blog</span>
+              <a
+                href="https://teknolojimenajeri.com.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="clickable w-full rounded-lg border border-red-400 px-4 py-2 text-center text-sm font-semibold text-red-200 transition-all duration-300 hover:border-red-200 hover:bg-red-500/20 hover:text-white sm:w-auto"
+              >
+                Teknoloji Menajeri
+              </a>
+            </div>
           </div>
         </nav>
 
         {/* Year Selector */}
         {/* Year Selector */}
         {availableYears.length > 1 && (
-          <div className="fixed top-32 right-8 z-40">
-            <div className="bg-[#DBDBDB] dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-2">
-              <select
-                value={selectedYear || ""}
-                onChange={(e) => setSelectedYear(e.target.value || null)}
-                className="p-2 rounded-lg bg-transparent border-0 text-sm font-medium text-gray-700 dark:text-gray-300 focus:outline-none clickable"
-              >
-                <option value="">📅 Tüm Yıllar</option>
-                {availableYears.map(year => (
-                  <option key={year} value={year}>📅 {year}</option>
-                ))}
-              </select>
+          <>
+            <div className="fixed top-32 right-6 z-40 hidden md:block">
+              <div className="rounded-lg border border-gray-300 bg-[#DBDBDB] p-2 shadow-lg dark:border-gray-600 dark:bg-gray-800">
+                <select
+                  value={selectedYear || ""}
+                  onChange={(e) => setSelectedYear(e.target.value || null)}
+                  className="clickable rounded-lg border-0 bg-transparent p-2 text-sm font-medium text-gray-700 focus:outline-none dark:text-gray-300"
+                >
+                  <option value="">📅 Tüm Yıllar</option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={year}>📅 {year}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
+            <div className="mx-auto mt-6 w-full max-w-7xl px-4 md:hidden">
+              <label className="sr-only" htmlFor="mobile-year-select">Yıl seçimi</label>
+              <div className="flex items-center gap-3 rounded-lg border border-gray-300 bg-[#DBDBDB] p-2 shadow-md">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-600">Yıl</span>
+                <select
+                  id="mobile-year-select"
+                  value={selectedYear || ""}
+                  onChange={(e) => setSelectedYear(e.target.value || null)}
+                  className="clickable w-full rounded-md border-0 bg-transparent px-2 py-1 text-sm font-medium text-gray-800 focus:outline-none"
+                >
+                  <option value="">📅 Tüm Yıllar</option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={year}>📅 {year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </>
         )}
 
-        <div className="pt-36 px-4 sm:px-6 lg:px-8" style={{ paddingBottom: '80px' }}>
+        <div className="px-4 pb-44 pt-40 sm:px-6 sm:pt-40 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-16">
