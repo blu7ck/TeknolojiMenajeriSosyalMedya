@@ -1403,7 +1403,7 @@ async function generateFallbackPDF(markdown: string, website: string): Promise<U
             <div class="footer-logo-text" style="display: none;">Teknoloji Menajeri</div>
         </div>
         <p>Dijital Pazarlama ve Web Analiz Hizmetleri</p>
-        <p>🌐 www.teknolojimenajeri.com.tr | 📧 gulsah@teknolojimenajeri.com</p>
+        <p>🌐 studio.teknolojimenajeri.com | 📧 gulsah@teknolojimenajeri.com</p>
         <p style="margin-top: 10px; opacity: 0.7; font-size: 12px;">
             Bu rapor otomatik olarak oluşturulmuştur.
         </p>

@@ -491,12 +491,12 @@ function generateAnalysisReportHTML(data: any, baseUrl: string) {
     <body>
       <div class="container">
         <div class="header">
-          <h1>🎉 Dijital Analiz Raporunuz Hazır!</h1>
+          <h1>Dijital Analiz Raporunuz Hazır!</h1>
         </div>
         <div class="content">
           <p>Merhaba <strong>${data.name}</strong>,</p>
           
-          <p><strong>${data.website}</strong> website'iniz için hazırladığımız dijital analiz raporu tamamlandı!</p>
+          <p><strong>${data.website}</strong> website'niz için hazırladığımız dijital analiz raporu tamamlandı!</p>
           
           <div class="score-card">
             <h2>Genel Değerlendirme</h2>

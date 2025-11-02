@@ -120,7 +120,7 @@ serve(async (req) => {
         isim: `${subscriber.first_name} ${subscriber.last_name}`,
         baslik: post.title || "ŞİMDİLERDE NELER OLUYOR?",
         ozet: post.excerpt || 'Bu ayın teknoloji özetini okumak için tıklayın.',
-        link: `https://teknolojimenajeri.com/blog/${post.slug}`,
+        link: `https://studio.teknolojimenajeri.com/blog/${post.slug}`,
         icerik: post.content || 'İçerik bulunamadı.',
         gorsel: post.cover_image || 'https://i.ibb.co/CstJSnMp/logo.png'
       }

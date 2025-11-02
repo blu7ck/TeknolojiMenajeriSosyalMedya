@@ -40,7 +40,7 @@ serve(async (req) => {
         isim: `${subscriber.first_name} ${subscriber.last_name}`,
         baslik: post.title,
         ozet: post.excerpt || 'Yazının detaylarını okumak için tıklayın.',
-        link: `https://teknolojimenajeri.com/blog/${post.slug}`
+        link: `https://studio.teknolojimenajeri.com/blog/${post.slug}`
       }
 
       const formData = new FormData()

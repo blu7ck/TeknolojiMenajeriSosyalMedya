@@ -67,7 +67,7 @@ export function setBlogPostSEO(post: {
   category?: string
   tags?: string[]
 }) {
-  const baseUrl = 'https://teknolojimenajeri.com'
+  const baseUrl = 'https://studio.teknolojimenajeri.com'
   const postUrl = `${baseUrl}/blog/${post.slug}`
   
   // Akıllı anahtar kelime oluşturma
@@ -89,7 +89,7 @@ function generateSmartKeywords(post: {
   category?: string
   tags?: string[]
 }): string {
-  const baseKeywords = ['teknoloji', 'blog', 'teknoloji menajeri']
+  const baseKeywords = ['teknoloji', 'blog', 'teknoloji menajeri', 'sosyal medya ajansı','sosyal medya','ai içerik üretimi','ai içerik oluşturma']
   
   // Başlıktan anahtar kelimeler çıkar
   const titleKeywords = extractKeywordsFromTitle(post.title)
@@ -160,7 +160,7 @@ export function setBlogPageSEO() {
     title: 'Blog | Teknoloji Menajeri - Teknoloji Haberleri',
     description: 'En güncel teknoloji haberleri, trend analizleri ve dijital dönüşüm yazıları. Teknoloji dünyasından son gelişmeler.',
     keywords: 'teknoloji blog, teknoloji haberleri, dijital dönüşüm, teknoloji trendleri',
-    url: 'https://teknolojimenajeri.com/blog'
+    url: 'https://studio.teknolojimenajeri.com/blog'
   })
 }
 
@@ -170,7 +170,7 @@ export function setHomePageSEO() {
     title: 'Teknoloji Menajeri - Sosyal Medya Ajansı | Blog & Teknoloji Haberleri',
     description: 'Teknoloji Menajeri - En güncel teknoloji haberleri, sosyal medya yönetimi ve dijital pazarlama hizmetleri.',
     keywords: 'teknoloji, sosyal medya, blog, dijital pazarlama, teknoloji haberleri, sosyal medya ajansı',
-    url: 'https://teknolojimenajeri.com'
+    url: 'https://studio.teknolojimenajeri.com'
   })
 }
 
@@ -180,6 +180,6 @@ export function setGalleryPageSEO() {
     title: 'Galeri | Teknoloji Menajeri - Proje Vitrini',
     description: 'Teknoloji Menajeri projelerinden seçili görseller ve deneyimler. Sosyal medya tasarımları, VR deneyimleri ve marka hikayeleri.',
     keywords: 'teknoloji menajeri galeri, sosyal medya tasarım galeri, yapay zeka projeleri, dijital deneyim vitrini, ai, ai generated images, ai generated videos',
-    url: 'https://teknolojimenajeri.com/gallery'
+    url: 'https://studio.teknolojimenajeri.com/gallery'
   })
 }
