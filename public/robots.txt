@@ -1,15 +1,15 @@
 User-agent: *
 Allow: /
 
-# Disallow admin panel
+# Protect admin panel
 Disallow: /blu4ck
 
-# Disallow API endpoints
+# Block non-public endpoints
 Disallow: /api/
 Disallow: /functions/
 
-# Sitemap
-Sitemap: https://teknoloji-menajeri-sosyal-medya.vercel.app/sitemap.xml
+# Preferred sitemap location
+Sitemap: https://studio.teknolojimenajeri.com/sitemap.xml
 
-# Crawl-delay
+# Crawl-delay (seconds)
 Crawl-delay: 1

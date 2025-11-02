@@ -6,34 +6,49 @@
 
   <!-- Ana Sayfa -->
   <url>
-    <loc>https://teknoloji-menajeri-sosyal-medya.vercel.app/</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://studio.teknolojimenajeri.com/</loc>
+    <lastmod>2025-11-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Blog Sayfası -->
+  <!-- Blog Ana Sayfası -->
   <url>
-    <loc>https://teknoloji-menajeri-sosyal-medya.vercel.app/blog</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://studio.teknolojimenajeri.com/blog</loc>
+    <lastmod>2025-11-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Unsubscribe Sayfası -->
+  <!-- Galeri -->
   <url>
-    <loc>https://teknoloji-menajeri-sosyal-medya.vercel.app/unsubscribe</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://studio.teknolojimenajeri.com/gallery</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Servisler & Detaylar -->
+  <url>
+    <loc>https://studio.teknolojimenajeri.com/more</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- E-posta Abonelik İptali -->
+  <url>
+    <loc>https://studio.teknolojimenajeri.com/unsubscribe</loc>
+    <lastmod>2025-11-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
-  <!-- Blog yazıları burada dinamik olarak eklenecek -->
-  <!-- Örnek blog yazısı URL'leri: -->
-  <!--
+  <!-- Blog yazıları Supabase üzerinden dinamik olarak eklenecek -->
+  <!-- Örnek blog yazısı URL'si:
   <url>
-    <loc>https://teknoloji-menajeri-sosyal-medya.vercel.app/blog/blog-yazisi-slug</loc>
-    <lastmod>2025-01-15</lastmod>
+    <loc>https://studio.teknolojimenajeri.com/blog/blog-yazisi-slug</loc>
+    <lastmod>2025-11-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
