@@ -128,26 +128,21 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-800">
             {/* Logo */}
             <div className="mb-6 flex justify-center">
-              <img 
-                src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg" 
-                alt="Teknoloji Menajeri Logo" 
+              <img
+                src="/favicon.png"
+                alt="Teknoloji Menajeri Logo"
                 className="h-32 w-auto"
                 width="128"
                 height="128"
                 loading="lazy"
                 onError={(e) => {
-                  console.log('Logo yüklenemedi, PNG deneniyor...')
                   const img = e.currentTarget
-                  img.src = 'https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.png'
-                  img.onerror = () => {
-                    console.log('PNG logo da yüklenemedi, metin logo gösteriliyor...')
-                    img.style.display = 'none'
-                    const textLogo = document.createElement('div')
-                    textLogo.className = 'text-2xl font-bold text-red-600'
-                    textLogo.textContent = 'TEKNOLOJİ MENAJERİ'
-                    if (img.parentNode) {
-                      img.parentNode.appendChild(textLogo)
-                    }
+                  img.style.display = 'none'
+                  const textLogo = document.createElement('div')
+                  textLogo.className = 'text-2xl font-bold text-red-600'
+                  textLogo.textContent = 'TEKNOLOJİ MENAJERİ'
+                  if (img.parentNode) {
+                    img.parentNode.appendChild(textLogo)
                   }
                 }}
               />

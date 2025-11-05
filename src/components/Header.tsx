@@ -59,7 +59,7 @@ export function Header() {
               className="flex items-center gap-3 text-xl md:text-2xl font-bold tracking-tight text-gray-900 hover:text-blue-600 transition-colors duration-300 clickable"
             >
               <img 
-                src="https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/Logo2.png" 
+                src="/favicon.png" 
                 alt="Teknoloji Menajeri" 
                 className="w-10 h-10 md:w-12 md:h-12 object-contain"
                 width="48"
