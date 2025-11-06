@@ -12,49 +12,72 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // React vendor chunk (smaller)
-          if (id.includes('react') && !id.includes('react-three')) {
-            return 'react-vendor'
+          const normalizedId = id.replace(/\\/g, '/')
+
+          if (normalizedId.includes('node_modules')) {
+            if (
+              normalizedId.includes('node_modules/react') ||
+              normalizedId.includes('node_modules/react-dom') ||
+              normalizedId.includes('node_modules/react-router')
+            ) {
+              return 'react-vendor'
+            }
+
+            if (
+              normalizedId.includes('node_modules/three') ||
+              normalizedId.includes('node_modules/@react-three') ||
+              normalizedId.includes('node_modules/three-mesh-bvh')
+            ) {
+              return 'three-vendor'
+            }
+
+            if (
+              normalizedId.includes('node_modules/framer-motion') ||
+              normalizedId.includes('node_modules/lucide-react') ||
+              normalizedId.includes('node_modules/styled-components')
+            ) {
+              return 'ui-vendor'
+            }
+
+            if (normalizedId.includes('node_modules/@supabase')) {
+              return 'supabase-vendor'
+            }
+
+            if (
+              normalizedId.includes('node_modules/react-markdown') ||
+              normalizedId.includes('node_modules/remark')
+            ) {
+              return 'markdown-vendor'
+            }
           }
-          // Three.js vendor chunk (separate heavy chunk)
-          if (id.includes('three') || id.includes('@react-three') || id.includes('three-mesh-bvh')) {
-            return 'three-vendor'
-          }
-          // UI vendor chunk
-          if (id.includes('lucide-react') || id.includes('framer-motion')) {
-            return 'ui-vendor'
-          }
-          // Supabase vendor chunk
-          if (id.includes('@supabase')) {
-            return 'supabase-vendor'
-          }
-          // Markdown vendor chunk
-          if (id.includes('react-markdown') || id.includes('remark')) {
-            return 'markdown-vendor'
-          }
-          // Router chunk (separate)
-          if (id.includes('react-router')) {
-            return 'router-vendor'
-          }
-          // Admin components (heavy - only load when needed)
-          if (id.includes('/admin/') || id.includes('/components/admin')) {
+
+          if (
+            normalizedId.includes('src/components/admin') ||
+            normalizedId.includes('src/pages/Admin')
+          ) {
             return 'admin-chunk'
           }
-          // Blog components
-          if (id.includes('/blog/') || id.includes('/components/blog')) {
+
+          if (
+            normalizedId.includes('src/components/blog') ||
+            normalizedId.includes('src/pages/Blog')
+          ) {
             return 'blog-chunk'
           }
-          // Gallery component (heavy 3D)
-          if (id.includes('GalleryPage') || id.includes('InfiniteGallery')) {
+
+          if (
+            normalizedId.includes('src/components/InfiniteGallery') ||
+            normalizedId.includes('src/pages/GalleryPage')
+          ) {
             return 'gallery-chunk'
           }
-          // Pages chunk (smaller)
-          if (id.includes('/pages/') && !id.includes('HomePage')) {
-            return 'pages-chunk'
-          }
-          // HomePage separate (includes gallery)
-          if (id.includes('HomePage')) {
+
+          if (normalizedId.includes('src/pages/HomePage')) {
             return 'home-chunk'
+          }
+
+          if (normalizedId.includes('src/pages/')) {
+            return 'pages-chunk'
           }
         },
         // Daha küçük chunk'lar için
