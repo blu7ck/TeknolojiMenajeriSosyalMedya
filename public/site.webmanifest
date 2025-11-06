@@ -1,0 +1,21 @@
+{
+  "name": "Teknoloji Menajeri",
+  "short_name": "TM Studio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#e74c3c",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/favicon_black.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
+
