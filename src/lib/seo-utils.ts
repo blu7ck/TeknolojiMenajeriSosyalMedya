@@ -169,7 +169,7 @@ export function setHomePageSEO() {
   updatePageSEO({
     title: 'Teknoloji Menajeri - Sosyal Medya Ajansı | Blog & Teknoloji Haberleri',
     description: 'Teknoloji Menajeri - En güncel teknoloji haberleri, sosyal medya yönetimi ve dijital pazarlama hizmetleri.',
-    keywords: 'teknoloji, sosyal medya, blog, dijital pazarlama, teknoloji haberleri, sosyal medya ajansı, dijital pazarlama terimleri, seo sözlüğü, marketing glossary, sem, smm, ppc, roi, kpi',
+    keywords: 'teknoloji, sosyal medya, blog, dijital pazarlama, teknoloji haberleri, sosyal medya ajansı, dijital pazarlama terimleri, seo sözlüğü, marketing glossary, sem, smm, ppc, roi, kpi, crm',
     url: 'https://studio.teknolojimenajeri.com'
   })
 }
