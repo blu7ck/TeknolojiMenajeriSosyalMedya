@@ -1,8 +1,25 @@
 {
-    "rewrites": [
-      {
-        "source": "/:path*",
-        "destination": "/index.html"
-      }
-    ]
-  }
+  "redirects": [
+    {
+      "source": "/blog/i-mdi-lerde-neler-oluyor",
+      "destination": "/blog/simdilerde-neler-oluyor",
+      "permanent": true
+    },
+    {
+      "source": "/blog/kas-m-test-yay-n",
+      "destination": "/blog/kasim-test-yayini",
+      "permanent": true
+    },
+    {
+      "source": "/blog/kas-may-first-post",
+      "destination": "/blog/kasimayi-first-post",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}

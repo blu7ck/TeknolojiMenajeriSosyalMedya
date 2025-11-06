@@ -16,6 +16,7 @@ import {
   Twitter,
   Music
 } from 'lucide-react'
+import Loader from '../Loader'
 
 interface PackageRequest {
   id: string
@@ -152,7 +153,7 @@ export default function PackageRequests() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
+        <Loader />
       </div>
     )
   }

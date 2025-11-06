@@ -1,80 +1,87 @@
 import { Routes, Route } from "react-router-dom"
 import { Suspense, lazy } from "react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import Loader from "./components/Loader"
 import "./components/PackageSelector.css"
 
 // Lazy load components with error handling
 const HomePage = lazy(() => import("./pages/HomePage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">Ana sayfa yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
     </div>
-  </div>
+  )
 })))
 
 const BlogPage = lazy(() => import("./pages/BlogPage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">Blog sayfası yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
     </div>
-  </div>
+  )
+})))
+
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage").catch(() => ({
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
+    </div>
+  )
 })))
 
 const AdminPage = lazy(() => import("./pages/AdminPage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">Admin paneli yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
     </div>
-  </div>
+  )
 })))
 
 const UnsubscribePage = lazy(() => import("./pages/UnsubscribePage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">Abonelik iptal sayfası yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
     </div>
-  </div>
+  )
 })))
 
 const TestPage = lazy(() => import("./pages/TestPage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-      <p className="text-gray-600">Test sayfası yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
+      <Loader />
     </div>
-  </div>
+  )
 })))
 
 const MorePage = lazy(() => import("./pages/MorePage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-black">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-4"></div>
-      <p className="text-white">Detay sayfası yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <Loader />
     </div>
-  </div>
+  )
 })))
 
 const GalleryPage = lazy(() => import("./pages/GalleryPage").catch(() => ({
-  default: () => <div className="min-h-screen flex items-center justify-center bg-[#050505]">
-    <div className="text-center text-gray-200">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-4"></div>
-      <p className="text-sm tracking-[0.3em] uppercase">Galeri yükleniyor...</p>
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+      <Loader />
     </div>
-  </div>
+  )
+})))
+
+const MarketingGlossaryPage = lazy(() => import("./pages/MarketingGlossaryPage").catch(() => ({
+  default: () => (
+    <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+      <Loader />
+    </div>
+  )
 })))
 
 // Loading component
 function PageLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#D3DADD]">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-        <p className="text-gray-600">Yükleniyor...</p>
-      </div>
+      <Loader />
     </div>
   )
 }
@@ -88,10 +95,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/blu4ck" element={<AdminPage />} />
           <Route path="/unsubscribe" element={<UnsubscribePage />} />
           <Route path="/more" element={<MorePage />} />
           <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/marketingGlossary" element={<MarketingGlossaryPage />} />
           {isDev && <Route path="/test" element={<TestPage />} />}
         </Routes>
         <SpeedInsights />

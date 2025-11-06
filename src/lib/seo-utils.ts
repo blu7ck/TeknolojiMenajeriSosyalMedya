@@ -169,8 +169,18 @@ export function setHomePageSEO() {
   updatePageSEO({
     title: 'Teknoloji Menajeri - Sosyal Medya Ajansı | Blog & Teknoloji Haberleri',
     description: 'Teknoloji Menajeri - En güncel teknoloji haberleri, sosyal medya yönetimi ve dijital pazarlama hizmetleri.',
-    keywords: 'teknoloji, sosyal medya, blog, dijital pazarlama, teknoloji haberleri, sosyal medya ajansı',
+    keywords: 'teknoloji, sosyal medya, blog, dijital pazarlama, teknoloji haberleri, sosyal medya ajansı, dijital pazarlama terimleri, seo sözlüğü, marketing glossary, sem, smm, ppc, roi, kpi',
     url: 'https://studio.teknolojimenajeri.com'
+  })
+}
+
+// Pazarlama sözlüğü sayfası için SEO
+export function setMarketingGlossarySEO() {
+  updatePageSEO({
+    title: 'Dijital Pazarlama Sözlüğü | Marketing Glossary | Teknoloji Menajeri',
+    description: 'SEO, SEM, SMM, PPC, CPC, CPM, CTR, CRM, CRO, ROI, KPI ve daha birçok dijital pazarlama teriminin Türkçe ve İngilizce açıklamalarını içeren kapsamlı sözlük.',
+    keywords: 'dijital pazarlama sözlüğü, marketing glossary, seo nedir, sem nedir, smm, ppc, ctr, crm, cro, roi, kpi, pazarlama terimleri, automation, content strategy',
+    url: 'https://studio.teknolojimenajeri.com/marketingGlossary'
   })
 }
 

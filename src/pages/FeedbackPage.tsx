@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "../lib/supabase/client"
 import { CheckCircle, Star, MessageSquare, ThumbsUp, ThumbsDown } from "lucide-react"
+import Loader from "../components/Loader"
 
 interface FeedbackData {
   requestId: string
@@ -165,7 +166,7 @@ export function FeedbackPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+        <Loader />
       </div>
     )
   }

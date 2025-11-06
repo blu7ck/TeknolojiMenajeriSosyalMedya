@@ -7,7 +7,7 @@ interface BlogListProps {
   posts: BlogPost[]
   month: string
   onBack: () => void
-  onSelectPost: (post: BlogPost) => void
+  onSelectPost: (post: BlogPost, month: string) => void
 }
 
 export function BlogList({ posts, month, onBack, onSelectPost }: BlogListProps) {
@@ -36,7 +36,7 @@ export function BlogList({ posts, month, onBack, onSelectPost }: BlogListProps) 
       {/* Blog Posts Grid */}
       <div className="grid gap-8">
         {posts.map((post) => (
-          <article key={post.id} onClick={() => onSelectPost(post)} className="group cursor-pointer clickable">
+          <article key={post.id} onClick={() => onSelectPost(post, month)} className="group cursor-pointer clickable">
             <div className="grid md:grid-cols-[300px_1fr] gap-6 p-6 rounded-2xl bg-card border border-border hover:border-primary transition-all duration-300 hover:shadow-xl">
               {/* Featured Image */}
               {post.cover_image && (

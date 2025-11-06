@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "../../lib/supabase/client"
 import type { NewsletterSubscriber } from "../../types/blog"
 import { Mail, Download } from 'lucide-react'
+import Loader from "../Loader"
 
 export function SubscribersList() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([])
@@ -52,7 +53,7 @@ export function SubscribersList() {
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+        <Loader />
       </div>
     )
   }

@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { createClient } from "../../lib/supabase/client"
+import { slugify } from "../../lib/slugify"
 import type { BlogPost } from "../../types/blog"
 import { Save, X, Eye, Upload, Image as ImageIcon } from 'lucide-react'
+import Loader from "../Loader"
 
 interface BlogEditorProps {
   post: BlogPost | null
@@ -26,6 +28,8 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
   const [preview, setPreview] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+
+  const generatedSlug = useMemo(() => slugify(formData.title), [formData.title])
 
   useEffect(() => {
     if (post) {
@@ -126,7 +130,7 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
 
       const data = {
         title: formData.title,
-        slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+        slug: slugify(formData.title),
         excerpt: formData.excerpt || null,
         content: formData.content,
         cover_image: formData.cover_image || null,
@@ -222,6 +226,12 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Yazı başlığı"
               />
+              <p className="mt-1 text-sm text-gray-500">
+                Otomatik slug: <span className="font-mono text-gray-700">{generatedSlug || "—"}</span>
+              </p>
+              <p className="mt-1 text-xs text-gray-400">
+                Türkçe karakterler otomatik olarak çevrilir. Mevcut yazıları yeni slug ile güncellemek için kaydetmeniz yeterlidir.
+              </p>
             </div>
 
             <div>
@@ -320,8 +330,10 @@ export function BlogEditor({ post, onSuccess, onCancel }: BlogEditorProps) {
                   }`}>
                     {uploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
-                        <span className="text-sm text-blue-600">Yükleniyor... {uploadProgress}%</span>
+                        <div className="scale-75">
+                          <Loader />
+                        </div>
+                        <span className="text-sm text-blue-600">%{uploadProgress}</span>
                       </>
                     ) : (
                       <>

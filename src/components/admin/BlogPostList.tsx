@@ -2,6 +2,7 @@
 
 import type { BlogPost } from "../../types/blog"
 import { Edit, Trash2 } from "lucide-react"
+import Loader from "../Loader"
 
 interface BlogPostListProps {
   posts: BlogPost[]
@@ -14,7 +15,7 @@ export function BlogPostList({ posts, loading, onEdit, onDelete }: BlogPostListP
   if (loading) {
     return (
       <div className="text-center py-12">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+        <Loader />
       </div>
     )
   }

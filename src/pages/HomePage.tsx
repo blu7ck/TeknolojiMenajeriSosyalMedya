@@ -1,9 +1,10 @@
 import { Header } from "../components/Header"
 import { processSteps } from "../data/packages"
 import { setHomePageSEO } from "../lib/seo-utils"
-import { Suspense, lazy } from "react"
-import { Link } from "react-router-dom"
+import { Suspense, lazy, useEffect } from "react"
+import { Link, useLocation } from "react-router-dom"
 import { MarvelColumns } from "../components/MarvelColumns"
+import Loader from "../components/Loader"
 
 // Lazy load heavy components for better performance
 const ProcessSection = lazy(() => import("../components/ProcessSection"))
@@ -13,6 +14,25 @@ const Services = lazy(() => import("../components/Services"))
 export default function HomePage() {
   // SEO ayarlarını güncelle
   setHomePageSEO()
+
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash) {
+      const targetId = location.hash.replace('#', '')
+      const element = document.getElementById(targetId)
+      if (element) {
+        const headerHeight = 100
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        })
+      }
+    }
+  }, [location.hash])
 
   const socialLinks = [
     {
@@ -74,15 +94,14 @@ export default function HomePage() {
         <MarvelColumns />
 
         {/* About Us Section */}
-        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader /></div>}>
           <AboutUs />
         </Suspense>
 
         {/* Services Section */}
-        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader /></div>}>
           <Services />
         </Suspense>
-
         {/* Important Notes Section */}
         <section className="py-12 border-t border-red-500/15 bg-[#0E0F0F]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -119,27 +138,31 @@ export default function HomePage() {
           </div>
         </section>
 
-         <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div></div>}>
+         <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader /></div>}>
            <ProcessSection steps={processSteps} />
          </Suspense>
 
         {/* Footer */}
-        <footer className="py-12" style={{ backgroundColor: "#DBDBDB" }}>
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-800">
+        <footer className="relative overflow-hidden py-12 bg-gradient-to-b from-[#0B0C10]/85 via-[#050505]/95 to-[#050505] text-[#E5E7EB]">
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div className="absolute -top-20 left-1/4 h-56 w-56 rounded-full bg-red-500/15 blur-[120px]" />
+            <div className="absolute bottom-[-6rem] right-12 h-64 w-64 rounded-full bg-purple-500/15 blur-[130px]" />
+          </div>
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             {/* Logo */}
             <div className="mb-6 flex justify-center">
               <img
-                src="/favicon.png"
+                src="/favicon_black.png"
                 alt="Teknoloji Menajeri Logo"
-                className="h-32 w-auto"
-                width="128"
-                height="128"
+                className="h-24 w-auto drop-shadow-[0_8px_20px_rgba(255,60,60,0.25)]"
+                width="96"
+                height="96"
                 loading="lazy"
                 onError={(e) => {
                   const img = e.currentTarget
                   img.style.display = 'none'
                   const textLogo = document.createElement('div')
-                  textLogo.className = 'text-2xl font-bold text-red-600'
+                  textLogo.className = 'text-2xl font-bold text-red-500'
                   textLogo.textContent = 'TEKNOLOJİ MENAJERİ'
                   if (img.parentNode) {
                     img.parentNode.appendChild(textLogo)
@@ -155,7 +178,7 @@ export default function HomePage() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-400/60 text-gray-700 transition-colors hover:border-red-500 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-200"
+                    className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-red-400 hover:text-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
                     aria-label={link.label}
                     title={link.title}
                   >
@@ -165,13 +188,13 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <p className="mt-3 text-gray-700">
+            <p className="mt-3 text-sm text-white/70">
               © 2025{' '}
               <a 
                 href="https://www.teknolojimenajeri.com.tr" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="font-semibold text-red-600 transition-colors hover:text-red-500"
+                className="font-semibold text-red-300 transition-colors hover:text-red-200"
               >
                 TEKNOLOJİ MENAJERİ
               </a>

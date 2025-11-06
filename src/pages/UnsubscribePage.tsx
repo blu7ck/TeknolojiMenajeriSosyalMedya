@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { createClient } from "../lib/supabase/client"
 import { Mail, CheckCircle, XCircle, ArrowLeft } from "lucide-react"
+import Loader from "../components/Loader"
 
 export default function UnsubscribePage() {
   const [searchParams] = useSearchParams()
@@ -101,8 +102,8 @@ export default function UnsubscribePage() {
           {/* Status Messages */}
           {status === "loading" && (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-4 border-red-500 border-t-transparent"></div>
-              <span className="ml-3 text-muted-foreground">İşleniyor...</span>
+              <Loader />
+              <span className="ml-4 text-muted-foreground">İşleniyor...</span>
             </div>
           )}
 

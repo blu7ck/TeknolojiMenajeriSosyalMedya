@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Loader from './Loader'
 
 interface OptimizedImageProps {
   src: string
@@ -23,8 +24,8 @@ export function OptimizedImage({
   return (
     <div className={`relative overflow-hidden ${className}`}>
       {!loaded && !error && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="text-gray-400 text-sm">Yükleniyor...</div>
+        <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+          <Loader />
         </div>
       )}
       

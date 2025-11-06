@@ -9,6 +9,7 @@ import { SubscribersList } from "./SubscribersList"
 import { DigitalAnalysisRequests } from "./DigitalAnalysisRequests"
 import { RecaptchaAnalytics } from "./RecaptchaAnalytics"
 import PackageRequests from "./PackageRequests"
+import Loader from "../Loader"
 import { PenSquare, List, Users, LogOut, BarChart3, Shield, Package } from 'lucide-react'
 
 interface AdminDashboardProps {
@@ -114,7 +115,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+            <Loader />
           </div>
         ) : activeTab === "posts" ? (
           <BlogPostList posts={posts} onEdit={handleEdit} onDelete={handleDelete} />

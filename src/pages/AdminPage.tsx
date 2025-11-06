@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { createClient } from "../lib/supabase/client"
 import { AdminLogin } from "../components/admin/AdminLogin"
 import { AdminDashboard } from "../components/admin/AdminDashboard"
+import Loader from "../components/Loader"
 import { Lock } from "lucide-react"
 
 const ADMIN_PASSWORD = "130113" // Basit şifre koruması
@@ -158,7 +159,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+        <Loader />
       </div>
     )
   }

@@ -229,8 +229,8 @@ TeknolojiMenajeriSosyalMedya/
 ## 🎯 Kullanım
 
 ### **Admin Panel**
-- URL: `/blu4ck` (gizli admin paneli)
-- Şifre: `130113`
+- URL: `/****` (gizli admin paneli)
+- Şifre: `******`
 - Blog yazıları oluşturma, düzenleme, silme
 - Newsletter abonelerini yönetme
 - Sistem istatistikleri
@@ -238,7 +238,7 @@ TeknolojiMenajeriSosyalMedya/
 ### **Blog Sistemi**
 - Ana sayfa: `/`
 - Blog sayfası: `/blog`
-- Admin paneli: `/blu4ck`
+- Admin paneli: `/***`
 - Unsubscribe: `/unsubscribe`
 
 ### **Email Sistemi**
@@ -325,6 +325,14 @@ npm run build
 
 ---
 
+## 🔁 SEO Bakım Rehberi
+
+- `scripts/normalize-blog-slugs.mjs` script'ini çalıştırarak Türkçe karakter içeren başlıklardaki slug'ları yeniden üretin. Varsayılan çalışma yalnızca rapor oluşturur; kalıcı güncelleme için `node scripts/normalize-blog-slugs.mjs --apply` komutunu kullanın.
+- Script, `scripts/blog-slug-redirects.json` dosyasını üretir. Bu çıktıyı `vercel.json` dosyasındaki `redirects` alanına ekleyerek eski URL'lerden yeni slug'lara 301 yönlendirme uygulayın.
+- Slug güncellemesi veya yeni içerik ekledikten sonra `npm run generate:sitemap` komutu ile `public/sitemap.xml` dosyasını yenileyip arama motorlarına gönderin.
+
+---
+
 ## 📝 Changelog
 
 ### **v1.0.1-beta** (2025-01-15)
@@ -374,6 +382,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 <div align="center">
 
-Made with ❤️ for [Teknoloji Menajeri](https://teknolojimenajeri.com.tr)
+Made with subhanallah for [Teknoloji Menajeri](https://teknolojimenajeri.com.tr)
 
 </div>

@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { ProcessStep } from '../types';
+import Loader from './Loader';
 
 const DigitalAnalysisForm = lazy(() => import('./DigitalAnalysisForm'));
 
@@ -37,7 +38,7 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
                 <div className="w-full md:ml-auto md:w-1/2">
                   <Suspense fallback={
                     <div className="flex items-center justify-center py-8">
-                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-red-500 border-t-transparent"></div>
+                      <Loader />
                     </div>
                   }>
                     <DigitalAnalysisForm />
