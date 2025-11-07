@@ -1,18 +1,20 @@
 "use client"
 
 import type React from "react"
+import type { CSSProperties } from "react"
 
 import { useEffect, useState } from "react"
-import { Check, X, Play, ArrowLeft } from "lucide-react"
+import { Check, X, Play } from "lucide-react"
 import "./PackageSelector.css"
-import QuoteButton from './QuoteButton'
+import QuoteButton from "./QuoteButton"
+import { useTranslation } from "react-i18next"
 
 interface Module {
   id: string
   name: string
   description?: string
   mediaUrl?: string
-  exampleJson?: string
+  example?: string
   price?: string
 }
 
@@ -24,125 +26,21 @@ interface Package {
   modules: Module[]
 }
 
-const packages: Package[] = [
-  {
-    id: "individual",
-    title: "Bireysel",
-    description: "Kişisel hesaplar için profesyonel görünüm",
-    target:
-      "Sosyal medyayı daha düzenli, estetik ve profesyonel kullanmak isteyen bireyler, kişisel marka oluşturmak isteyenler, hobi içerik üreticileri",
-    modules: [
-      {
-        id: "fenomen-paket",
-        name: "Fenomen Paket",
-        description: "Mentorluk + İçerik Üretimi ",
-        mediaUrl: "https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/test4.mp4",
-        exampleJson: "Profesyonel Seviyede 12 Fotoğraf ve 2 Video | Sosyal Medya Eğitimi",
-        price: "₺2,500",
-      },
-      {
-        id: "kisiye-ozel-icerik",
-        name: "Kişiye Özel İçerik Üretimi",
-        description: "Görsel",
-        mediaUrl: "https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/test4.mp4",
-        exampleJson: "4 Adet Görsel",
-        price: "₺800",
-      },
-      {
-        id: "mini-video",
-        name: "Mini Video (Reel)",
-        description: "Anılarınızı canlandırabilir, hayallerinizi gerçekleştirebilirsiniz :)",
-        mediaUrl: "https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/test4.mp4",
-        exampleJson: '{"deliverables": "1 Adet Video"}',
-        price: "₺1,200",
-      },
-      {
-        id: "trend-ai-icerikler",
-        name: "Trend AI İçerikler",
-        description: "Sosyal Medya Viral İçerikleri",
-        exampleJson: '{"deliverables": "Görsel | Video"}',
-        price: "₺600",
-      },
-    ],
-  },
-  {
-    id: "influencer",
-    title: "Influencer",
-    description: "İçerik üreticileri ve marka işbirlikleri için",
-    target:
-      "Gelir elde eden veya gelir hedefleyen içerik üreticileri, markalarla işbirliği yapanlar veya işbirliği sürecine hazırlananlar",
-    modules: [
-      {
-        id: "influencer-baslangic",
-        name: "Infiluencer Başlangıç Paketi",
-        description: "Danışmanlık + Profil Yönetimi + İçerik Takvimi + İçerik Üretimi + Hedef Kitle Analizi",
-        exampleJson:
-          '{"deliverables": "Aylık 2 Saat Danışmanlık Hizmeti + Profesyonel Seviyede 20 Fotoğraf + 4 Video + Anlık İletişim Hizmeti"}',
-        price: "₺4,500",
-      },
-      {
-        id: "marka-isbirligi",
-        name: "Marka İşbirliği İçerik Üretimi",
-        description: "Görsel + Caption + Hashtag | Video + Caption + Hashtag",
-        exampleJson: '{"deliverables": "Görsel | Video"}',
-        price: "₺1,800",
-      },
-      {
-        id: "mini-video-platform",
-        name: "Mini Video (Platform Uyumlu)",
-        description: "Kısa video",
-        exampleJson: '{"deliverables": "1 Adet Video"}',
-        price: "₺1,500",
-      },
-      {
-        id: "ugc-seti",
-        name: "UGC Seti",
-        description: "İstenilen Stilde",
-        exampleJson: '{"deliverables": "1 Adet UGC Video"}',
-        price: "₺2,000",
-      },
-    ],
-  },
-  {
-    id: "corporate",
-    title: "Kurumsal",
-    description: "KOBİ'den kurumsala tam çözüm",
-    target:
-      "KOBİ'den kurumsala kadar işletmeler, marka yönetimi, satış odaklı sosyal medya, SEO ve dijital büyüme hedefleri",
-    modules: [
-      {
-        id: "sosyal-medya-yonetimi",
-        name: "Sosyal Medya Yönetimi",
-        description: "Hesapların tam kapsamlı yönetimi",
-        exampleJson: '{"deliverables": "1-3 platform yönetimi"}',
-        price: "₺3,500",
-      },
-      {
-        id: "video-icerik-uretimi",
-        name: "Video İçerik Üretimi",
-        description: "Yapay Zeka destekli veya UE5 profesyonel video",
-        exampleJson: '{"deliverables": "1 Adet Video"}',
-        price: "₺2,800",
-      },
-      {
-        id: "web-sitesi-tasarimi",
-        name: "Web Sitesi Tasarımı",
-        description: "Kurumsal veya e-ticaret site",
-        exampleJson: '{"deliverables": "Website"}',
-        price: "₺5,000",
-      },
-      {
-        id: "kisisel-marka-danismanligi",
-        name: "Kişisel Marka Danışmanlığı",
-        description: "1 Saatlik Online Oturum",
-        exampleJson: '{"deliverables": "Rapor"}',
-        price: "₺1,000",
-      },
-    ],
-  },
-]
+interface SectionCopy {
+  title: string
+  subtitle: string
+  disclaimer: string
+  modulesLabel: string
+  moduleHelp: string
+  ctaLabel: string
+  fallbackTitle: string
+  fallbackPrice: string
+}
 
 export function PackageSelector() {
+  const { t } = useTranslation()
+  const sectionCopy = t("packages.section", { returnObjects: true }) as SectionCopy
+  const packages = t("packages.list", { returnObjects: true }) as Package[]
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
   const [selectedModules, setSelectedModules] = useState<Record<string, string[]>>({})
   const [hoveredModule, setHoveredModule] = useState<Module | null>(null)
@@ -153,6 +51,7 @@ export function PackageSelector() {
     }
     return window.innerWidth < 768
   })
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -229,196 +128,225 @@ export function PackageSelector() {
     return null
   }
 
+  const cardBaseStyle: CSSProperties = {
+    transformStyle: "preserve-3d",
+    WebkitTransformStyle: "preserve-3d"
+  }
+
+  const faceBaseStyle: CSSProperties = {
+    backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden"
+  }
+
   return (
-    <div className="py-12 px-4 relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-4">Neler Yapıyoruz?</h2>
-          <p className="text-xl text-gray-400">Seç · Özelleştir · Parla</p>
-        </div>
+    <div className="relative py-12 px-4">
+      <div className={`relative mx-auto max-w-7xl overflow-hidden rounded-[40px] border border-rose-100/70 bg-white/80 px-6 py-12 shadow-[0_45px_140px_-60px_rgba(244,114,182,0.55)] backdrop-blur transition-all duration-300 ${isQuoteOpen ? "ring-4 ring-rose-100/60" : ""}`}>
+        <div className="pointer-events-none absolute -left-36 top-10 h-56 w-56 rounded-full bg-rose-200/40 blur-[120px]" aria-hidden="true" />
+        <div className="pointer-events-none absolute -right-32 bottom-12 h-64 w-64 rounded-full bg-sky-200/35 blur-[140px]" aria-hidden="true" />
+        <div className="relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold text-slate-900 mb-4">{sectionCopy.title}</h2>
+            <p className="text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400">
+              {sectionCopy.subtitle}
+            </p>
+          </div>
 
-        <div
-          className="relative transition-all duration-700 ease-in-out"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center items-start perspective-1000" onClick={handleContainerClick}>
-            {packages.map((pkg) => {
-              const isSelected = selectedPackage === pkg.id
-
-              return (
+          {!isQuoteOpen ? (
+            <>
+              <div className="relative transition-all duration-500 ease-in-out">
                 <div
-                  key={pkg.id}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setSelectedPackage(isSelected ? null : pkg.id)
-                  }}
-                  className={`
-                    relative w-full h-[280px] md:h-[320px] cursor-pointer transition-transform duration-700
-                    ${isSelected ? "rotate-y-180" : ""}
-                  `}
-                  style={{
-                    transformStyle: "preserve-3d",
-                    zIndex: isSelected ? 20 : 1
-                  }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center items-start perspective-1000"
+                  onClick={handleContainerClick}
                 >
-                  {/* Kartın Ön Yüzü */}
-                  <div 
-                    className="absolute inset-0 rounded-2xl p-6 flex flex-col bg-black/80 border border-red-500/30 hover:border-red-500/60 hover:bg-black/90 transition-all duration-300"
-                    style={{
-                      backfaceVisibility: "hidden"
-                    }}
-                  >
-                    <div className="mb-4 min-h-0">
-                      <h3 className="text-2xl font-bold text-white mb-2">{pkg.title}</h3>
-                      <p className="text-gray-400 text-sm mb-2">{pkg.description}</p>
-                      <p className="text-gray-500 text-xs leading-relaxed">{pkg.target}</p>
-                    </div>
-                    <p className="mt-auto text-[11px] text-red-300/80 leading-relaxed">
-                      Fiyatlar örnek niteliğinde olup, proje kapsamına göre değişiklik gösterebilir.
-                    </p>
-                  </div>
+                  {packages.map((pkg) => {
+                    const isSelected = selectedPackage === pkg.id
 
-                  {/* Kartın Arka Yüzü */}
-                  <div 
-                    className="absolute inset-0 rounded-2xl p-6 flex flex-col bg-black/95 backdrop-blur-sm border-2 border-red-500 shadow-2xl shadow-red-500/40"
-                    style={{
-                      backfaceVisibility: "hidden",
-                      transform: "rotateY(180deg)"
-                    }}
-                  >
-                    <div className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
-                      <Check className="w-5 h-5 text-white" />
-                    </div>
-
-                    <div className="space-y-1 animate-fade-in">
-                      <div className="text-sm font-semibold text-gray-300 mb-1">Modüller:</div>
-                      {pkg.modules.map((module) => {
-                        const isModuleSelected = Boolean(selectedModules[pkg.id]?.includes(module.id))
-
-                        return (
-                          <div
-                            key={module.id}
-                            className="relative overflow-visible z-50"
-                            onMouseEnter={!isMobile ? (e) => {
-                              setHoveredModule(module)
-                              const rect = e.currentTarget.getBoundingClientRect()
-                              const viewportWidth = window.innerWidth
-                              const popupWidth = 288
-                              const wouldOverflow = rect.right + popupWidth > viewportWidth - 20
-                              setHoverPosition(wouldOverflow ? "left" : "right")
-                            } : undefined}
-                            onMouseLeave={!isMobile ? () => setHoveredModule(null) : undefined}
-                            onTouchStart={undefined}
-                            onTouchEnd={undefined}
-                            onFocus={!isMobile ? () => setHoveredModule(module) : undefined}
-                            onBlur={!isMobile ? () => setHoveredModule(null) : undefined}
-                            tabIndex={isMobile ? -1 : 0}
-                          >
-                            <label
-                              className="flex items-center gap-2 p-2 rounded-lg bg-black/60 hover:bg-black/80 border border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer group"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={isModuleSelected}
-                                onChange={() => toggleModule(pkg.id, module.id)}
-                                className="w-5 h-5 rounded border-red-500/50 text-red-500 focus:ring-red-500 focus:ring-offset-0 cursor-pointer"
-                              />
-                              <span className="text-sm text-gray-300 group-hover:text-white transition-colors flex-1">
-                                {module.name}
-                              </span>
-                              {(module.mediaUrl || module.description) && (
-                                <Play className="w-4 h-4 text-gray-500 group-hover:text-red-500 transition-colors" />
-                              )}
-                            </label>
-
-                            {!isMobile && hoveredModule?.id === module.id && (module.description || module.mediaUrl) && (
-                              <>
-                                {/* Mobile backdrop */}
-                                
-                                <div
-                                  className={`absolute w-72 bg-black/95 border border-red-500/40 rounded-xl p-4 shadow-2xl shadow-red-500/30 z-[9999] animate-fade-slide-in
-                                    ${
-                                      hoverPosition === "right"
-                                        ? "md:left-full md:top-0 md:ml-2 md:pointer-events-none"
-                                        : "md:right-full md:top-0 md:mr-2 md:pointer-events-none"
-                                    }
-                                    max-md:fixed max-md:top-1/2 max-md:left-1/2 max-md:transform max-md:-translate-x-1/2 max-md:-translate-y-1/2 max-md:w-[90vw] max-md:max-w-[400px] max-md:max-h-[80vh] max-md:overflow-y-auto max-md:pointer-events-auto`}
-                                  style={{
-                                    animation: "fadeSlideIn 0.3s ease-out forwards",
-                                    maxWidth: "calc(100vw - 2rem)",
-                                  }}
-                                >
-                                <div className="flex justify-between items-start mb-2">
-                                  <h4 className="text-white font-semibold flex-1">{module.name}</h4>
-                                  <div className="flex items-center gap-2">
-                                    {module.price && (
-                                      <span className="text-red-500 font-bold text-lg">{module.price}</span>
-                                    )}
-                                    {/* Mobile close button */}
-                                    <button
-                                      onClick={() => setHoveredModule(null)}
-                                      className="md:hidden text-gray-400 hover:text-white text-xl font-bold"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                </div>
-                                {module.description && (
-                                  <p className="text-gray-400 text-sm mb-3">{module.description}</p>
-                                )}
-                                {module.mediaUrl && (
-                                  <div className="aspect-video bg-black rounded-lg overflow-hidden pointer-events-auto">
-                                    {getMediaType(module.mediaUrl) === "image" ? (
-                                      <img
-                                        src={module.mediaUrl || "/placeholder.svg"}
-                                        alt={module.name}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : getMediaType(module.mediaUrl) === "video" ? (
-                                      <video
-                                        src={module.mediaUrl}
-                                        autoPlay
-                                        loop
-                                        muted
-                                        playsInline
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : null}
-                                  </div>
-                                )}
-                                {module.exampleJson && (
-                                  <pre className="mt-3 text-xs text-gray-500 bg-black/50 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words max-w-full">
-                                    {module.exampleJson}
-                                  </pre>
-                                )}
-                              </div>
-                              </>
-                            )}
+                    return (
+                      <div
+                        key={pkg.id}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedPackage(isSelected ? null : pkg.id)
+                        }}
+                        className="relative w-full h-[280px] md:h-[320px] cursor-pointer transition-transform duration-700"
+                        style={{
+                          ...cardBaseStyle,
+                          zIndex: isSelected ? 20 : 1
+                        }}
+                      >
+                        <div
+                          className="absolute inset-0 rounded-3xl p-6 flex flex-col border border-rose-200/60 bg-white/80 backdrop-blur transition-all duration-300 shadow-[0_25px_80px_-45px_rgba(244,114,182,0.65)] hover:border-rose-300 hover:bg-white/95"
+                          style={{
+                            ...faceBaseStyle,
+                            transform: isSelected ? "rotateY(180deg)" : "rotateY(0deg)",
+                            opacity: isSelected ? 0 : 1,
+                            pointerEvents: isSelected ? "none" : "auto",
+                            transition: "transform 0.7s ease, opacity 0.3s ease"
+                          }}
+                        >
+                          <div className="mb-4 min-h-0">
+                            <h3 className="text-2xl font-bold text-slate-900 mb-2">{pkg.title}</h3>
+                            <p className="text-sm text-slate-600 mb-2">{pkg.description}</p>
+                            <p className="text-xs leading-relaxed text-slate-500">{pkg.target}</p>
                           </div>
-                        )
-                      })}
-                    <p className="mt-4 text-xs text-gray-400">
-                      Modül seçmekte kararsız kaldıysanız, daha fazla bilgi ve yönlendirme için TEKLİF AL butonuna tıklayabilirsiniz.
-                    </p>
-                    </div>
+                          <p className="mt-auto text-[11px] leading-relaxed text-rose-400">
+                            {sectionCopy.disclaimer}
+                          </p>
+                        </div>
 
-                  </div>
+                        <div
+                          className="absolute inset-0 rounded-3xl p-6 flex flex-col bg-white/98 backdrop-blur-sm border-2 border-rose-300 shadow-[0_35px_100px_-55px_rgba(244,114,182,0.7)]"
+                          style={{
+                            ...faceBaseStyle,
+                            transform: isSelected ? "rotateY(0deg)" : "rotateY(-180deg)",
+                            opacity: isSelected ? 1 : 0,
+                            pointerEvents: isSelected ? "auto" : "none",
+                            transition: "transform 0.7s ease, opacity 0.3s ease"
+                          }}
+                        >
+                          <div className="absolute -top-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full bg-rose-500 shadow-lg shadow-rose-500/40 animate-pulse">
+                            <Check className="w-5 h-5 text-white" />
+                          </div>
+
+                          <div className="space-y-1 animate-fade-in">
+                            <div className="mb-1 text-sm font-semibold text-rose-500">
+                              {sectionCopy.modulesLabel}
+                            </div>
+                            {pkg.modules.map((module) => {
+                              const isModuleSelected = Boolean(selectedModules[pkg.id]?.includes(module.id))
+
+                              return (
+                                <div
+                                  key={module.id}
+                                  className="relative overflow-visible z-50"
+                                  onMouseEnter={!isMobile ? (e) => {
+                                    setHoveredModule(module)
+                                    const rect = e.currentTarget.getBoundingClientRect()
+                                    const viewportWidth = window.innerWidth
+                                    const popupWidth = 288
+                                    const wouldOverflow = rect.right + popupWidth > viewportWidth - 20
+                                    setHoverPosition(wouldOverflow ? "left" : "right")
+                                  } : undefined}
+                                  onMouseLeave={!isMobile ? () => setHoveredModule(null) : undefined}
+                                  onTouchStart={undefined}
+                                  onTouchEnd={undefined}
+                                  onFocus={!isMobile ? () => setHoveredModule(module) : undefined}
+                                  onBlur={!isMobile ? () => setHoveredModule(null) : undefined}
+                                  tabIndex={isMobile ? -1 : 0}
+                                >
+                                  <label
+                                    className="group flex cursor-pointer items-center gap-2 rounded-xl border border-rose-100/60 bg-white/85 p-2 transition-colors hover:border-rose-300 hover:bg-white"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={isModuleSelected}
+                                      onChange={() => toggleModule(pkg.id, module.id)}
+                                      className="h-5 w-5 cursor-pointer rounded border-rose-400 text-rose-500 focus:ring-rose-400 focus:ring-offset-0"
+                                    />
+                                    <span className="flex-1 text-sm text-slate-700 transition-colors group-hover:text-rose-600">
+                                      {module.name}
+                                    </span>
+                                    {(module.mediaUrl || module.description) && (
+                                      <Play className="w-4 h-4 text-rose-300 transition-colors group-hover:text-rose-500" />
+                                    )}
+                                  </label>
+
+                                  {!isMobile && hoveredModule?.id === module.id && (module.description || module.mediaUrl || module.example) && (
+                                    <div
+                                      className={`absolute w-72 rounded-2xl border border-rose-200/70 bg-white/95 p-4 shadow-[0_25px_80px_-30px_rgba(244,114,182,0.45)] backdrop-blur-sm z-[9999] animate-fade-slide-in
+                                        ${
+                                          hoverPosition === "right"
+                                            ? "md:left-full md:top-0 md:ml-2 md:pointer-events-none"
+                                            : "md:right-full md:top-0 md:mr-2 md:pointer-events-none"
+                                        }
+                                        max-md:fixed max-md:top-1/2 max-md:left-1/2 max-md:transform max-md:-translate-x-1/2 max-md:-translate-y-1/2 max-md:w-[90vw] max-md:max-w-[400px] max-md:max-h-[80vh] max-md:overflow-y-auto max-md:pointer-events-auto`}
+                                      style={{
+                                        animation: "fadeSlideIn 0.3s ease-out forwards",
+                                        maxWidth: "calc(100vw - 2rem)",
+                                      }}
+                                    >
+                                      <div className="mb-2 flex items-start justify-between">
+                                        <h4 className="flex-1 font-semibold text-slate-900">{module.name}</h4>
+                                        <div className="flex items-center gap-2">
+                                          {module.price && (
+                                            <span className="text-lg font-bold text-rose-500">{module.price}</span>
+                                          )}
+                                          <button
+                                            onClick={() => setHoveredModule(null)}
+                                            className="text-xl font-bold text-rose-300 hover:text-rose-500 md:hidden"
+                                          >
+                                            ×
+                                          </button>
+                                        </div>
+                                      </div>
+                                      {module.description && (
+                                        <p className="mb-3 text-sm text-slate-600">{module.description}</p>
+                                      )}
+                                      {module.mediaUrl && (
+                                        <div className="pointer-events-auto aspect-video overflow-hidden rounded-xl bg-slate-900/10">
+                                          {getMediaType(module.mediaUrl) === "image" ? (
+                                            <img
+                                              src={module.mediaUrl || "/placeholder.svg"}
+                                              alt={module.name}
+                                              className="w-full h-full object-cover"
+                                            />
+                                          ) : getMediaType(module.mediaUrl) === "video" ? (
+                                            <video
+                                              src={module.mediaUrl}
+                                              autoPlay
+                                              loop
+                                              muted
+                                              playsInline
+                                              className="w-full h-full object-cover"
+                                            />
+                                          ) : null}
+                                        </div>
+                                      )}
+                                      {module.example && (
+                                        <pre className="mt-3 max-w-full overflow-x-auto whitespace-pre-wrap break-words rounded-xl bg-rose-50 p-3 text-xs text-slate-600">
+                                          {module.example}
+                                        </pre>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            })}
+                            <p className="mt-4 text-xs text-slate-500">
+                              {sectionCopy.moduleHelp}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
-          </div>
-        </div>
+              </div>
 
-        {/* TEKLİF AL Butonu - Kartların Altında */}
-        <div className="mt-12 flex justify-center items-center">
-          <div className="flex justify-center items-center">
-            <QuoteButton 
-              packageTitle={selectedPackageData?.title || 'Paket Seçimi Bekleniyor'}
-              packagePrice={selectedPackageData?.pricing || ''}
-              selectedModules={selectedModuleNames}
-              disabled={!selectedPackageData}
-            />
-          </div>
+              <div className="mt-12">
+                <QuoteButton
+                  packageTitle={selectedPackageData?.title || sectionCopy.fallbackTitle}
+                  packagePrice={selectedPackageData?.description || sectionCopy.fallbackPrice}
+                  selectedModules={selectedModuleNames}
+                  disabled={!selectedPackageData}
+                  expanded={false}
+                  onExpandChange={setIsQuoteOpen}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="mt-12">
+              <QuoteButton
+                packageTitle={selectedPackageData?.title || sectionCopy.fallbackTitle}
+                packagePrice={selectedPackageData?.description || sectionCopy.fallbackPrice}
+                selectedModules={selectedModuleNames}
+                disabled={!selectedPackageData}
+                expanded
+                onExpandChange={setIsQuoteOpen}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

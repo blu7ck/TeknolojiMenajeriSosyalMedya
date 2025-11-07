@@ -1,4 +1,4 @@
-/* Package Selector Styles - Dark Theme */
+/* Package Selector Styles - Light Theme */
 .package-selector {
   width: 100%;
   max-width: 1200px;
@@ -30,9 +30,9 @@
 
 /* Package Cards */
 .package-card {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 16px;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(244, 114, 182, 0.3);
   padding: 2rem;
   cursor: pointer;
   transition: all 0.5s ease-out;
@@ -47,9 +47,9 @@
 }
 
 .package-card:hover {
-  border-color: rgba(239, 68, 68, 0.6);
+  border-color: rgba(244, 114, 182, 0.6);
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(244, 114, 182, 0.15);
 }
 
 .package-card.collapsed:hover {
@@ -63,10 +63,10 @@
 }
 
 .package-card.selected {
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(4px);
-  border: 2px solid #ef4444;
-  box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.4);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(6px);
+  border: 2px solid #f43f5e;
+  box-shadow: 0 25px 50px -12px rgba(244, 114, 182, 0.35);
   transform: scale(1.05);
   z-index: 10;
 }
@@ -80,12 +80,12 @@
 .package-title {
   font-size: 3rem;
   font-weight: 700;
-  color: white;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
 .package-description {
-  color: rgb(156, 163, 175);
+  color: #475569;
   font-size: 0.875rem;
   margin-bottom: 1rem;
   line-height: 1.5;
@@ -122,12 +122,12 @@
 .package-features h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
 .package-target p {
-  color: #6b7280;
+  color: #4b5563;
   font-size: 0.875rem;
   line-height: 1.5;
 }
@@ -144,7 +144,7 @@
   gap: 0.5rem;
   margin-bottom: 0.25rem;
   font-size: 0.875rem;
-  color: #374151;
+  color: #334155;
 }
 
 .package-features li svg {
@@ -160,7 +160,7 @@
 .module-selection h4 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: rgb(209, 213, 219);
+  color: #f43f5e;
   margin-bottom: 1rem;
 }
 
@@ -180,22 +180,22 @@
   gap: 0.75rem;
   padding: 0.75rem;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(244, 114, 182, 0.25);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .module-checkbox:hover {
-  background: rgba(0, 0, 0, 0.8);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(244, 114, 182, 0.45);
 }
 
 .module-checkbox input[type="checkbox"] {
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(239, 68, 68, 0.5);
+  border: 2px solid rgba(244, 114, 182, 0.6);
   border-radius: 4px;
   position: relative;
   cursor: pointer;
@@ -203,8 +203,8 @@
 }
 
 .module-checkbox input[type="checkbox"]:checked {
-  background-color: #ef4444;
-  border-color: #ef4444;
+  background-color: #f43f5e;
+  border-color: #f43f5e;
 }
 
 .module-checkbox input[type="checkbox"]:checked::after {
@@ -227,11 +227,11 @@
 
 .module-name {
   font-weight: 500;
-  color: rgb(209, 213, 219);
+  color: #1f2937;
 }
 
 .module-name:hover {
-  color: white;
+  color: #db2777;
 }
 
 .module-price {
@@ -247,13 +247,13 @@
   left: 100%;
   margin-left: 1rem;
   width: 20rem;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(244, 114, 182, 0.25);
   padding: 1rem;
   z-index: 100;
   animation: fadeSlideIn 0.3s ease-out forwards;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border: 1px solid rgba(244, 114, 182, 0.35);
   pointer-events: none;
 }
 
@@ -292,12 +292,12 @@
 .module-tooltip h5 {
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
 .module-tooltip p {
-  color: rgb(156, 163, 175);
+  color: #475569;
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -316,7 +316,7 @@
 
 .tooltip-details {
   font-size: 0.75rem;
-  color: rgb(107, 114, 128);
+  color: #64748b;
   font-style: italic;
 }
 
@@ -361,12 +361,12 @@
 .quote-form-container {
   max-width: 42rem;
   margin: 0 auto;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(244, 114, 182, 0.35);
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(244, 114, 182, 0.25);
 }
 
 .quote-form-header {
@@ -379,7 +379,7 @@
 .quote-form-header h3 {
   font-size: 1.875rem;
   font-weight: 700;
-  color: white;
+  color: #1f2937;
 }
 
 .close-button {
@@ -387,17 +387,18 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(244, 114, 182, 0.35);
   border-radius: 8px;
-  color: white;
+  color: #1f2937;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .close-button:hover {
-  background: rgba(0, 0, 0, 0.9);
-  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(244, 114, 182, 0.55);
+  color: #db2777;
 }
 
 /* Quote Form */
@@ -408,8 +409,8 @@
 }
 
 .selection-summary {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(244, 114, 182, 0.12);
+  border: 1px solid rgba(244, 114, 182, 0.3);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -418,14 +419,14 @@
 .selection-summary h4 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: rgb(209, 213, 219);
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
 .selection-summary h5 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: rgb(209, 213, 219);
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 
@@ -437,7 +438,7 @@
 
 .selected-modules li {
   font-size: 0.875rem;
-  color: rgb(156, 163, 175);
+  color: #475569;
   margin-bottom: 0.25rem;
 }
 
@@ -458,16 +459,16 @@
 .form-group label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgb(209, 213, 219);
+  color: #334155;
 }
 
 .form-group input,
 .form-group textarea {
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.6);
   border-radius: 8px;
-  color: white;
+  color: #1f2937;
   font-size: 0.875rem;
   transition: all 0.2s ease;
 }
@@ -475,8 +476,8 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #ef4444;
-  background: rgba(0, 0, 0, 0.9);
+  border-color: #f43f5e;
+  background: rgba(255, 255, 255, 0.98);
 }
 
 .social-media-field {
@@ -491,23 +492,23 @@
 
 .social-media-field button {
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.6);
   border-radius: 8px;
-  color: rgb(156, 163, 175);
+  color: #475569;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .social-media-field button:hover {
-  color: #ef4444;
-  border-color: #ef4444;
-  background: rgba(0, 0, 0, 0.9);
+  color: #f43f5e;
+  border-color: #f43f5e;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .add-social-button {
   background: transparent;
-  color: #ef4444;
+  color: #f43f5e;
   border: none;
   font-size: 0.875rem;
   cursor: pointer;
@@ -515,7 +516,7 @@
 }
 
 .add-social-button:hover {
-  color: rgb(239, 68, 68, 0.8);
+  color: rgba(244, 114, 182, 0.85);
 }
 
 /* Form Actions */

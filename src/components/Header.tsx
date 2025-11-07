@@ -1,10 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { Menu, X } from "lucide-react"
+import { useTranslation } from "react-i18next"
+
+const languages = [
+  { code: "tr", labelKey: "language.turkish", shortKey: "language.short" },
+  { code: "en", labelKey: "language.english", shortKey: "language.short" }
+] as const
 
 export function Header() {
+  const { t, i18n } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const location = useLocation()
@@ -26,7 +33,7 @@ export function Header() {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth",
+        behavior: "smooth"
       })
       setIsMobileMenuOpen(false)
     }
@@ -35,6 +42,41 @@ export function Header() {
   const isMarketingPage = location.pathname === "/marketingGlossary"
   const isHomePage = location.pathname === "/"
   const isBlogPage = location.pathname === "/blog"
+
+  const navItems = useMemo(
+    () => [
+      { label: t("header.nav.about"), type: "scroll" as const, target: "about" },
+      { label: t("header.nav.services"), type: "scroll" as const, target: "services" },
+      { label: t("header.nav.glossary"), type: "route" as const, target: "/marketingGlossary" }
+    ],
+    [t]
+  )
+
+  const renderLanguageSwitcher = (variant: "light" | "dark" = "light") => (
+    <div className="flex items-center gap-2">
+      {languages.map(({ code, labelKey }) => {
+        const isActive = i18n.language === code || (code === "tr" && i18n.language.startsWith("tr"))
+        return (
+          <button
+            key={code}
+            onClick={() => void i18n.changeLanguage(code)}
+            className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+              variant === "dark"
+                ? isActive
+                  ? "bg-white text-black"
+                  : "bg-white/10 text-white hover:bg-white/20"
+                : isActive
+                  ? "bg-black text-white"
+                  : "bg-black/5 text-gray-700 hover:bg-black/10"
+            }`}
+            aria-pressed={isActive}
+          >
+            {t(labelKey)}
+          </button>
+        )
+      })}
+    </div>
+  )
 
   if (isMarketingPage) {
     return (
@@ -62,7 +104,7 @@ export function Header() {
                 >
                   <path d="m15 19-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                Ana Sayfa
+                {t("header.home")}
               </Link>
 
               <Link
@@ -72,41 +114,16 @@ export function Header() {
                 } clickable`}
                 aria-current="page"
               >
-                #KNOWLEDGE
+                {t("header.marketingGlossary")}
               </Link>
             </div>
 
-            <Link
-              to="/blog"
-              className={`inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/15 px-5 py-3 text-xs font-semibold uppercase tracking-[0.32em] transition-all duration-300 clickable ${
-                isBlogPage ? "text-red-100" : "text-red-200 hover:border-red-500/50 hover:bg-red-500/25 hover:text-red-100"
-              }`}
-              aria-current={isBlogPage ? "page" : undefined}
-            >
-              Blog Yazıları
-              <svg
-                aria-hidden="true"
-                className="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                viewBox="0 0 24 24"
-              >
-                <path d="m9 5 7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+            <div className="flex items-center gap-3">{renderLanguageSwitcher("dark")}</div>
           </nav>
         </div>
       </header>
     )
   }
-
-  const navItems = [
-    { label: "Biz Kimiz?", type: "scroll" as const, target: "about" },
-    { label: "Neler Yapıyoruz?", type: "scroll" as const, target: "services" },
-    { label: "Pazarlama Sözlüğü", type: "route" as const, target: "/marketingGlossary" },
-    { label: "Blog", type: "route" as const, target: "/blog" },
-  ]
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "py-2" : "py-2"}`}>
@@ -175,20 +192,21 @@ export function Header() {
               </div>
             )}
 
-            <div className="hidden md:block">
+            <div className="hidden md:flex items-center gap-3">
+              {renderLanguageSwitcher("light")}
               {isHomePage ? (
                 <button
                   onClick={() => scrollToSection("process")}
                   className="relative overflow-hidden bg-red-600 hover:bg-red-700 text-white rounded-full px-6 py-2 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg clickable"
                 >
-                  <span className="relative z-10">Başlayalım</span>
+                  <span className="relative z-10">{t("header.cta.start")}</span>
                 </button>
               ) : (
                 <Link
                   to="/"
                   className="relative overflow-hidden bg-red-600 hover:bg-red-700 text-white rounded-full px-6 py-2 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg inline-block clickable"
                 >
-                  <span className="relative z-10">Ana Sayfa</span>
+                  <span className="relative z-10">{t("header.cta.home")}</span>
                 </Link>
               )}
             </div>
@@ -196,7 +214,7 @@ export function Header() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors clickable"
-              aria-label="Toggle menu"
+              aria-label={t("header.mobileToggle")}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -205,49 +223,51 @@ export function Header() {
           {isMobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200/50 bg-white/80 backdrop-blur-xl">
               <div className="px-6 py-4 space-y-3">
-                {!isBlogPage && navItems.map((item, index) => {
-                  if (item.type === "route") {
+                <div className="flex justify-end">{renderLanguageSwitcher("light")}</div>
+                {!isBlogPage &&
+                  navItems.map((item, index) => {
+                    if (item.type === "route") {
+                      return (
+                        <Link
+                          key={index}
+                          to={item.target}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-blue-100/50 rounded-xl transition-all duration-300 clickable"
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    }
+
+                    if (isHomePage) {
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => scrollToSection(item.target)}
+                          className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-blue-100/50 rounded-xl transition-all duration-300 clickable"
+                        >
+                          {item.label}
+                        </button>
+                      )
+                    }
+
                     return (
                       <Link
                         key={index}
-                        to={item.target}
+                        to={{ pathname: "/", hash: `#${item.target}` }}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-blue-100/50 rounded-xl transition-all duration-300 clickable"
                       >
                         {item.label}
                       </Link>
                     )
-                  }
-
-                  if (isHomePage) {
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => scrollToSection(item.target)}
-                        className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-blue-100/50 rounded-xl transition-all duration-300 clickable"
-                      >
-                        {item.label}
-                      </button>
-                    )
-                  }
-
-                  return (
-                    <Link
-                      key={index}
-                      to={{ pathname: "/", hash: `#${item.target}` }}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block w-full text-left px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-blue-100/50 rounded-xl transition-all duration-300 clickable"
-                    >
-                      {item.label}
-                    </Link>
-                  )
-                })}
+                  })}
                 {isHomePage ? (
                   <button
                     onClick={() => scrollToSection("process")}
                     className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 font-medium clickable"
                   >
-                    Başlayalım
+                    {t("header.cta.start")}
                   </button>
                 ) : (
                   <Link
@@ -255,7 +275,7 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 font-medium text-center clickable"
                   >
-                    Ana Sayfa
+                    {t("header.cta.home")}
                   </Link>
                 )}
               </div>

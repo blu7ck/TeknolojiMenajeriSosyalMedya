@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react"
 import { ChevronRight } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface Column {
   id: string
@@ -9,45 +10,9 @@ interface Column {
   content: string
 }
 
-const columns: Column[] = [
-  {
-    id: "social-media",
-    title: "SOSYAL MEDYA",
-    image: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1200&dpr=1",
-    description: "Dijital Dünyada Güçlü Varlık",
-    content: "Sosyal medya platformlarında markanızı güçlendirin. Instagram, TikTok, Facebook ve diğer platformlarda etkileyici içeriklerle hedef kitlenize ulaşın. Profesyonel fotoğraf ve video çekimleri ile markanızı öne çıkarın."
-  },
-  {
-    id: "digital-strategy",
-    title: "DİJİTAL STRATEJİ",
-    image: "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200&dpr=1",
-    description: "Akıllı Dijital Planlama",
-    content: "Dijital dünyada başarılı olmak için doğru strateji şart. Hedef kitle analizi, rakip analizi ve içerik planlaması ile markanızı dijital dünyada güçlendirin. Veri odaklı kararlarla büyüyün."
-  },
-  {
-    id: "content-creation",
-    title: "İÇERİK ÜRETİMİ",
-    image: "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=1200&dpr=1",
-    description: "Yaratıcı İçerikler",
-    content: "Markanızın hikayesini anlatan etkileyici içerikler üretiyoruz. Fotoğraf, video, grafik tasarım ve yazılı içeriklerle hedef kitlenizi etkileyin. Her platform için özel olarak tasarlanmış içerikler."
-  },
-  {
-    id: "team-collaboration",
-    title: "ANALİZ & DANISMANLIK",
-    image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=1200&dpr=1",
-    description: "Anlık Danışmanlık ve Analiz",
-    content: "Markanızın dijital dünyada nasıl gelişeceğini analiz ediyoruz. Hedef kitlenizi tanıyoruz, rakiplerinizi analiz ediyoruz ve markanızın dijital dünyada nasıl gelişeceğini belirliyoruz."
-  },
-  {
-    id: "business-growth",
-    title: "MARKA YÖNETİMİ",
-    image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1200&dpr=1",
-    description: "Sürdürülebilir Büyüme",
-    content: "İşinizi dijital dünyada büyütmek için doğru adımları atın. Müşteri kazanımı, marka bilinirliği ve satış artışı için kapsamlı dijital pazarlama stratejileri. Ölçülebilir sonuçlarla büyüyün."
-  }
-]
-
 export function MarvelColumns() {
+  const { t } = useTranslation()
+  const columns = t("marvelColumns.columns", { returnObjects: true }) as Column[]
   const [expandedColumn, setExpandedColumn] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === "undefined") {
@@ -133,7 +98,7 @@ export function MarvelColumns() {
                         window.location.href = `/more?section=${column.id}`
                       }}
                     >
-                      Daha Fazla Bilgi
+                      {t("marvelColumns.mobile.cta")}
                       <ChevronRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -221,7 +186,7 @@ export function MarvelColumns() {
                     window.location.href = `/more?section=${column.id}`
                   }}
                 >
-                  DAHA FAZLA BİLGİ
+                  {t("marvelColumns.desktop.button")}
                   <ChevronRight className="h-5 w-5" />
                 </button>
               </div>
@@ -231,7 +196,9 @@ export function MarvelColumns() {
             {!isExpanded && !isOtherExpanded && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 ease-out hover:opacity-100">
                 <div className="rounded-sm border-2 border-red-400 bg-red-600/15 px-6 py-3 backdrop-blur-sm">
-                  <p className="text-sm font-bold tracking-wider text-white">GENİŞLETMEK İÇİN TIKLAYIN</p>
+                  <p className="text-sm font-bold tracking-wider text-white">
+                    {t("marvelColumns.desktop.hint")}
+                  </p>
                 </div>
               </div>
             )}

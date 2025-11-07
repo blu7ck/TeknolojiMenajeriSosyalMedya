@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect, forwardRef } from "react"
+import type { InputHTMLAttributes } from "react"
 import { createClient } from "../lib/supabase/client"
 // Email service removed - using Edge Functions instead
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react"
+import styled from "styled-components"
 
 // reCAPTCHA v3 types
 declare global {
@@ -50,7 +52,6 @@ function DigitalAnalysisForm() {
     status: 'idle',
     message: ''
   })
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false)
 
   // reCAPTCHA v3 script yükleme - Basitleştirilmiş
@@ -350,7 +351,7 @@ function DigitalAnalysisForm() {
 
       // Check if any website matches after normalization
       if (allWebsiteRequests && allWebsiteRequests.length > 0) {
-        const matchingWebsite = allWebsiteRequests.find(req => 
+        const matchingWebsite = allWebsiteRequests.find((req: { website: string }) => 
           normalizeUrl(req.website) === normalizedWebsite
         )
 
@@ -522,61 +523,60 @@ function DigitalAnalysisForm() {
   return (
     <div className="max-w-2xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <input
-              type="text"
-              name="name"
-              placeholder="Ad - Soyad"
-              value={formData.name}
-              onChange={handleInputChange}
-              disabled={formState.status === 'loading'}
-              className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors disabled:opacity-50"
-              required
-            />
-          </div>
-          <div>
-            <input
-              type="email"
-              name="email"
-              placeholder="E-posta"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={formState.status === 'loading'}
-              className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors disabled:opacity-50"
-              required
-            />
-          </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <BrutalistInput
+            type="text"
+            name="name"
+            placeholder="Ad - Soyad"
+            label="Ad - Soyad"
+            value={formData.name}
+            onChange={handleInputChange}
+            disabled={formState.status === 'loading'}
+            required
+          />
+          <BrutalistInput
+            type="email"
+            name="email"
+            placeholder="E-posta"
+            label="E-posta"
+            value={formData.email}
+            onChange={handleInputChange}
+            disabled={formState.status === 'loading'}
+            required
+          />
         </div>
 
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <input
-              type="text"
-              name="website"
-              placeholder="example.com"
-              value={formData.website}
-              onChange={handleInputChange}
-              onBlur={handleWebsiteBlur}
-              disabled={formState.status === 'loading'}
-              className="w-full px-4 py-3 bg-black/80 border border-red-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-colors disabled:opacity-50"
-              required
-            />
-          </div>
-          <button
-            type="submit"
+        <div className="flex flex-col gap-4 md:flex-row md:items-end">
+          <BrutalistInput
+            type="text"
+            name="website"
+            placeholder="example.com"
+            label="Website"
+            value={formData.website}
+            onChange={handleInputChange}
+            onBlur={handleWebsiteBlur}
             disabled={formState.status === 'loading'}
-            className="px-8 py-3 bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 disabled:hover:scale-100 whitespace-nowrap"
-          >
-            {formState.status === 'loading' ? (
-              <div className="flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Gönderiliyor...</span>
-              </div>
-            ) : (
-              'Rapor İste'
-            )}
-          </button>
+            required
+            className="flex-1"
+          />
+          <RaporButtonWrapper>
+            <button
+              type="submit"
+              disabled={formState.status === 'loading'}
+              className="rapor-button"
+            >
+              <span className="rapor-button__content">
+                {formState.status === 'loading' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="rapor-button__text">Gönderiliyor...</span>
+                  </>
+                ) : (
+                  <span className="rapor-button__text">RAPORUMU VER</span>
+                )}
+              </span>
+            </button>
+          </RaporButtonWrapper>
         </div>
 
         {/* reCAPTCHA v3 - Görünmez, otomatik çalışır */}
@@ -603,3 +603,198 @@ function DigitalAnalysisForm() {
 }
 
 export default DigitalAnalysisForm;
+
+interface BrutalistInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label: string
+  className?: string
+}
+
+const BrutalistInput = forwardRef<HTMLInputElement, BrutalistInputProps>(({ label, className, disabled, ...rest }, ref) => {
+  return (
+    <BrutalistField className={className} data-disabled={disabled ? "true" : "false"}>
+      <div className={`brutalist-container${disabled ? " is-disabled" : ""}`}>
+        <input ref={ref} disabled={disabled} className="brutalist-input smooth-type" {...rest} />
+        <label className="brutalist-label">{label}</label>
+      </div>
+    </BrutalistField>
+  )
+})
+
+BrutalistInput.displayName = "BrutalistInput"
+
+const RaporButtonWrapper = styled.div`
+  .rapor-button {
+    width: 150px;
+    padding: 0;
+    border: none;
+    transform: rotate(5deg) scale(0.78);
+    transform-origin: center;
+    font-family: "Gochi Hand", cursive;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+    padding-bottom: 3px;
+    border-radius: 5px;
+    box-shadow: 0 2px 0 rgba(15, 23, 42, 0.55);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+    display: inline-block;
+  }
+
+  .rapor-button__content {
+    background: var(--color-primary-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .rapor-button__text {
+    display: inline-block;
+  }
+
+  .rapor-button:active:not(:disabled) {
+    transform: rotate(5deg) scale(0.78) translateY(5px);
+    padding-bottom: 0px;
+    outline: 0;
+  }
+
+  .rapor-button:disabled {
+    cursor: not-allowed;
+    box-shadow: 0 2px 0 rgba(15, 23, 42, 0.3);
+    opacity: 0.7;
+  }
+
+  .rapor-button:disabled .rapor-button__content {
+    opacity: 0.9;
+  }
+`
+
+const BrutalistField = styled.div`
+  position: relative;
+  width: 100%;
+
+  .brutalist-container {
+    position: relative;
+    width: 100%;
+    font-family: "Space Mono", "Courier New", Courier, monospace;
+    max-width: 100%;
+  }
+
+  .brutalist-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 3px solid #0f172a;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 4px 4px 0 #0f172a, 9px 9px 0 rgba(244, 114, 182, 0.8);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brutalist-input:disabled {
+    color: #94a3b8;
+    background-color: #f8fafc;
+    border-color: #cbd5f5;
+    box-shadow: 4px 4px 0 #94a3b8, 9px 9px 0 rgba(226, 232, 240, 0.9);
+    cursor: not-allowed;
+  }
+
+  .brutalist-input::placeholder {
+    color: #64748b;
+    transition: color 0.3s ease;
+  }
+
+  .brutalist-input:focus::placeholder {
+    color: transparent;
+  }
+
+  .brutalist-input:focus {
+    border-color: #f43f5e;
+    box-shadow: 6px 6px 0 #0f172a, 12px 12px 0 rgba(251, 191, 36, 0.85);
+  }
+
+  .smooth-type {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .smooth-type::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .smooth-type:focus::before {
+    opacity: 1;
+    animation: type-gradient 2s linear infinite;
+  }
+
+  .brutalist-label {
+    position: absolute;
+    left: -3px;
+    top: -26px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #ffffff;
+    background-color: #0f172a;
+    padding: 4px 10px;
+    transform: rotate(-1.5deg);
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-transform: uppercase;
+  }
+
+  .brutalist-input:focus + .brutalist-label {
+    transform: rotate(0deg) scale(1.05);
+    background-color: #f43f5e;
+    box-shadow: 3px 3px 0 rgba(251, 191, 36, 0.95);
+  }
+
+  .brutalist-container.is-disabled .brutalist-label {
+    background-color: #cbd5f5;
+    color: #475569;
+    box-shadow: none;
+  }
+
+  .brutalist-input:focus::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: #ffffff;
+    z-index: -2;
+  }
+
+  @keyframes type-gradient {
+    0% {
+      background-position: 300px 0;
+    }
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .brutalist-label {
+      font-size: 9px;
+      top: -24px;
+    }
+  }
+`

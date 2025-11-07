@@ -1,46 +1,54 @@
-import React, { Suspense, lazy } from 'react';
-import { ProcessStep } from '../types';
-import Loader from './Loader';
+import React, { Suspense, lazy } from "react"
+import Loader from "./Loader"
+import { useTranslation } from "react-i18next"
 
-const DigitalAnalysisForm = lazy(() => import('./DigitalAnalysisForm'));
+const DigitalAnalysisForm = lazy(() => import("./DigitalAnalysisForm"))
 
-interface ProcessSectionProps {
-  steps: ProcessStep[];
-}
+const ProcessSection: React.FC = () => {
+  const { t } = useTranslation()
+  const steps = t("process.steps", { returnObjects: true }) as Array<{
+    step: number
+    title: string
+    description: string
+  }>
 
-const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
   return (
-    <section id="process" className="py-20 bg-[#0A0B0C] text-[#E5E7EB]">
+    <section id="process" className="py-20 text-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-red-400 sm:text-4xl">
-            Çalışma Süreci
+          <h2 className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-rose-500 sm:text-4xl">
+            {t("process.title")}
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-[#AEB3C2]">
-            Başlangıçtan teslimat sonrasına kadar standart iş akışımızın her adımında şeffaf ve ölçülebilir ilerleriz.
+          <p className="mx-auto max-w-2xl text-lg text-slate-600">
+            {t("process.description")}
           </p>
         </div>
 
         <div className="space-y-8">
           {steps.map((step) => (
-            <div key={step.step} className="flex flex-col gap-4 rounded-2xl border border-red-500/25 bg-black/70 p-6 shadow-lg shadow-red-900/15 md:flex-row md:items-center">
+            <div
+              key={step.step}
+              className="flex flex-col gap-4 rounded-2xl border border-rose-200/70 bg-white/85 p-6 shadow-xl shadow-rose-100/60 backdrop-blur md:flex-row md:items-center transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-rose-200/80"
+            >
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-red-500/40 bg-red-600/90 text-lg font-bold text-white">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-white/60 bg-gradient-to-br from-rose-400 to-amber-300 text-lg font-bold text-white shadow-md">
                   {step.step}
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-[#F3F4F6]">{step.title}</h3>
-                  <p className="text-sm text-[#AEB3C2]">{step.description}</p>
+                  <h3 className="text-xl font-semibold text-slate-800">{step.title}</h3>
+                  <p className="text-sm text-slate-600">{step.description}</p>
                 </div>
               </div>
 
               {step.step === 1 && (
                 <div className="w-full md:ml-auto md:w-1/2">
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center py-8">
-                      <Loader />
-                    </div>
-                  }>
+                  <Suspense
+                    fallback={
+                      <div className="flex items-center justify-center py-8">
+                        <Loader />
+                      </div>
+                    }
+                  >
                     <DigitalAnalysisForm />
                   </Suspense>
                 </div>
@@ -50,7 +58,7 @@ const ProcessSection: React.FC<ProcessSectionProps> = ({ steps }) => {
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default ProcessSection;
+export default ProcessSection
