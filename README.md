@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![Teknoloji Menajeri](https://i.ibb.co/CstJSnMp/logo.png)
 
 **Modern teknoloji haberleri ve sosyal medya yönetimi için geliştirilmiş kapsamlı platform**
 
@@ -372,8 +371,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 ## 📞 İletişim
 
-- **Website**: [teknolojimenajeri.com](https://teknolojimenajeri.com.tr)
-- **Email**: gulsah@teknolojimenajeri.com
 - **GitHub**: [@blu7ck](https://github.com/blu7ck)
 
 **📋 Kurulum Desteği:** Detaylı kurulum rehberi, SQL script'leri ve dokümantasyon için iletişime geçin.
@@ -382,6 +379,5 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 <div align="center">
 
-Made with subhanallah for [Teknoloji Menajeri](https://teknolojimenajeri.com.tr)
 
 </div>
