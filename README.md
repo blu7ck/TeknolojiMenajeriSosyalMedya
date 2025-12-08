@@ -1,4 +1,4 @@
-# 🚀 Teknoloji Menajeri - Sosyal Medya Yönetim Platformu
+# Sosyal Medya Yönetim ve Danışmanlık | Site Tasarımı
 
 <div align="center">
 
@@ -6,13 +6,6 @@
 **Modern teknoloji haberleri ve sosyal medya yönetimi için geliştirilmiş kapsamlı platform**
 
 > **📋 Not:** Bu repository sadece kaynak kodları içerir. Kurulum script'leri ve detaylı dokümantasyon lokalde tutulur. Tam kurulum için iletişime geçin.
-
-[![React](https://img.shields.io/badge/React-18.0+-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-3.0+-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0+-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-
-[🌐 Demo]([https://teknoloji-menajeri-sosyal-medya.vercel.app](https://rqhrjhgcoonsvzjwlega.supabase.co/storage/v1/object/public/assests/logo.svg)) • [📖 Dokümantasyon](#dokümantasyon) • [🚀 Kurulum](#kurulum) • [📝 Changelog](#changelog)
 
 </div>
 
@@ -24,7 +17,7 @@
 - **Responsive Design** - Tüm cihazlarda mükemmel görünüm
 - **Dark/Light Mode** - Kullanıcı tercihi ile tema değişimi
 - **Smooth Animations** - Framer Motion ile akıcı geçişler
-- **Custom Cursor** - Teknoloji Menajeri renklerinde özel imleç
+- **Custom Cursor** -  Tercihe göre geliştirilen özel imleç
 
 ### 📝 **Blog Sistemi**
 - **Admin Panel** - Kolay blog yönetimi
@@ -98,7 +91,7 @@
 ### **Gereksinimler**
 - Node.js 18+ 
 - npm veya yarn
-- Docker & Docker Compose (PDF raporları için)
+- Docker & Docker Compose (PDF raporları için) (PROD için RENDER, HEROKU, RAILWAY etc.)
 - Supabase hesabı
 - Mailgun hesabı
 - Google PageSpeed API Key (opsiyonel)
@@ -200,7 +193,7 @@ curl \
 ## 📁 Proje Yapısı
 
 ```
-TeknolojiMenajeriSosyalMedya/
+SosyalMedya/
 ├── 📁 public/                 # Statik dosyalar (robots.txt, sitemap.xml)
 ├── 📁 src/
 │   ├── 📁 components/         # React bileşenleri
